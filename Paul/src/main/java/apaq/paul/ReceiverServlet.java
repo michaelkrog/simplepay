@@ -1,4 +1,4 @@
-package paul.servlet;
+package apaq.paul;
 
 public class ReceiverServlet {
 
