@@ -1,4 +1,4 @@
-package dk.apaq.paul.servlet;
+package paul.servlet;
 
 public class ReceiverServlet {
 

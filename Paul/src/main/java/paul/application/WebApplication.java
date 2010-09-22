@@ -1,4 +1,4 @@
-package dk.apaq.paul.application;
+package paul.application;
 
 public class WebApplication {
 

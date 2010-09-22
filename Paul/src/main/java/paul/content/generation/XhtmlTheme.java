@@ -3,12 +3,12 @@
  * and open the template in the editor.
  */
 
-package dk.apaq.paul.content.generation;
+package paul.content.generation;
 
 /**
  *
  * @author michael
  */
-public class XhtmlComponent {
+public class XhtmlTheme {
 
 }

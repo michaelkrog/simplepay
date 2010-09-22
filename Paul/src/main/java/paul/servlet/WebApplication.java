@@ -3,11 +3,15 @@
  * and open the template in the editor.
  */
 
-package dk.apaq.paul.servlet;
+package paul.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,9 +20,13 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author michael
  */
-public class Receiver extends HttpServlet {
-   
-    /** 
+public abstract class WebApplication extends HttpServlet implements Filter {
+
+    public void doFilter(ServletRequest sr, ServletResponse sr1, FilterChain fc) throws IOException, ServletException {
+        
+    }
+
+    /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
@@ -33,10 +41,10 @@ public class Receiver extends HttpServlet {
             /* TODO output your page here
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet Receiver</title>");  
+            out.println("<title>Servlet WebApplication</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet Receiver at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet WebApplication at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
             */

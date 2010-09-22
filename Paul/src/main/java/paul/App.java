@@ -1,4 +1,4 @@
-package dk.apaq.paul;
+package paul;
 
 import java.io.FileInputStream;
 

@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package dk.apaq.paul.servlet;
+package paul.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author michael
  */
-public class WebApplication extends HttpServlet {
+public class Receiver extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -33,10 +33,10 @@ public class WebApplication extends HttpServlet {
             /* TODO output your page here
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet WebApplication</title>");  
+            out.println("<title>Servlet Receiver</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet WebApplication at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet Receiver at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
             */
