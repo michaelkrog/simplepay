@@ -8,6 +8,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>Receiver</servlet-name>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
