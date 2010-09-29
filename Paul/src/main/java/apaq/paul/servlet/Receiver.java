@@ -5,19 +5,29 @@
 
 package apaq.paul.servlet;
 
+import apaq.paul.HostInfo;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.javavfs.FileSystem;
 import paul.application.WebApplication;
+import paul.file.FileSystemFacade;
 
 /**
  *
  * @author michael
  */
 public class Receiver extends HttpServlet {
+
+    private FileSystem fs = FileSystemFacade.getFileSystem();
+
+    private HostInfo getHostInfo(){
+        return null;
+    }
 
     private WebApplication getApplication(HttpServletRequest request){
         return null;
