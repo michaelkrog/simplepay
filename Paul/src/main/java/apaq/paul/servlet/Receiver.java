@@ -5,7 +5,7 @@
 
 package apaq.paul.servlet;
 
-import apaq.paul.HostInfo;
+import paul.host.HostInfo;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;

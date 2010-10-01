@@ -5,23 +5,19 @@
 
 package apaq.paul;
 
-import paul.host.HostInfo;
-import com.google.gson.Gson;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import junit.framework.TestCase;
+import paul.host.HostFacade;
 
 /**
  *
  * @author krog
  */
-public class HostInfoParserTest extends TestCase {
+public class HostInfoFacadeTest extends TestCase {
     
-    public HostInfoParserTest(String testName) {
+    public HostInfoFacadeTest(String testName) {
         super(testName);
     }
 
@@ -35,19 +31,12 @@ public class HostInfoParserTest extends TestCase {
         super.tearDown();
     }
 
-    public void testHostFacade() {
-        
-
-        InputStream inputStream = HostInfoParserTest.class.getResourceAsStream("/hosts.json");
-        HostInfoParser infoParser = new HostInfoParser();
-        List<HostInfo> list=null;
+    public void testGetHostInfoList() {
         try {
-            list = infoParser.parseHostInfo(inputStream);
+            HostFacade.getHostInfoList();
         } catch (IOException ex) {
             fail(ex.getMessage());
         }
-
-        System.out.println("count: "+list.size());
     }
 
 }

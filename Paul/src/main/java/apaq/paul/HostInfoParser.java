@@ -5,6 +5,7 @@
 
 package apaq.paul;
 
+import paul.host.HostInfo;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
@@ -21,16 +22,9 @@ import org.javavfs.File;
  * @author krog
  */
 public class HostInfoParser {
-    public static List<HostInfo> parseHostInfo(InputStream inputStream) throws IOException{
+    public List<HostInfo> parseHostInfo(InputStream inputStream) throws IOException{
         Gson gson = new Gson();
-        List<HostInfo> infos = new ArrayList<HostInfo>();
-        HostInfo hi = new HostInfo();
-        hi.setName("Apaq");
-        infos.add(hi);
-        String json = gson.toJson(infos);
-        
         Type collectionType = new TypeToken<Collection<HostInfo>>(){}.getType();
-        //Gson gson = new Gson();
         return gson.fromJson(new InputStreamReader(inputStream), collectionType);
     }
 }
