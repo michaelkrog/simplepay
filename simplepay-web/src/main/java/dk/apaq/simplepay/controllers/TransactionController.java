@@ -7,6 +7,7 @@ import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.security.MerchantUserDetails;
+import dk.apaq.simplepay.security.MerchantUserDetailsHolder;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +37,7 @@ public class TransactionController {
     private PaymentGatewayManager gatewayManager;
     
     private Merchant getMerchant() {
-        MerchantUserDetails mud = (MerchantUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return mud.getMerchant();
+        return MerchantUserDetailsHolder.getMerchantUserDetails().getMerchant();
     }
     
     private Transaction getTransaction(Merchant m, String token) {
