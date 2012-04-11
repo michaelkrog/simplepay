@@ -1,11 +1,17 @@
 package dk.apaq.simplepay.controllers;
 
+import dk.apaq.crud.Crud;
+import dk.apaq.filter.Filter;
+import dk.apaq.filter.core.CompareFilter;
 import dk.apaq.simplepay.PayService;
 import dk.apaq.simplepay.gateway.PaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import dk.apaq.simplepay.model.Merchant;
+import dk.apaq.simplepay.model.Transaction;
+import dk.apaq.simplepay.model.TransactionStatus;
 import dk.apaq.simplepay.security.MerchantUserDetailsHolder;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
@@ -44,6 +50,7 @@ public class CallbackController {
         LOG.debug("Payment event recieved");
         
         Merchant merchant = service.getMerchantByPublicKey(publicKey);
+        Crud.Complete<String, Transaction> transactions = service.getTransactions(merchant);
         String eventType = request.getParameter("msgtype");
         
         
@@ -64,7 +71,7 @@ public class CallbackController {
         String orderNumber=request.getParameter("ordernumber");
         long amount;
         String currency = request.getParameter("currency");
-        String transaction = request.getParameter("transaction");
+        String gatewayTransactionId = request.getParameter("transaction");
         
         LOG.debug("Payment event type is " + eventType);
         
@@ -79,58 +86,27 @@ public class CallbackController {
         PaymentGateway gateway = gatewayManager.createPaymentGateway(PaymentGatewayType.QuickPay, merchant.getGatewayUserId(), merchant.getGatewaySecret());
 
         
-        if("subscribe".equals(eventType)) {
+        /*if("subscribe".equals(eventType)) {
             
             
-        } 
+        } */
         
         if("authorize".equals("eventType")) {
         
-            /*
-            String orderId = getOrderIdFromOrderNumber(sellerService, orderNumber);
-            LOG.debug("Orderid found from orderNumber. [orderId={}; orderNumber={}]", orderId, orderNumber);
-            Order order = sellerService.getOrders().read(orderId);
-            CustomerRelationship customerRelationship = null;
+            //Find transaction ud fra ordrenummer
+            Filter filter = new CompareFilter("orderNumber", orderNumber, CompareFilter.CompareType.Equals);
+            List<String> idlist = service.getTransactions(merchant).listIds(filter, null);
+            if(idlist.isEmpty()) {
+                throw new ResourceNotFoundException("Could not find the order requested.");
+            }
             
-
-            if(order.getBuyerId() != null) {
-                LOG.debug("Order carried a customer. Loading customerRelationsShip");
-                customerRelationship = sellerService.getCustomers().read(order.getBuyerId());
-            }
-        
-            //Woohoo. :) User is really gonna pay - accept order if it isnt already accepted
-            if(!order.getStatus().isConfirmedState()) {
-                LOG.debug("Order was not already accepted. Changing it to accepted.");
-                order.setStatus(OrderStatus.Accepted);
-                order = sellerService.getOrders().update(order);
-            }
-
-            //take money
-            LOG.debug("Charging money from customers card.");
-            try {
-                gateway.capture(amount.getAmountMinorLong(), request.getParameter("transaction"));
-                LOG.debug("Money was charged from card.");
-            } catch(PaymentException ex) {
-                LOG.warn("Unable to charge money from card.", ex);
-                throw ex;
-            }
-
-            LOG.debug("Persisting payment information..");
-
-            Payment payment = new Payment();
-            payment.setAmount(amount);
-            payment.setOrderId(orderId);
-            payment.setPaymentType(PaymentType.Card);
-            payment.setPaymentDetails(request.getParameter("cardtype") + ": " + request.getParameter("cardnumber"));
-            sellerService.getPayments().create(payment);
-
-            //Payments may have changed order properties - reload it
-            order = sellerService.getOrders().read(orderId);
-
-            if(!order.isPaid()) {
-                LOG.warn("A payment went down on an order but was not marked as fully paid. [orderId={}; order total={}; payment amount={}]", 
-                        new Object[]{order.getId(), order.getTotalWithTax(), amount});
-            }*/
+            Transaction transaction = transactions.read(idlist.get(0));
+            
+            //marker som authorized med den givne amount
+            transaction.setAuthorizedAmount(amount);
+            transaction.setStatus(TransactionStatus.Authorized);
+            transactions.update(transaction);
+            
         }
     }
     

@@ -5,11 +5,11 @@ var Pay = (function(){
         this.publicKey = publicKey;
     }
 
-    function createUnauthorizedToken(orderNumber, description, amount, currency, returnUrl, cancelUrl, callback) {
+    function createUnauthorizedToken(orderNumber, description, callback) {
         //Create transaction at server and return token
     }
     
-    function authorizeToken(token) {
+    function authorizeToken(token, amount, currency, returnUrl, cancelUrl) {
         //request url & fields
         //inject form
     }

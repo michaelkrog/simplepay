@@ -11,15 +11,13 @@ public class Transaction {
     private long authorizedAmount;
     private long capturedAmount;
     private long refundedAmount;
-    private String orderNumber;
+    private long orderNumber;
     private Merchant merchant;
     private String currency;
     private String description;
     private String gatewayTransactionId;
     private PaymentGatewayType gatewayType;
-    private boolean captured;
-    private boolean refunded;
-    private boolean cancelled;
+    private TransactionStatus status;
 
     public long getAuthorizedAmount() {
         return authorizedAmount;
@@ -27,14 +25,6 @@ public class Transaction {
 
     public void setAuthorizedAmount(long authorizedAmount) {
         this.authorizedAmount = authorizedAmount;
-    }
-
-    public boolean isCaptured() {
-        return captured;
-    }
-
-    public void setCaptured(boolean captured) {
-        this.captured = captured;
     }
 
     public long getCapturedAmount() {
@@ -93,21 +83,14 @@ public class Transaction {
         this.merchant = merchant;
     }
 
-    public String getOrderNumber() {
+    public long getOrderNumber() {
         return orderNumber;
     }
 
-    public void setOrderNumber(String orderNumber) {
+    public void setOrderNumber(long orderNumber) {
         this.orderNumber = orderNumber;
     }
 
-    public boolean isRefunded() {
-        return refunded;
-    }
-
-    public void setRefunded(boolean refunded) {
-        this.refunded = refunded;
-    }
 
     public long getRefundedAmount() {
         return refundedAmount;
@@ -117,13 +100,12 @@ public class Transaction {
         this.refundedAmount = refundedAmount;
     }
 
-    public boolean isCancelled() {
-        return cancelled;
+    public TransactionStatus getStatus() {
+        return status;
     }
 
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
+    public void setStatus(TransactionStatus status) {
+        this.status = status;
     }
-    
     
 }
