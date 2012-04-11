@@ -2,11 +2,11 @@ var Pay = (function(){
     var publicKey;
     var serviceRoot = "http://localhost:8080";
     
-    function setPublicKey(publicKey) {
+    var setPublicKey = function(publicKey) {
         this.publicKey = publicKey;
     }
 
-    function createUnauthorizedToken(orderNumber, description, callback) {
+    var createUnauthorizedToken = function(orderNumber, description, callback) {
         $.ajax({
           url: serviceRoot + "/transactions",
           username:publicKey,
@@ -18,7 +18,7 @@ var Pay = (function(){
         });
     }
     
-    function authorizeTokenRemote(token, amount, currency, returnUrl, cancelUrl) {
+    var authorizeTokenRemote = function(token, amount, currency, returnUrl, cancelUrl) {
         //request url & fields
         $.ajax({
           url: serviceRoot + "/authoriation/form",
