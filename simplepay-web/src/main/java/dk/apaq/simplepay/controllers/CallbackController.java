@@ -102,7 +102,7 @@ public class CallbackController {
             
             Transaction transaction = transactions.read(idlist.get(0));
             
-            //marker som authorized med den givne amount
+            //markér som authorized med den givne amount
             transaction.setAuthorizedAmount(amount);
             transaction.setStatus(TransactionStatus.Authorized);
             transactions.update(transaction);

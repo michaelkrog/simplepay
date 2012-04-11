@@ -1,18 +1,41 @@
 var Pay = (function(){
     var publicKey;
+    var serviceRoot = "http://localhost:8080";
     
     function setPublicKey(publicKey) {
         this.publicKey = publicKey;
     }
 
     function createUnauthorizedToken(orderNumber, description, callback) {
-        //Create transaction at server and return token
+        $.ajax({
+          url: serviceRoot + "/transactions",
+          username:publicKey,
+          type: "POST",
+          data: {orderNumber:orderNumber, description:description}
+        }).done(function(data) {
+            alert(data);
+            callback('somedata');
+        });
     }
     
-    function authorizeToken(token, amount, currency, returnUrl, cancelUrl) {
+    function authorizeTokenRemote(token, amount, currency, returnUrl, cancelUrl) {
         //request url & fields
-        //inject form
+        $.ajax({
+          url: serviceRoot + "/authoriation/form",
+          username:publicKey,
+          type: "POST",
+          data: {token:token, amount:amount, currecny:currency, returnUrl:returnUrl, cancelUrl:cancelUrl}
+        }).done(function(data) {
+            //inject form
+            var inputs = [];
+            $.each(data.fields, function(index,val) {
+                inputs.push('<input type="hidden" name="'+index+'" value="'+val+'"/>');
+            })
+            
+            $('<form id="_simplepay" method="post" action="'+data.url+'">' + inputs.join('') + '</form>').appendTo('body')[0].submit();
+            
+        });
+        
     }
-    
     
 })();
