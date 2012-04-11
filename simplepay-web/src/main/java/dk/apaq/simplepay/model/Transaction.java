@@ -19,4 +19,102 @@ public class Transaction {
     private PaymentGatewayType gatewayType;
     private boolean captured;
     private boolean refunded;
+
+    public long getAuthorizedAmount() {
+        return authorizedAmount;
+    }
+
+    public void setAuthorizedAmount(long authorizedAmount) {
+        this.authorizedAmount = authorizedAmount;
+    }
+
+    public boolean isCaptured() {
+        return captured;
+    }
+
+    public void setCaptured(boolean captured) {
+        this.captured = captured;
+    }
+
+    public long getCapturedAmount() {
+        return capturedAmount;
+    }
+
+    public void setCapturedAmount(long capturedAmount) {
+        this.capturedAmount = capturedAmount;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getGatewayTransactionId() {
+        return gatewayTransactionId;
+    }
+
+    public void setGatewayTransactionId(String gatewayTransactionId) {
+        this.gatewayTransactionId = gatewayTransactionId;
+    }
+
+    public PaymentGatewayType getGatewayType() {
+        return gatewayType;
+    }
+
+    public void setGatewayType(PaymentGatewayType gatewayType) {
+        this.gatewayType = gatewayType;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Merchant getMerchant() {
+        return merchant;
+    }
+
+    public void setMerchant(Merchant merchant) {
+        this.merchant = merchant;
+    }
+
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
+    public boolean isRefunded() {
+        return refunded;
+    }
+
+    public void setRefunded(boolean refunded) {
+        this.refunded = refunded;
+    }
+
+    public long getRefundedAmount() {
+        return refundedAmount;
+    }
+
+    public void setRefundedAmount(long refundedAmount) {
+        this.refundedAmount = refundedAmount;
+    }
+    
+    
 }
