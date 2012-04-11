@@ -56,5 +56,17 @@ public class PayService implements ApplicationContextAware {
         }
         return merchantCrud;
     }
+    
+    public Merchant getMerchantBySecretKey(String secretKey) {
+        return null;
+    }
+
+    public Merchant getMerchantByPublicKey(String publicKey) {
+        return null;
+    }
+    
+    public Merchant getMerchantByCredentials(String username, String password) {
+        return null;
+    }
 
 }

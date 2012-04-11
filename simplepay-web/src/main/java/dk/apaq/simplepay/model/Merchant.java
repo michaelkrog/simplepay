@@ -1,5 +1,7 @@
 package dk.apaq.simplepay.model;
 
+import dk.apaq.simplepay.gateway.PaymentGatewayType;
+
 /**
  *
  * @author krog
@@ -8,12 +10,19 @@ public class Merchant {
     private String id;
     private String name;
     private String email;
+    private String phone;
     private String road;
     private String zipcode;
     private String city;
     private String country;
     private String publicKey;
     private String secretKey;
+    private String username;
+    private String password;
+    
+    private String gatewayUserId;
+    private String gatewaySecret;
+    private PaymentGatewayType gatewayType;
 
     public String getCity() {
         return city;
@@ -86,6 +95,53 @@ public class Merchant {
     public void setZipcode(String zipcode) {
         this.zipcode = zipcode;
     }
-    
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getGatewayUserId() {
+        return gatewayUserId;
+    }
+
+    public void setGatewayUserId(String merchantId) {
+        this.gatewayUserId = merchantId;
+    }
+
+    public String getGatewaySecret() {
+        return gatewaySecret;
+    }
+
+    public void setGatewaySecret(String merchantSecret) {
+        this.gatewaySecret = merchantSecret;
+    }
+
+    public PaymentGatewayType getGatewayType() {
+        return gatewayType;
+    }
+
+    public void setGatewayType(PaymentGatewayType gatewayType) {
+        this.gatewayType = gatewayType;
+    }
     
 }

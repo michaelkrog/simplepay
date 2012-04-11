@@ -19,6 +19,7 @@ public class Transaction {
     private PaymentGatewayType gatewayType;
     private boolean captured;
     private boolean refunded;
+    private boolean cancelled;
 
     public long getAuthorizedAmount() {
         return authorizedAmount;
@@ -114,6 +115,14 @@ public class Transaction {
 
     public void setRefundedAmount(long refundedAmount) {
         this.refundedAmount = refundedAmount;
+    }
+
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
     }
     
     
