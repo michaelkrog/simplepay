@@ -19,6 +19,10 @@ public class Merchant {
     private String secretKey;
     private String username;
     private String password;
+    private boolean disabled;
+    private boolean expired;
+    private boolean credentialsExpired;
+    private boolean locked;
     
     private String gatewayUserId;
     private String gatewaySecret;
@@ -142,6 +146,38 @@ public class Merchant {
 
     public void setGatewayType(PaymentGatewayType gatewayType) {
         this.gatewayType = gatewayType;
+    }
+
+    public boolean isCredentialsExpired() {
+        return credentialsExpired;
+    }
+
+    public void setCredentialsExpired(boolean credentialsExpired) {
+        this.credentialsExpired = credentialsExpired;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+
+    public boolean isExpired() {
+        return expired;
+    }
+
+    public void setExpired(boolean expired) {
+        this.expired = expired;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
     
 }

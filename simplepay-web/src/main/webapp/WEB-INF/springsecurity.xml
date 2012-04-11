@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+  xmlns:beans="http://www.springframework.org/schema/beans"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+           http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+
+    <http pattern="/transactions/**" create-session="stateless" authentication-manager-ref="serviceCredsAuthMgr">
+        <http-basic />
+    </http>
+    
+    <http authentication-manager-ref="mainAuthMgr">
+        <intercept-url pattern="/dashboard/*" access="ROLE_USER" />
+        <intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        
+        <form-login login-page="/login.htm" />
+        <logout logout-url="/logout" invalidate-session="true"/>
+    </http>
+
+    
+    <beans:bean id="apiAuthenticationProvider" class="dk.apaq.shopsystem.qash.security.ApiAuthenticationProvider">
+        <beans:property name="userDetailsManager">
+            <beans:ref bean="userDetailsManager"/>
+        </beans:property>
+    </beans:bean>
+
+    <authentication-manager id="serviceCredsAuthMgr" alias="authenticationManager">
+        <authentication-provider ref="apiAuthenticationProvider" />
+    </authentication-manager>
+    
+    <authentication-manager id="mainAuthMgr" alias="authenticationManager">
+        <authentication-provider user-service-ref="userDetailsManager" />
+    </authentication-manager>
+
+    <beans:bean id="userDetailsManager" class="dk.apaq.simplepay.security.MerchantUserDetailsManager" />
+
+</beans:beans>

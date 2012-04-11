@@ -6,11 +6,14 @@ import dk.apaq.simplepay.gateway.PaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Transaction;
+import dk.apaq.simplepay.security.MerchantUserDetails;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,12 +35,9 @@ public class TransactionController {
     @Autowired
     private PaymentGatewayManager gatewayManager;
     
-    private Merchant getMerchant(String secretKey) {
-        Merchant m = service.getMerchantBySecretKey(secretKey);
-        if(m == null) {
-            throw new UnauthorizedException("secretKey given is not at valid key.");
-        }
-        return m;
+    private Merchant getMerchant() {
+        MerchantUserDetails mud = (MerchantUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return mud.getMerchant();
     }
     
     private Transaction getTransaction(Merchant m, String token) {
@@ -49,20 +49,23 @@ public class TransactionController {
     }
     
     @RequestMapping(value = "/transactions" , method= RequestMethod.GET)
-    public List<String> listTransactions(@RequestHeader String secretKey) {
-        Merchant m = getMerchant(secretKey);
+    @Transactional(readOnly=true)
+    public List<String> listTransactions() {
+        Merchant m = getMerchant();
         return service.getTransactions(m).listIds();
     }
     
     @RequestMapping(value="/transactions/{token}")
-    public Transaction getTransaction(@RequestHeader String secretKey, @PathVariable String token) {
-        Merchant m = getMerchant(secretKey);
+    @Transactional(readOnly=true)
+    public Transaction getTransaction(@PathVariable String token) {
+        Merchant m = getMerchant();
         return getTransaction(m, token);
     }
     
     @RequestMapping(value="/transactions/{token}/refund")
-    public Transaction refundTransaction(@RequestHeader String secretKey, @PathVariable String token, @RequestParam Long amount) {
-        Merchant m = getMerchant(secretKey);
+    @Transactional
+    public Transaction refundTransaction(@PathVariable String token, @RequestParam Long amount) {
+        Merchant m = getMerchant();
         Transaction t = getTransaction(m, token);
         
         if(amount == null) {
@@ -77,8 +80,9 @@ public class TransactionController {
     }
     
     @RequestMapping(value="/transactions/{token}/charge")
-    public Transaction chargeTransaction(@RequestHeader String secretKey, @PathVariable String token, @RequestParam Long amount) {
-        Merchant m = getMerchant(secretKey);
+    @Transactional
+    public Transaction chargeTransaction(@PathVariable String token, @RequestParam Long amount) {
+        Merchant m = getMerchant();
         Transaction t = getTransaction(m, token);
         
         if(amount == null) {
@@ -93,8 +97,9 @@ public class TransactionController {
     }
     
     @RequestMapping(value="/transactions/{token}/cancel")
-    public Transaction cancelTransaction(@RequestHeader String secretKey, @PathVariable String token) {
-        Merchant m = getMerchant(secretKey);
+    @Transactional
+    public Transaction cancelTransaction(@PathVariable String token) {
+        Merchant m = getMerchant();
         Transaction t = getTransaction(m, token);
         
         PaymentGateway gateway = gatewayManager.createPaymentGateway(t.getGatewayType(), m.getGatewayUserId(), m.getGatewaySecret());
