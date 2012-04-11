@@ -91,6 +91,7 @@ public class QuickPay implements PaymentGateway {
             checkQuickpayResult(new QuickPayResult(result));
             
         } catch (IOException ex) {
+            LOG.error("Unable to cancel payment.", ex);
             throw new PaymentException("Unable to cancel payment.", ex);
         } 
         
@@ -125,6 +126,7 @@ public class QuickPay implements PaymentGateway {
             //TODO
             return null;
         } catch (IOException ex) {
+            LOG.error("Unable to get status for payment.", ex);
             throw new PaymentException("Unable to get status for payment.", ex);
         }
     }
@@ -159,6 +161,7 @@ public class QuickPay implements PaymentGateway {
             String result = new String(ba.toByteArray(), 0, ba.size());
             checkQuickpayResult(new QuickPayResult(result));
         } catch (IOException ex) {
+            LOG.error("Unable to capture payment.", ex);
             throw new PaymentException("Unable to capture payment.", ex);
         }
     }
@@ -195,6 +198,7 @@ public class QuickPay implements PaymentGateway {
             String result = new String(ba.toByteArray(), 0, ba.size());
             checkQuickpayResult(new QuickPayResult(result));
         } catch (IOException ex) {
+            LOG.error("Unable to create recurring payment.", ex);
             throw new PaymentException("Unable to create recurring payment.", ex);
         }
     }
@@ -225,6 +229,7 @@ public class QuickPay implements PaymentGateway {
             String result = new String(ba.toByteArray(), 0, ba.size());
             checkQuickpayResult(new QuickPayResult(result));
         } catch (IOException ex) {
+            LOG.error("Unable to renew payment.", ex);
             throw new PaymentException("Unable to renew payment.", ex);
         }
     }
@@ -258,15 +263,10 @@ public class QuickPay implements PaymentGateway {
             String result = new String(ba.toByteArray(), 0, ba.size());
             checkQuickpayResult(new QuickPayResult(result));
         } catch (IOException ex) {
+            LOG.error("Unable to refund payment.", ex);
             throw new PaymentException("Unable to refund payment.", ex);
         }
     }
-
-    /*public static void main(String[] args) throws Exception {
-        QuickPay qp = new QuickPay("29331847", "Q9N7D16ri3EkAeH482fvUtZ67Md29W9LPbY1hxgQ3c34l54w5GImKFp1y636J725T");
-        qp.capture(12000, "33942345");
-        
-    }*/
 
     private void checkQuickpayResult(QuickPayResult result) {
         String status = result.getParameter("qpstat");
@@ -297,9 +297,6 @@ public class QuickPay implements PaymentGateway {
         }
 
     }
-    
-    /**
-     * md5check: 1baff8b58c67d036b2d3a5a158bf33df, hash: 98891297330cb31793562898d2e2b3ce
-     */
+
 }
 

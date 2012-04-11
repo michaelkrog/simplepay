@@ -70,12 +70,7 @@ public class TransactionController {
         }
         
         PaymentGateway gateway = gatewayManager.createPaymentGateway(t.getGatewayType(), m.getGatewayUserId(), m.getGatewaySecret());
-        try{
-            gateway.refund(amount, t.getGatewayTransactionId());
-        } catch(PaymentException ex) {
-            LOG.error("Error while refunding via gateway." ,ex);
-            throw new RequestFailed("Error while refunding. " + ex.getMessage());
-        }
+        gateway.refund(amount, t.getGatewayTransactionId());
         t.setRefunded(true);
         t.setRefundedAmount(amount);
         return service.getTransactions(m).update(t);
@@ -91,12 +86,7 @@ public class TransactionController {
         }
         
         PaymentGateway gateway = gatewayManager.createPaymentGateway(t.getGatewayType(), m.getGatewayUserId(), m.getGatewaySecret());
-        try{
-            gateway.capture(amount, t.getGatewayTransactionId());
-        } catch(PaymentException ex) {
-            LOG.error("Error while capturing via gateway." ,ex);
-            throw new RequestFailed("Error while charging money. " + ex.getMessage());
-        }
+        gateway.capture(amount, t.getGatewayTransactionId());
         t.setCaptured(true);
         t.setCapturedAmount(amount);
         return service.getTransactions(m).update(t);
@@ -104,16 +94,11 @@ public class TransactionController {
     
     @RequestMapping(value="/transactions/{token}/cancel")
     public Transaction cancelTransaction(@RequestHeader String secretKey, @PathVariable String token) {
-                Merchant m = getMerchant(secretKey);
+        Merchant m = getMerchant(secretKey);
         Transaction t = getTransaction(m, token);
         
         PaymentGateway gateway = gatewayManager.createPaymentGateway(t.getGatewayType(), m.getGatewayUserId(), m.getGatewaySecret());
-        try{
-            gateway.cancel(t.getGatewayTransactionId());
-        } catch(PaymentException ex) {
-            LOG.error("Error while cancelling via gateway." ,ex);
-            throw new RequestFailed("Error while cancelling. " + ex.getMessage());
-        }
+        gateway.cancel(t.getGatewayTransactionId());
         t.setCancelled(true);
         return service.getTransactions(m).update(t);
     }
