@@ -1,22 +1,38 @@
 package dk.apaq.simplepay.model;
 
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  *
  * @author krog
  */
+@Entity
 public class Transaction {
+    @Id
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
     private String id;
     private long authorizedAmount;
     private long capturedAmount;
     private long refundedAmount;
     private long orderNumber;
+
+    @ManyToOne
     private Merchant merchant;
     private String currency;
     private String description;
     private String gatewayTransactionId;
+    
+    @Enumerated(EnumType.STRING)
     private PaymentGatewayType gatewayType;
+    @Enumerated(EnumType.STRING)
     private TransactionStatus status;
 
     public long getAuthorizedAmount() {

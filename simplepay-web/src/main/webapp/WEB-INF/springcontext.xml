@@ -55,6 +55,8 @@
         <property name="from" value="${mail.from}"/>
     </bean>
 
+    <bean class="dk.apaq.simplepay.Bootstrap"/>
+    
     <!-- DATA BEANS -->
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="SimplePay"/>

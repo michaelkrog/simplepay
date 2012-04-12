@@ -3,9 +3,12 @@ package dk.apaq.simplepay;
 import dk.apaq.crud.Crud;
 import dk.apaq.crud.Crud.Complete;
 import dk.apaq.crud.CrudNotifier;
+import dk.apaq.filter.Filter;
+import dk.apaq.filter.core.CompareFilter;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.security.CrudSecurity;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.slf4j.Logger;
@@ -41,7 +44,7 @@ public class PayService implements ApplicationContextAware {
             throw new IllegalArgumentException("Merchant must have been persisted before used for retrieving transactions.");
         }
         
-        Complete<String, Transaction> crud = (Crud.Complete<String, Transaction>) context.getBean("transactionCrud", em, merchant);
+        Complete<String, Transaction> crud = (Crud.Complete<String, Transaction>) context.getBean("crud", em, Transaction.class);
         ((CrudNotifier)crud).addListener(new CrudSecurity.TransactionSecurity(merchant));
         
         return crud;
@@ -51,22 +54,27 @@ public class PayService implements ApplicationContextAware {
     public Crud.Complete<String, Merchant> getMerchants() {
         LOG.debug("Retrieving MerchantCrud");
         if(merchantCrud==null) {
-            merchantCrud = (Crud.Complete) context.getBean("merchantCrud", em);
+            merchantCrud = (Crud.Complete) context.getBean("crud", em, Merchant.class);
             ((CrudNotifier)merchantCrud).addListener(merchantSecurity);
         }
         return merchantCrud;
     }
     
     public Merchant getMerchantBySecretKey(String secretKey) {
-        return null;
+        return getMerchant("secretKey", secretKey);
     }
 
     public Merchant getMerchantByPublicKey(String publicKey) {
-        return null;
+        return getMerchant("publicKey", publicKey);
     }
     
     public Merchant getMerchantByUsername(String username) {
-        return null;
+        return getMerchant("username", username);
     }
 
+    private Merchant getMerchant(String key, String value) {
+        Filter filter = new CompareFilter(key, value, CompareFilter.CompareType.Equals);
+        List<Merchant> list = getMerchants().list(filter, null);
+        return list.isEmpty() ? null : list.get(0);
+    }
 }

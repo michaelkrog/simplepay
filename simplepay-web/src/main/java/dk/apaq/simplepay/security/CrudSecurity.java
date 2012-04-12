@@ -21,6 +21,5 @@ public class CrudSecurity {
             this.owner = owner;
         }
         
-        
     }
 }

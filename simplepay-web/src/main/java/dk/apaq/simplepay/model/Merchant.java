@@ -1,12 +1,22 @@
 package dk.apaq.simplepay.model;
 
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  *
  * @author krog
  */
+@Entity
 public class Merchant {
+    @Id
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
     private String id;
     private String name;
     private String email;
@@ -26,6 +36,8 @@ public class Merchant {
     
     private String gatewayUserId;
     private String gatewaySecret;
+    
+    @Enumerated(EnumType.STRING)
     private PaymentGatewayType gatewayType;
 
     public String getCity() {

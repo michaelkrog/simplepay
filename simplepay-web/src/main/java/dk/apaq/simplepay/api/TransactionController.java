@@ -46,11 +46,12 @@ public class TransactionController {
         return t;
     }
     
-    @RequestMapping(value = "/", method=RequestMethod.POST)
+    @RequestMapping(value = "/transactions", method=RequestMethod.POST)
     @Transactional(readOnly=true)
     @Secured({"ROLE_PUBLIC","ROLE_PRIVATE"})
     public String createTransactions(@RequestParam Long orderNumber, String description) {
         Merchant m = getMerchant();
+        LOG.debug("Creating transaction. [merchant={}; orderNumber={}]", m.getId(), orderNumber);
         
         Transaction transaction = new Transaction();
         transaction.setOrderNumber(orderNumber);
@@ -61,27 +62,30 @@ public class TransactionController {
     }
     
     
-    @RequestMapping(value = "/" , method=RequestMethod.GET)
+    @RequestMapping(value = "/transactions" , method=RequestMethod.GET)
     @Transactional(readOnly=true)
     @Secured("ROLE_PRIVATE")
     public List<String> listTransactions() {
         Merchant m = getMerchant();
+        LOG.debug("Listing transactions. [merchant={}]", m.getId());
         return service.getTransactions(m).listIds();
     }
     
-    @RequestMapping(value="/{token}", method=RequestMethod.GET)
+    @RequestMapping(value="/transactions/{token}", method=RequestMethod.GET)
     @Transactional(readOnly=true)
     @Secured("ROLE_PRIVATE")
     public Transaction getTransaction(@PathVariable String token) {
         Merchant m = getMerchant();
+        LOG.debug("Retrieving transaction. [merchant={};token={}]", m.getId(), token);
         return getTransaction(m, token);
     }
     
-    @RequestMapping(value="/{token}/refund", method=RequestMethod.POST)
+    @RequestMapping(value="/transactions/{token}/refund", method=RequestMethod.POST)
     @Transactional
     @Secured("ROLE_PRIVATE")
     public Transaction refundTransaction(@PathVariable String token, @RequestParam Long amount) {
         Merchant m = getMerchant();
+        LOG.debug("Refunding transaction. [merchant={}; token={}; amount={}]", new Object[]{m.getId(), token, amount});
         Transaction t = getTransaction(m, token);
         
         if(amount == null) {
@@ -95,11 +99,12 @@ public class TransactionController {
         return service.getTransactions(m).update(t);
     }
     
-    @RequestMapping(value="/{token}/charge", method=RequestMethod.POST)
+    @RequestMapping(value="/transactions/{token}/charge", method=RequestMethod.POST)
     @Transactional
     @Secured("ROLE_PRIVATE")
     public Transaction chargeTransaction(@PathVariable String token, @RequestParam Long amount) {
         Merchant m = getMerchant();
+        LOG.debug("Charging transaction. [merchant={}; token={}; amount={}]", new Object[]{m.getId(), token, amount});
         Transaction t = getTransaction(m, token);
         
         if(amount == null) {
@@ -113,11 +118,12 @@ public class TransactionController {
         return service.getTransactions(m).update(t);
     }
     
-    @RequestMapping(value="/{token}/cancel", method=RequestMethod.POST)
+    @RequestMapping(value="/transactions/{token}/cancel", method=RequestMethod.POST)
     @Transactional
     @Secured("ROLE_PRIVATE")
     public Transaction cancelTransaction(@PathVariable String token) {
         Merchant m = getMerchant();
+        LOG.debug("Cancelling transaction. [merchant={}; token={}]", m.getId(), token);
         Transaction t = getTransaction(m, token);
         
         PaymentGateway gateway = gatewayManager.createPaymentGateway(t.getGatewayType(), m.getGatewayUserId(), m.getGatewaySecret());

@@ -32,7 +32,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>api</servlet-name>
-        <url-pattern>/transactions/*</url-pattern>
+        <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
     
     <!-- SITE DISPATCHER -->
