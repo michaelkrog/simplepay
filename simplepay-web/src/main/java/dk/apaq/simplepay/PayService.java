@@ -31,7 +31,7 @@ public class PayService implements ApplicationContextAware {
 
     @Override
     public void setApplicationContext(ApplicationContext ac) throws BeansException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.context=ac;
     }
     
     public Crud.Complete<String, Transaction> getTransactions(Merchant merchant) {

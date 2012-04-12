@@ -3,8 +3,8 @@
   xmlns:beans="http://www.springframework.org/schema/beans"
   xmlns:util="http://www.springframework.org/schema/util"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
            http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
 
@@ -21,13 +21,9 @@
     </http>
 
     
-    <beans:bean id="apiAuthenticationProvider" class="dk.apaq.shopsystem.qash.security.ApiAuthenticationProvider">
-        <beans:property name="userDetailsManager">
-            <beans:ref bean="userDetailsManager"/>
-        </beans:property>
-    </beans:bean>
+    <beans:bean id="apiAuthenticationProvider" class="dk.apaq.simplepay.security.ApiAuthenticationProvider"/>
 
-    <authentication-manager id="serviceCredsAuthMgr" alias="authenticationManager">
+    <authentication-manager id="serviceCredsAuthMgr">
         <authentication-provider ref="apiAuthenticationProvider" />
     </authentication-manager>
     
