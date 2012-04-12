@@ -8,13 +8,12 @@
         <script src="pay.js"></script>
     </head>
     <body>
-        Hvad sker der
-        <div>Du har bare at betale!</div>
         <button id='paybutton'>Betal</button>
     </body>
     
     <script>
         $('#paybutton').click(function(){
+            Pay.setPublicKey('qwerty');
             Pay.createUnauthorizedToken(1001, 'Dette er den vildeste ordre.', function(token) {
                 Pay.authorizeTokenRemote(token, 1000, 'DKK', 'http://localhost:8080/ok.html', 'http://localhost:8080/cancel.html');
             });

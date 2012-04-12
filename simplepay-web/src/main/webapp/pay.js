@@ -8,20 +8,19 @@ function PayService (){
 
     this.createUnauthorizedToken = function(orderNumber, description, callback) {
         $.ajax({
-          url: serviceRoot + "/transactions",
-          username:publicKey,
+          url: serviceRoot + "/api/transactions",
+          username:this.publicKey,
           type: "POST",
           data: {orderNumber:orderNumber, description:description}
         }).done(function(data) {
-            alert(data);
-            callback('somedata');
+            callback(data);
         });
     }
     
     this.authorizeTokenRemote = function(token, amount, currency, returnUrl, cancelUrl) {
         //request url & fields
         $.ajax({
-          url: serviceRoot + "/authoriation/form",
+          url: serviceRoot + "/api/authoriation/form",
           username:publicKey,
           type: "POST",
           data: {token:token, amount:amount, currecny:currency, returnUrl:returnUrl, cancelUrl:cancelUrl}
