@@ -1,24 +1,20 @@
 package dk.apaq.simplepay.api;
 
 import dk.apaq.simplepay.PayService;
-import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.gateway.PaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.model.TransactionStatus;
-import dk.apaq.simplepay.security.MerchantUserDetails;
 import dk.apaq.simplepay.security.MerchantUserDetailsHolder;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,6 +48,7 @@ public class TransactionController {
     
     @RequestMapping(value = "/", method=RequestMethod.POST)
     @Transactional(readOnly=true)
+    @Secured({"ROLE_PUBLIC","ROLE_PRIVATE"})
     public String createTransactions(@RequestParam Long orderNumber, String description) {
         Merchant m = getMerchant();
         
@@ -66,20 +63,23 @@ public class TransactionController {
     
     @RequestMapping(value = "/" , method=RequestMethod.GET)
     @Transactional(readOnly=true)
+    @Secured("ROLE_PRIVATE")
     public List<String> listTransactions() {
         Merchant m = getMerchant();
         return service.getTransactions(m).listIds();
     }
     
-    @RequestMapping(value="/{token}")
+    @RequestMapping(value="/{token}", method=RequestMethod.GET)
     @Transactional(readOnly=true)
+    @Secured("ROLE_PRIVATE")
     public Transaction getTransaction(@PathVariable String token) {
         Merchant m = getMerchant();
         return getTransaction(m, token);
     }
     
-    @RequestMapping(value="/{token}/refund")
+    @RequestMapping(value="/{token}/refund", method=RequestMethod.POST)
     @Transactional
+    @Secured("ROLE_PRIVATE")
     public Transaction refundTransaction(@PathVariable String token, @RequestParam Long amount) {
         Merchant m = getMerchant();
         Transaction t = getTransaction(m, token);
@@ -95,8 +95,9 @@ public class TransactionController {
         return service.getTransactions(m).update(t);
     }
     
-    @RequestMapping(value="/{token}/charge")
+    @RequestMapping(value="/{token}/charge", method=RequestMethod.POST)
     @Transactional
+    @Secured("ROLE_PRIVATE")
     public Transaction chargeTransaction(@PathVariable String token, @RequestParam Long amount) {
         Merchant m = getMerchant();
         Transaction t = getTransaction(m, token);
@@ -112,8 +113,9 @@ public class TransactionController {
         return service.getTransactions(m).update(t);
     }
     
-    @RequestMapping(value="/{token}/cancel")
+    @RequestMapping(value="/{token}/cancel", method=RequestMethod.POST)
     @Transactional
+    @Secured("ROLE_PRIVATE")
     public Transaction cancelTransaction(@PathVariable String token) {
         Merchant m = getMerchant();
         Transaction t = getTransaction(m, token);
