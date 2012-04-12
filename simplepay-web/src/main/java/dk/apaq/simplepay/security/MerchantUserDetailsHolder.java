@@ -9,6 +9,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class MerchantUserDetailsHolder {
     
     public static MerchantUserDetails getMerchantUserDetails() {
-        return (MerchantUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        return (MerchantUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

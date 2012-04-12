@@ -7,6 +7,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -24,14 +25,19 @@ public class Transaction {
     private long refundedAmount;
     private long orderNumber;
 
+    @JsonIgnore
     @ManyToOne
     private Merchant merchant;
     private String currency;
     private String description;
+    
+    @JsonIgnore
     private String gatewayTransactionId;
     
+    @JsonIgnore
     @Enumerated(EnumType.STRING)
     private PaymentGatewayType gatewayType;
+    
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;
 

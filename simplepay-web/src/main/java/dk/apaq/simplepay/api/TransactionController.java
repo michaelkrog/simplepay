@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  *
@@ -46,9 +47,11 @@ public class TransactionController {
         return t;
     }
     
+
     @RequestMapping(value = "/transactions", method=RequestMethod.POST)
     @Transactional(readOnly=true)
     @Secured({"ROLE_PUBLIC","ROLE_PRIVATE"})
+    @ResponseBody
     public String createTransactions(@RequestParam Long orderNumber, String description) {
         Merchant m = getMerchant();
         LOG.debug("Creating transaction. [merchant={}; orderNumber={}]", m.getId(), orderNumber);
@@ -65,15 +68,17 @@ public class TransactionController {
     @RequestMapping(value = "/transactions" , method=RequestMethod.GET)
     @Transactional(readOnly=true)
     @Secured("ROLE_PRIVATE")
-    public List<String> listTransactions() {
+    @ResponseBody
+    public List<Transaction> listTransactions() {
         Merchant m = getMerchant();
         LOG.debug("Listing transactions. [merchant={}]", m.getId());
-        return service.getTransactions(m).listIds();
+        return service.getTransactions(m).list();
     }
     
     @RequestMapping(value="/transactions/{token}", method=RequestMethod.GET)
     @Transactional(readOnly=true)
     @Secured("ROLE_PRIVATE")
+    @ResponseBody
     public Transaction getTransaction(@PathVariable String token) {
         Merchant m = getMerchant();
         LOG.debug("Retrieving transaction. [merchant={};token={}]", m.getId(), token);
@@ -83,6 +88,7 @@ public class TransactionController {
     @RequestMapping(value="/transactions/{token}/refund", method=RequestMethod.POST)
     @Transactional
     @Secured("ROLE_PRIVATE")
+    @ResponseBody
     public Transaction refundTransaction(@PathVariable String token, @RequestParam Long amount) {
         Merchant m = getMerchant();
         LOG.debug("Refunding transaction. [merchant={}; token={}; amount={}]", new Object[]{m.getId(), token, amount});
@@ -102,6 +108,7 @@ public class TransactionController {
     @RequestMapping(value="/transactions/{token}/charge", method=RequestMethod.POST)
     @Transactional
     @Secured("ROLE_PRIVATE")
+    @ResponseBody
     public Transaction chargeTransaction(@PathVariable String token, @RequestParam Long amount) {
         Merchant m = getMerchant();
         LOG.debug("Charging transaction. [merchant={}; token={}; amount={}]", new Object[]{m.getId(), token, amount});
@@ -121,6 +128,7 @@ public class TransactionController {
     @RequestMapping(value="/transactions/{token}/cancel", method=RequestMethod.POST)
     @Transactional
     @Secured("ROLE_PRIVATE")
+    @ResponseBody
     public Transaction cancelTransaction(@PathVariable String token) {
         Merchant m = getMerchant();
         LOG.debug("Cancelling transaction. [merchant={}; token={}]", m.getId(), token);

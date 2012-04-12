@@ -1,6 +1,7 @@
 package dk.apaq.simplepay;
 
 import dk.apaq.simplepay.model.Merchant;
+import dk.apaq.simplepay.model.Transaction;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,7 +22,10 @@ public class Bootstrap {
             m.setPassword("krogen");
             m.setPublicKey("qwerty");
             m.setSecretKey("123456");
-            payService.getMerchants().create(m);
+            m = payService.getMerchants().createAndRead(m);
+            
+            Transaction t = new Transaction();
+            payService.getTransactions(m).create(t);
         }
     }
 }
