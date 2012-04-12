@@ -9,11 +9,12 @@
 
 
     <http pattern="/transactions/**" create-session="stateless" authentication-manager-ref="serviceCredsAuthMgr">
+        <intercept-url pattern="/transactions/**" access="ROLE_PUBLIC,ROLE_PRIVATE" />
         <http-basic />
     </http>
     
     <http authentication-manager-ref="mainAuthMgr">
-        <intercept-url pattern="/dashboard/*" access="ROLE_USER" />
+        <intercept-url pattern="/dashboard/**" access="ROLE_USER" />
         <intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         
         <form-login login-page="/login.htm" />

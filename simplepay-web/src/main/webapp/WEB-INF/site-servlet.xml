@@ -22,7 +22,7 @@
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
     
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
-        <property name="basename" value="dk.apaq.shopsystem.qash.i18n.Messages" />
+        <property name="basename" value="dk.apaq.simplepay.i18n.Messages" />
     </bean>
 
     <bean id="publicUrl" class="java.lang.String">
@@ -30,7 +30,7 @@
     </bean>
 
     <context:annotation-config />
-    <context:component-scan base-package="dk.apaq.shopsystem.site"/>
-    <context:property-placeholder ignore-resource-not-found="true" location="classpath:qash_default.properties,file:${user.home}/qash.properties" />
+    <context:component-scan base-package="dk.apaq.simplepay.site"/>
+    <context:property-placeholder ignore-resource-not-found="true" location="classpath:simplepay_default.properties,file:${user.home}/simplepay.properties" />
     
 </beans>

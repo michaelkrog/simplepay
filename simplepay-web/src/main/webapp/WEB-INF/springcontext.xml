@@ -28,13 +28,7 @@
        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd"
         >
 
-    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="locations">  
-            <list>  
-                <value>classpath:simplepay_default.properties</value>  
-            </list>  
-        </property>  
-    </bean> 
+    <context:property-placeholder ignore-resource-not-found="true" location="classpath:simplepay_default.properties,file:${user.home}/simplepay.properties" />
     
         <!-- CRUD AND SERVICE BEANS -->
     <bean id="crud" class="dk.apaq.simplepay.crud.EntityManagerCrudForSpring" scope="prototype">
@@ -96,7 +90,6 @@
     <!-- Enables the Spring MVC @Controller programming model -->
     <mvc:annotation-driven />
     
-    <context:component-scan base-package="dk.apaq.simplepay.controller" />
     <context:annotation-config />
     
 </beans>

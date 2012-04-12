@@ -39,7 +39,7 @@ public class ApiAuthenticationProvider implements AuthenticationProvider {
         }
         
         if(m==null) {
-            throw new BadCredentialsException("Invalid secrect key.");
+            throw new BadCredentialsException("Invalid key.");
         }
         
         MerchantUserDetails mud = new MerchantUserDetails(m);
