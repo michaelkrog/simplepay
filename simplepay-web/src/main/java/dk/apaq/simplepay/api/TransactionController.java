@@ -110,7 +110,7 @@ public class TransactionController {
         map.put("cancelurl", cancelUrl);
         map.put("callbackurl", callbackUrl);
         map.put("autocapture", "0");
-        map.put("cardtypelock", "");
+        map.put("cardtypelock", "creditcard");
         map.put("splitpayment", "1");
         
         //md5

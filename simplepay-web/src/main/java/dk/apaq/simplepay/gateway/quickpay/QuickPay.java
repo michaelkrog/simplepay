@@ -1,5 +1,6 @@
 package dk.apaq.simplepay.gateway.quickpay;
 
+import dk.apaq.simplepay.gateway.CardType;
 import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.gateway.PaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentInformation;
@@ -268,6 +269,59 @@ public class QuickPay implements PaymentGateway {
         }
     }
 
+    public static CardType getCardTypeFromString(String type) {
+        if("american-express".equals(type) || "american-express-dk".equals(type)) {
+            return CardType.American_Express;
+        }
+        
+        if("dankort".equals(type)) {
+            return CardType.Dankort;
+        }
+        
+        if("diners-express".equals(type) || "diners-express-dk".equals(type)) {
+            return CardType.Diners;
+        }
+        
+        if("jcb".equals(type)) {
+            return CardType.Jcb;
+        }
+        
+        if("mastercard".equals(type) || "mastercard-dk".equals(type)) {
+            return CardType.Mastercard;
+        }
+        
+        if("visa".equals(type) || "visa-dk".equals(type)) {
+            return CardType.Visa;
+        }
+        
+        if("visa-electron".equals(type) || "visa-electron-dk".equals(type)) {
+            return CardType.Visa_Electron;
+        }
+        return CardType.Unknown;
+    }
+    
+    public static String getStringFromCardType(CardType type) {
+        switch(type) {
+            case American_Express:
+                return "american-express";
+            case Dankort:
+                return "dankort";
+            case Diners:
+                return "diners";
+            case Jcb:
+                return "jcb";
+            case Mastercard:
+                return "mastercard";
+            case Visa:
+                return "visa";
+            case Visa_Electron:
+                return "visa-electron";
+            default: 
+                return null;
+        }
+        
+    }
+    
     public static void checkQuickpayResult(QuickPayResult result) {
         checkQuickpayResult(result.getParameter("qpstat"), result.getParameter("qpstatmsg"));
     }

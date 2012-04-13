@@ -53,6 +53,8 @@ public class CallbackController {
         String eventType = request.getParameter("msgtype");
         String qpstat = request.getParameter("qpstat");
         String qpstatmsg = request.getParameter("qpstatmsg");
+        String currency = request.getParameter("currency");
+        String gatewayTransactionId = request.getParameter("transaction");
         
         
         String[] keys = "subscribe".equals(eventType) ? QUICKPAY_KEYS_SUBSCRIBE : QUICKPAY_KEYS;
@@ -72,8 +74,6 @@ public class CallbackController {
         
         long orderNumber;
         long amount;
-        String currency = request.getParameter("currency");
-        String gatewayTransactionId = request.getParameter("transaction");
         
         LOG.debug("Payment event type is " + eventType);
         
@@ -91,9 +91,6 @@ public class CallbackController {
             throw new InvalidRequestException("amount not a valid number [value="+request.getParameter("amount") +"]");
         }
         
-        
-        //PaymentGateway gateway = gatewayManager.createPaymentGateway(PaymentGatewayType.QuickPay, merchant.getGatewayUserId(), merchant.getGatewaySecret());
-
         if("authorize".equals(eventType)) {
         
             //Find transaction from ordernumber
@@ -109,10 +106,13 @@ public class CallbackController {
                 throw new InvalidRequestException("Currency does not match what originally was requested.");
             }
             
-            //markér som authorized med den givne amount og sæt gateways transactionid
+            //markér som authorized med den givne amount og sæt andre info
             transaction.setAuthorizedAmount(amount);
             transaction.setStatus(TransactionStatus.Authorized);
             transaction.setGatewayTransactionId(gatewayTransactionId);
+            transaction.setCardType(QuickPay.getCardTypeFromString(request.getParameter("cardtype")));
+            transaction.setCardExpires(request.getParameter("cardexpire"));
+            transaction.setCardNumberTruncated(request.getParameter("cardnumber"));
             transactions.update(transaction);
             
         }

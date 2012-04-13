@@ -15,7 +15,7 @@
         $('#paybutton').click(function(){
             $(this).attr('disabled','disabled');
             Pay.setPublicKey('qwerty');
-            Pay.createUnauthorizedToken(10020, 'Dette er den vildeste ordre.', function(token) {
+            Pay.createUnauthorizedToken(10021, 'Dette er den vildeste ordre.', function(token) {
                 Pay.authorizeTokenRemote(token, 1000, 'DKK', 'http://localhost:8080/ok.html', 'http://localhost:8080/cancel.html');
             });
         }); 

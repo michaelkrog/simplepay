@@ -1,5 +1,6 @@
 package dk.apaq.simplepay.model;
 
+import dk.apaq.simplepay.gateway.CardType;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -30,6 +31,9 @@ public class Transaction {
     private Merchant merchant;
     private String currency;
     private String description;
+    private CardType cardType;
+    private String cardExpires;
+    private String cardNumberTruncated;
     
     @JsonIgnore
     private String gatewayTransactionId;
@@ -128,6 +132,30 @@ public class Transaction {
 
     public void setStatus(TransactionStatus status) {
         this.status = status;
+    }
+
+    public String getCardExpires() {
+        return cardExpires;
+    }
+
+    public void setCardExpires(String cardExpires) {
+        this.cardExpires = cardExpires;
+    }
+
+    public String getCardNumberTruncated() {
+        return cardNumberTruncated;
+    }
+
+    public void setCardNumberTruncated(String cardNumberTruncated) {
+        this.cardNumberTruncated = cardNumberTruncated;
+    }
+
+    public CardType getCardType() {
+        return cardType;
+    }
+
+    public void setCardType(CardType cardType) {
+        this.cardType = cardType;
     }
     
 }
