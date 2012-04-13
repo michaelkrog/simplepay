@@ -39,7 +39,7 @@ public class Transaction {
     private PaymentGatewayType gatewayType;
     
     @Enumerated(EnumType.STRING)
-    private TransactionStatus status;
+    private TransactionStatus status = TransactionStatus.Unauthorized;
 
     public long getAuthorizedAmount() {
         return authorizedAmount;

@@ -7,10 +7,16 @@ import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.model.TransactionStatus;
 import dk.apaq.simplepay.security.MerchantUserDetailsHolder;
+import java.text.NumberFormat;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,12 +34,41 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class TransactionController {
     
     private static final Logger LOG = LoggerFactory.getLogger(TransactionController.class);
+    private static final NumberFormat nfQuickPayOrderNumber = NumberFormat.getIntegerInstance();
+    
+    static {
+        nfQuickPayOrderNumber.setGroupingUsed(false);
+    }
+    
     
     @Autowired
     private PayService service;
     
     @Autowired
     private PaymentGatewayManager gatewayManager;
+    
+    @Autowired
+    @Qualifier("publicUrl")
+    private String publicUrl;
+    
+    public class FormData {
+        private String url;
+        private Map<String, String> fields = new LinkedHashMap<String, String>();
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public Map<String, String> getFields() {
+            return fields;
+        }
+        
+    }
+    
     
     private Merchant getMerchant() {
         return MerchantUserDetailsHolder.getMerchantUserDetails().getMerchant();
@@ -47,12 +82,53 @@ public class TransactionController {
         return t;
     }
     
+    
+    @RequestMapping(value = "/form", method=RequestMethod.POST)
+    @Secured({"ROLE_PUBLIC","ROLE_PRIVATE"})
+    @ResponseBody
+    public FormData generateForm(HttpServletRequest request, String token, Long amount, String currency, String returnUrl, String cancelUrl) {
+        Merchant m = getMerchant();
+        Transaction t = getTransaction(token);
+        
+        t.setCurrency(currency);
+        service.getTransactions(m).update(t);
+        
+        String callbackUrl = publicUrl + "/api/callback/quickpay/" + m.getPublicKey() + "/" + token;
+        
+        FormData formData = new FormData();
+        formData.setUrl("https://secure.quickpay.dk/form/");
+        
+        Map<String, String> map = formData.getFields();
+        map.put("protocol", "4");
+        map.put("msgtype", "authorize");
+        map.put("merchant", m.getGatewayUserId());
+        map.put("language", request.getLocale().getLanguage());
+        map.put("ordernumber", nfQuickPayOrderNumber.format(t.getOrderNumber()));  //
+        map.put("amount", Long.toString(amount));
+        map.put("currency", currency);
+        map.put("continueurl", returnUrl);
+        map.put("cancelurl", cancelUrl);
+        map.put("callbackurl", callbackUrl);
+        map.put("autocapture", "0");
+        map.put("cardtypelock", "");
+        map.put("splitpayment", "1");
+        
+        //md5
+        StringBuilder builder = new StringBuilder();
+        for(String value : map.values()) {
+            builder.append(value);
+        }
+        builder.append(m.getGatewaySecret());
+        map.put("md5check", DigestUtils.md5Hex(builder.toString()));
+        
+        return formData;
+    }
 
     @RequestMapping(value = "/transactions", method=RequestMethod.POST)
     @Transactional(readOnly=true)
     @Secured({"ROLE_PUBLIC","ROLE_PRIVATE"})
     @ResponseBody
-    public String createTransactions(@RequestParam Long orderNumber, String description) {
+    public String createTransactions(@RequestParam Long orderNumber, @RequestParam String description) {
         Merchant m = getMerchant();
         LOG.debug("Creating transaction. [merchant={}; orderNumber={}]", m.getId(), orderNumber);
         

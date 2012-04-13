@@ -45,7 +45,7 @@ public class CallbackController {
     @Autowired
     private PaymentGatewayManager gatewayManager;
     
-    @RequestMapping(value="/{publicKey}/{token}", method=RequestMethod.POST, params="gateway=quickpay") 
+    @RequestMapping(value="/callback/quickpay/{publicKey}/{token}", method=RequestMethod.POST) 
     public void handleQuickpayEvent(MultipartHttpServletRequest request, @PathVariable String publicKey, @PathVariable String token) {
         LOG.debug("Payment event recieved");
         
@@ -68,12 +68,19 @@ public class CallbackController {
             return;
         }
         
-        String orderNumber=request.getParameter("ordernumber");
+        long orderNumber;
         long amount;
         String currency = request.getParameter("currency");
         String gatewayTransactionId = request.getParameter("transaction");
         
         LOG.debug("Payment event type is " + eventType);
+        
+        try {
+            orderNumber = Long.parseLong(request.getParameter("ordernumber"));
+        } catch(NumberFormatException ex) {
+            LOG.warn("Payment data was valid, but orderNumber is not a valid number!!! [ordernumber{}; remoteIp={}]", request.getParameter("ordernumber"), request.getRemoteAddr());
+            throw new InvalidRequestException("ordernumber not a valid number [value="+request.getParameter("ordernumber") +"]");
+        }
         
         try {
             amount = Long.parseLong(request.getParameter("amount"));
@@ -83,17 +90,11 @@ public class CallbackController {
         }
         
         
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(PaymentGatewayType.QuickPay, merchant.getGatewayUserId(), merchant.getGatewaySecret());
+        //PaymentGateway gateway = gatewayManager.createPaymentGateway(PaymentGatewayType.QuickPay, merchant.getGatewayUserId(), merchant.getGatewaySecret());
 
+        if("authorize".equals(eventType)) {
         
-        /*if("subscribe".equals(eventType)) {
-            
-            
-        } */
-        
-        if("authorize".equals("eventType")) {
-        
-            //Find transaction ud fra ordrenummer
+            //Find transaction from ordernumber
             Filter filter = new CompareFilter("orderNumber", orderNumber, CompareFilter.CompareType.Equals);
             List<String> idlist = service.getTransactions(merchant).listIds(filter, null);
             if(idlist.isEmpty()) {
@@ -102,15 +103,25 @@ public class CallbackController {
             
             Transaction transaction = transactions.read(idlist.get(0));
             
-            //markér som authorized med den givne amount
+            if(!currency.equals(transaction.getCurrency())) {
+                throw new InvalidRequestException("Currency does not match what originally was requested.");
+            }
+            
+            //markér som authorized med den givne amount og sæt gateways transactionid
             transaction.setAuthorizedAmount(amount);
             transaction.setStatus(TransactionStatus.Authorized);
+            transaction.setGatewayTransactionId(gatewayTransactionId);
             transactions.update(transaction);
             
         }
     }
     
     private boolean validate(HttpServletRequest request, String md5check, String secret, String[] keys) {
+        assert md5check != null;
+        assert secret != null;
+        assert request != null;
+        assert keys != null;
+        
         StringBuilder sb = new StringBuilder();
         for(String key : keys) {
             sb.append(request.getParameter(key));

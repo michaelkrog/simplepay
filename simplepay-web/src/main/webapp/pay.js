@@ -20,10 +20,10 @@ function PayService (){
     this.authorizeTokenRemote = function(token, amount, currency, returnUrl, cancelUrl) {
         //request url & fields
         $.ajax({
-          url: serviceRoot + "/api/authoriation/form",
+          url: serviceRoot + "/api/form",
           username:publicKey,
           type: "POST",
-          data: {token:token, amount:amount, currecny:currency, returnUrl:returnUrl, cancelUrl:cancelUrl}
+          data: {token:token, amount:amount, currency:currency, returnUrl:returnUrl, cancelUrl:cancelUrl}
         }).done(function(data) {
             //inject form
             var inputs = [];

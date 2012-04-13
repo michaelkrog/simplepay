@@ -9,6 +9,7 @@
 
 
     <http pattern="/api/**" create-session="stateless" authentication-manager-ref="serviceCredsAuthMgr">
+        <intercept-url pattern="/api/callback/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/api/**" access="ROLE_PUBLIC,ROLE_PRIVATE" />
         <http-basic />
     </http>
