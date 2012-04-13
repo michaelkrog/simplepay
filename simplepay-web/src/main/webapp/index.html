@@ -3,22 +3,28 @@
     <head>
         <title>Dette er en title</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" ></script>
-        <script src="pay.js"></script>
+        <script src="pay.min.js"></script>
     </head>
     <body>
         <button id='paybutton'>Betal</button>
+        <div id='info'></div>
     </body>
-    
+
     <script>
+        
         $('#paybutton').click(function(){
-            $(this).attr('disabled','disabled');
+            //$(this).attr('disabled','disabled');
             Pay.setPublicKey('qwerty');
             Pay.createUnauthorizedToken(10021, 'Dette er den vildeste ordre.', function(token) {
                 Pay.authorizeTokenRemote(token, 1000, 'DKK', 'http://localhost:8080/ok.html', 'http://localhost:8080/cancel.html');
             });
         }); 
+        
+        $('#info').ajaxError(function(event, jqXHR, ajaxSettings, thrownError) {
+            $(this).text(event + "/" + thrownError);
+        });
     </script>
 </html>
 

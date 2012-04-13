@@ -1,17 +1,23 @@
 function PayService (){
     var publicKey;
-    var serviceRoot = "http://localhost:8080";
+    var serviceRoot = "127.0.0.1:8080";
     
     this.setPublicKey = function(publicKey) {
         this.publicKey = publicKey;
     }
 
     this.createUnauthorizedToken = function(orderNumber, description, callback) {
+        var url = "http://" + serviceRoot + "/api/transactions";
+        var that=this;
+        jQuery.support.cors = true;
         $.ajax({
-          url: serviceRoot + "/api/transactions",
-          username:this.publicKey,
-          type: "POST",
-          data: {orderNumber:orderNumber, description:description}
+            url: url,
+            type: "POST",
+            beforeSend: function (xhr) { xhr.setRequestHeader ("SimplePayKey", that.publicKey); },
+            data: {
+                orderNumber:orderNumber, 
+                description:description
+            }
         }).done(function(data) {
             callback(data);
         });
@@ -19,11 +25,19 @@ function PayService (){
     
     this.authorizeTokenRemote = function(token, amount, currency, returnUrl, cancelUrl) {
         //request url & fields
+        var that=this;
         $.ajax({
-          url: serviceRoot + "/api/form",
-          username:publicKey,
-          type: "POST",
-          data: {token:token, amount:amount, currency:currency, returnUrl:returnUrl, cancelUrl:cancelUrl}
+            url: "http://" + serviceRoot + "/api/form",
+            type: "POST",
+            dataType:"json",
+            beforeSend: function (xhr) { xhr.setRequestHeader ("SimplePayKey", that.publicKey); },
+            data: {
+                token:token, 
+                amount:amount, 
+                currency:currency, 
+                returnUrl:returnUrl, 
+                cancelUrl:cancelUrl
+            }
         }).done(function(data) {
             //inject form
             var inputs = [];
@@ -40,3 +54,4 @@ function PayService (){
 };
 
 var Pay = new PayService();
+
