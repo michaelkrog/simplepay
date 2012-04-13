@@ -5,14 +5,11 @@ import dk.apaq.filter.Filter;
 import dk.apaq.filter.core.CompareFilter;
 import dk.apaq.simplepay.PayService;
 import dk.apaq.simplepay.gateway.PaymentException;
-import dk.apaq.simplepay.gateway.PaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
-import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import dk.apaq.simplepay.gateway.quickpay.QuickPay;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.model.TransactionStatus;
-import dk.apaq.simplepay.security.MerchantUserDetailsHolder;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -54,6 +51,8 @@ public class CallbackController {
         Merchant merchant = service.getMerchantByPublicKey(publicKey);
         Crud.Complete<String, Transaction> transactions = service.getTransactions(merchant);
         String eventType = request.getParameter("msgtype");
+        String qpstat = request.getParameter("qpstat");
+        String qpstatmsg = request.getParameter("qpstatmsg");
         
         
         String[] keys = "subscribe".equals(eventType) ? QUICKPAY_KEYS_SUBSCRIBE : QUICKPAY_KEYS;
@@ -64,9 +63,9 @@ public class CallbackController {
         }
         
         try {
-            QuickPay.checkQuickpayResult(request.getParameter("qpstat"), request.getParameter("qpstatmsg"));
+            QuickPay.checkQuickpayResult(qpstat, qpstatmsg);
         } catch(PaymentException ex) {
-            LOG.debug("Payment did not have a qpstat we handle. [qpstat={}]", request.getParameter("qpstat"));
+            LOG.debug("Payment did not have a qpstat we handle. [qpstat={}]", qpstat);
             //What to do about the exception?
         }                                      
 
