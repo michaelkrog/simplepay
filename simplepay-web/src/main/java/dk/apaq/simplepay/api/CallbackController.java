@@ -4,9 +4,11 @@ import dk.apaq.crud.Crud;
 import dk.apaq.filter.Filter;
 import dk.apaq.filter.core.CompareFilter;
 import dk.apaq.simplepay.PayService;
+import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.gateway.PaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
+import dk.apaq.simplepay.gateway.quickpay.QuickPay;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.model.TransactionStatus;
@@ -61,12 +63,13 @@ public class CallbackController {
             throw new InvalidRequestException("The data sent is not valid(checked against md5check).");
         }
         
-                                                
-        if (!"000".equals(request.getParameter("qpstat"))) {
+        try {
+            QuickPay.checkQuickpayResult(request.getParameter("qpstat"), request.getParameter("qpstatmsg"));
+        } catch(PaymentException ex) {
             LOG.debug("Payment did not have a qpstat we handle. [qpstat={}]", request.getParameter("qpstat"));
-            //We dont care about other requests
-            return;
-        }
+            //What to do about the exception?
+        }                                      
+
         
         long orderNumber;
         long amount;

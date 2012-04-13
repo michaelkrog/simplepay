@@ -268,32 +268,34 @@ public class QuickPay implements PaymentGateway {
         }
     }
 
-    private void checkQuickpayResult(QuickPayResult result) {
-        String status = result.getParameter("qpstat");
-        String statusMessage = result.getParameter("qpstatmsg");
+    public static void checkQuickpayResult(QuickPayResult result) {
+        checkQuickpayResult(result.getParameter("qpstat"), result.getParameter("qpstatmsg"));
+    }
+    
+    public static void checkQuickpayResult(String qpstat, String qpstatmsg) {
         
-        if("000".equals(status)) {
+        if("000".equals(qpstat)) {
             return;
-        } else if("001".equals(status)) {
-            throw new PaymentException("001: " + statusMessage + ". Rejected by acquirer.");
-        } else if("002".equals(status)) {
-            throw new PaymentException("002: " + statusMessage + ". Communication error.");
-        } else if("003".equals(status)) {
-            throw new PaymentException("003: " + statusMessage + ". Card expired.");
-        } else if("004".equals(status)) {
-            throw new PaymentException("004: " + statusMessage + ". Transition is not allowed for transaction current state.");
-        } else if("005".equals(status)) {
-            throw new PaymentException("005: " + statusMessage + ". Authorization is expired.");
-        } else if("006".equals(status)) {
-            throw new PaymentException("006: " + statusMessage + ". Error reported by acquirer.");
-        } else if("007".equals(status)) {
-            throw new PaymentException("007: " + statusMessage + ". Error reported by QuickPay.");
-        } else if("008".equals(status)) {
-            throw new PaymentException("008: " + statusMessage + ". Error in request data.");
-        } else if("009".equals(status)) {
-            throw new PaymentException("009: " + statusMessage + ". Payment aborted by shopper.");
+        } else if("001".equals(qpstat)) {
+            throw new PaymentException("001: " + qpstatmsg + ". Rejected by acquirer.");
+        } else if("002".equals(qpstat)) {
+            throw new PaymentException("002: " + qpstatmsg + ". Communication error.");
+        } else if("003".equals(qpstat)) {
+            throw new PaymentException("003: " + qpstatmsg + ". Card expired.");
+        } else if("004".equals(qpstat)) {
+            throw new PaymentException("004: " + qpstatmsg + ". Transition is not allowed for transaction current state.");
+        } else if("005".equals(qpstat)) {
+            throw new PaymentException("005: " + qpstatmsg + ". Authorization is expired.");
+        } else if("006".equals(qpstat)) {
+            throw new PaymentException("006: " + qpstatmsg + ". Error reported by acquirer.");
+        } else if("007".equals(qpstat)) {
+            throw new PaymentException("007: " + qpstatmsg + ". Error reported by QuickPay.");
+        } else if("008".equals(qpstat)) {
+            throw new PaymentException("008: " + qpstatmsg + ". Error in request data.");
+        } else if("009".equals(qpstat)) {
+            throw new PaymentException("009: " + qpstatmsg + ". Payment aborted by shopper.");
         } else {
-            throw new PaymentException("Unknown status. [status=" + status + "]");
+            throw new PaymentException("Unknown status. [status=" + qpstat + "]");
         }
 
     }
