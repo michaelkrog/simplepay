@@ -57,7 +57,8 @@ public class CorsFilter implements Filter {
             
             if(preflight) return;
             
-            //Also a hack - convert SimplePayKey into basic auth :)
+            //Also a hack - Cannot add basic auth header over crossdomain in firefox and ie,
+            //so we will convert SimplePayKey into basic auth :)
             String key = httpReq.getHeader("SimplePayKey");
             if(key!=null) {
                 httpReq = new FakeBasicAuthRequestWrapper(key, httpReq);
