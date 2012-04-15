@@ -35,7 +35,7 @@ public class PayServiceTest {
      * Test of setApplicationContext method, of class PayService.
      */
     @Test
-    public void testWorkWithMarchant() {
+    public void testWorkWithMerchant() {
         Merchant m = new Merchant();
         m = service.getMerchants().createAndRead(m);
         
@@ -51,6 +51,7 @@ public class PayServiceTest {
         m = service.getMerchants().update(m);
         
         Transaction t = new Transaction();
+        t.setOrderNumber("T_123");
         t.setGatewayType(PaymentGatewayType.QuickPay);
         t = service.getTransactions(m).createAndRead(t);
         
