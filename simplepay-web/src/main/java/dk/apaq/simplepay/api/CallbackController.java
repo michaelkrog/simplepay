@@ -16,10 +16,12 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
@@ -45,6 +47,7 @@ public class CallbackController {
     private PaymentGatewayManager gatewayManager;
     
     @RequestMapping(value="/callback/quickpay/{publicKey}/{token}", method=RequestMethod.POST) 
+    @ResponseStatus(HttpStatus.OK)
     public void handleQuickpayEvent(MultipartHttpServletRequest request, @PathVariable String publicKey, @PathVariable String token) {
         LOG.debug("Payment event recieved");
         

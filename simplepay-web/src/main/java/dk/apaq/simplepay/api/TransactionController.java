@@ -3,6 +3,7 @@ package dk.apaq.simplepay.api;
 import dk.apaq.simplepay.PayService;
 import dk.apaq.simplepay.gateway.PaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
+import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.model.TransactionStatus;
@@ -135,6 +136,7 @@ public class TransactionController {
         Transaction transaction = new Transaction();
         transaction.setOrderNumber(orderNumber);
         transaction.setDescription(description);
+        transaction.setGatewayType(m.getGatewayType());
         transaction = service.getTransactions(m).createAndRead(transaction);
         return transaction.getId();
         
@@ -165,7 +167,7 @@ public class TransactionController {
     @Transactional
     @Secured("ROLE_PRIVATE")
     @ResponseBody
-    public Transaction refundTransaction(@PathVariable String token, @RequestParam Long amount) {
+    public Transaction refundTransaction(@PathVariable String token, @RequestParam(required=false) Long amount) {
         Merchant m = getMerchant();
         LOG.debug("Refunding transaction. [merchant={}; token={}; amount={}]", new Object[]{m.getId(), token, amount});
         Transaction t = getTransaction(m, token);
@@ -185,7 +187,7 @@ public class TransactionController {
     @Transactional
     @Secured("ROLE_PRIVATE")
     @ResponseBody
-    public Transaction chargeTransaction(@PathVariable String token, @RequestParam Long amount) {
+    public Transaction chargeTransaction(@PathVariable String token, @RequestParam(required=false) Long amount) {
         Merchant m = getMerchant();
         LOG.debug("Charging transaction. [merchant={}; token={}; amount={}]", new Object[]{m.getId(), token, amount});
         Transaction t = getTransaction(m, token);

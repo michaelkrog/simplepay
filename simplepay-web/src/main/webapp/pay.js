@@ -1,6 +1,6 @@
 function PayService (){
     var publicKey;
-    var serviceRoot = "127.0.0.1:8080";
+    var serviceRoot = "79.138.236.100";
     
     this.setPublicKey = function(publicKey) {
         this.publicKey = publicKey;
