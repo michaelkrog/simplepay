@@ -45,7 +45,7 @@ public class PayService implements ApplicationContextAware {
         }
         
         Complete<String, Transaction> crud = (Crud.Complete<String, Transaction>) context.getBean("crud", em, Transaction.class);
-        ((CrudNotifier)crud).addListener(new CrudSecurity.TransactionSecurity(merchant));
+        ((CrudNotifier)crud).addListener(new CrudSecurity.TransactionSecurity(this, merchant));
         
         return crud;
             
@@ -75,6 +75,12 @@ public class PayService implements ApplicationContextAware {
     private Merchant getMerchant(String key, String value) {
         Filter filter = new CompareFilter(key, value, CompareFilter.CompareType.Equals);
         List<Merchant> list = getMerchants().list(filter, null);
+        return list.isEmpty() ? null : list.get(0);
+    }
+    
+    public Transaction getTransactionByOrderNumber(Merchant m, String orderNumber) {
+        Filter filter = new CompareFilter("orderNumber", orderNumber, CompareFilter.CompareType.Equals);
+        List<Transaction> list = getTransactions(m).list(filter, null);
         return list.isEmpty() ? null : list.get(0);
     }
 }

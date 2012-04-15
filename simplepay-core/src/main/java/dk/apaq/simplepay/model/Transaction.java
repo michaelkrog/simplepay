@@ -25,7 +25,9 @@ public class Transaction {
     private long authorizedAmount;
     private long capturedAmount;
     private long refundedAmount;
-    private long orderNumber;
+    
+    @NotNull
+    private String orderNumber;
 
     @JsonIgnore
     @ManyToOne
@@ -114,11 +116,11 @@ public class Transaction {
         this.merchant = merchant;
     }
 
-    public long getOrderNumber() {
+    public String getOrderNumber() {
         return orderNumber;
     }
 
-    public void setOrderNumber(long orderNumber) {
+    public void setOrderNumber(String orderNumber) {
         this.orderNumber = orderNumber;
     }
 
