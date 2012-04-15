@@ -8,5 +8,6 @@
   <name>simplepay</name>
   <modules>
     <module>simplepay-web</module>
+    <module>simplepay-core</module>
   </modules>
 </project>
