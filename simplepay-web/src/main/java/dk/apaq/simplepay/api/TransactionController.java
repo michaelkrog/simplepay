@@ -129,7 +129,7 @@ public class TransactionController {
     @Transactional(readOnly=true)
     @Secured({"ROLE_PUBLIC","ROLE_PRIVATE"})
     @ResponseBody
-    public String createTransactions(@RequestParam Long orderNumber, @RequestParam String description) {
+    public String createTransactions(@RequestParam String orderNumber, @RequestParam String description) {
         Merchant m = getMerchant();
         LOG.debug("Creating transaction. [merchant={}; orderNumber={}]", m.getId(), orderNumber);
         
