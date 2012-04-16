@@ -1,8 +1,12 @@
 package dk.apaq.simplepay.crud;
 
+import dk.apaq.crud.CrudEvent.List;
 import dk.apaq.crud.CrudEvent.WithEntity;
 import dk.apaq.crud.CrudEvent.WithIdAndEntity;
 import dk.apaq.crud.core.BaseCrudListener;
+import dk.apaq.filter.Filter;
+import dk.apaq.filter.core.AndFilter;
+import dk.apaq.filter.core.CompareFilter;
 import dk.apaq.simplepay.PayService;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Transaction;
@@ -63,6 +67,16 @@ public class CrudSecurity {
                 throw new IllegalArgumentException("Ordernumber already used.");
             }
             event.getEntity().setMerchant(owner);
+        }
+
+        @Override
+        public void onBeforeList(List<String, Transaction> event) {
+            Filter merchantFilter = new CompareFilter("merchant", owner, CompareFilter.CompareType.Equals);
+            if(event.getListSpecification().getFilter() != null) {
+                event.getListSpecification().setFilter(new AndFilter(merchantFilter, event.getListSpecification().getFilter()));
+            } else {
+                event.getListSpecification().setFilter(merchantFilter);
+            }
         }
         
         
