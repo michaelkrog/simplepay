@@ -4,7 +4,7 @@ body {
 }
 
 body>.container {
-    border:1px solid #bdbdbd;
+    /*border:1px solid #bdbdbd;*/
     border-top: 0px;
     box-shadow: 0px 3px 8px #7f7f7f;
 }
@@ -49,15 +49,26 @@ body>.container {
     border-top: 1px solid #bdbdbd;
 }
 
-#teaserwrapper1, #teaserwrapper2 {
+.teaserwrapper {
     background: #f8f8f8;
 }
 
 .splash {
-    height:300px;
+    height:299px;
     background: white;
 }
 
 .content {
     overflow:hidden;
+}
+
+#bottom {
+    height:200px;
+    background: #1f1f1f;
+    background-image: -moz-linear-gradient(top, #333, #000);
+    background-image: -ms-linear-gradient(top, #333, #000);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#333), to(#000));
+    background-image: -webkit-linear-gradient(top,  #333, #000);
+    background-image: -o-linear-gradient(top,  #333, #000);
+    background-image: linear-gradient(top,  #333, #000);
 }
