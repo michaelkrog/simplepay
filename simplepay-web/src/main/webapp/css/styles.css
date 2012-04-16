@@ -26,6 +26,25 @@ body>.container {
     
 }
 
+.navbar .nav > li > a {
+    color: #262626;
+    text-decoration: none;
+    text-shadow: none;
+}
+
+.navbar .nav > li > a:hover {
+    color:#1C5AC4;
+}
+
+.navbar .divider-vertical {
+    height: 40px;
+    width: 1px;
+    margin: 0 9px;
+    overflow: hidden;
+    background-color: #bdbdbd;
+    border-right: 0px solid #fafafa;
+}
+
 #teaserwrapper1 {
     border-top: 1px solid #bdbdbd;
 }
