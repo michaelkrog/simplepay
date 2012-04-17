@@ -2,9 +2,11 @@ package dk.apaq.simplepay;
 
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import dk.apaq.simplepay.model.Merchant;
+import dk.apaq.simplepay.model.Role;
+import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.model.TransactionStatus;
-import dk.apaq.simplepay.security.MerchantUserDetails;
+import dk.apaq.simplepay.security.SystemUserDetails;
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,9 +28,9 @@ public class PayServiceTest {
     @Autowired
     private PayService service;
     
-    private void login(Merchant m) {
-        MerchantUserDetails mud = new MerchantUserDetails(m);
-        mud.getAuthorities().add(new SimpleGrantedAuthority("ROLE_USER"));
+    private void login(SystemUser user) {
+        SystemUserDetails mud = new SystemUserDetails(user);
+        mud.getAuthorities().add(new SimpleGrantedAuthority("ROLE_" + Role.Merchant.name()));
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(mud, null, mud.getAuthorities()));
     }
     
@@ -40,8 +42,12 @@ public class PayServiceTest {
         Merchant m = new Merchant();
         m = service.getMerchants().createAndRead(m);
         
+        SystemUser user = service.getUsers().createAndRead(new SystemUser(m, "john", "doe"));
+        
         Merchant m2 = new Merchant();
         m2 = service.getMerchants().createAndRead(m2);
+        
+        SystemUser user2 = service.getUsers().createAndRead(new SystemUser(m, "jane", "doe"));
         
         //We are not logged in - we should not be allowed to change this merchant.
         try {
@@ -49,7 +55,7 @@ public class PayServiceTest {
             fail("Should not be able to update merchant.");
         } catch(Exception ex) { }
         
-        login(m);
+        login(user);
         
         //Now we should be allowed
         m = service.getMerchants().update(m);

@@ -1,27 +1,34 @@
 package dk.apaq.simplepay.security;
 
 import dk.apaq.simplepay.model.Merchant;
+import dk.apaq.simplepay.model.Role;
+import dk.apaq.simplepay.model.SystemUser;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  *
  * @author krog
  */
-public class MerchantUserDetails implements UserDetails {
+public class SystemUserDetails implements UserDetails {
 
-    private final Merchant merchant;
+    private final SystemUser user;
     private List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
-    public MerchantUserDetails(Merchant merchant) {
-        this.merchant = merchant;
+    public SystemUserDetails(SystemUser user) {
+        this.user = user;
+        
+        for(Role role : user.getRoles()) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.name().toUpperCase()));
+        }
     }
 
-    public Merchant getMerchant() {
-        return merchant;
+    public SystemUser getUser() {
+        return user;
     }
 
     @Override
@@ -31,32 +38,32 @@ public class MerchantUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return merchant.getPassword();
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return merchant.getUsername();
+        return user.getUsername();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return !merchant.isExpired();
+        return !user.isExpired();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return !merchant.isLocked();
+        return !user.isLocked();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return !merchant.isCredentialsExpired();
+        return !user.isCredentialsExpired();
     }
 
     @Override
     public boolean isEnabled() {
-        return !merchant.isDisabled();
+        return !user.isDisabled();
     }
     
 }

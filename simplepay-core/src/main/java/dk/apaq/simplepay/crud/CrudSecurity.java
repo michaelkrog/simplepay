@@ -10,7 +10,7 @@ import dk.apaq.filter.core.CompareFilter;
 import dk.apaq.simplepay.PayService;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Transaction;
-import dk.apaq.simplepay.security.MerchantUserDetailsHolder;
+import dk.apaq.simplepay.security.SystemUserDetailsHolder;
 
 /**
  *
@@ -22,8 +22,8 @@ public class CrudSecurity {
 
         @Override
         public void onBeforeEntityUpdate(WithIdAndEntity<String, Merchant> event) {
-            Merchant principal = MerchantUserDetailsHolder.getMerchantUserDetails().getMerchant();
-            if(!principal.getId().equals(event.getEntity().getId())) {
+            Merchant usersMerchant = SystemUserDetailsHolder.getDetails().getUser().getMerchant();
+            if(!usersMerchant.getId().equals(event.getEntity().getId())) {
                 throw new SecurityException("Not allowed to change other merchants.");
             }
         }

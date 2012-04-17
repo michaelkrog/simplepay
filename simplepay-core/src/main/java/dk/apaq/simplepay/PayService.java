@@ -8,6 +8,9 @@ import dk.apaq.filter.core.CompareFilter;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.crud.CrudSecurity;
+import dk.apaq.simplepay.model.Role;
+import dk.apaq.simplepay.model.SystemUser;
+import dk.apaq.simplepay.util.IdGenerator;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -30,6 +33,7 @@ public class PayService implements ApplicationContextAware {
     
     private ApplicationContext context;
     private Crud.Complete<String, Merchant> merchantCrud;
+    private Crud.Complete<String, SystemUser> userCrud;
     private CrudSecurity.MerchantSecurity merchantSecurity = new CrudSecurity.MerchantSecurity();
 
     @Override
@@ -60,22 +64,52 @@ public class PayService implements ApplicationContextAware {
         return merchantCrud;
     }
     
-    public Merchant getMerchantBySecretKey(String secretKey) {
-        return getMerchant("secretKey", secretKey);
-    }
-
-    public Merchant getMerchantByPublicKey(String publicKey) {
-        return getMerchant("publicKey", publicKey);
+    
+    public SystemUser getOrCreatePublicUser(Merchant merchant) {
+        List<SystemUser> list = getUserlist("merchant", merchant);
+        
+        for(SystemUser user : list) {
+            if(user.getRoles().contains(Role.PublicApiAccessor)) {
+                return user;
+            }
+        }
+        
+        return getUsers().createAndRead(new SystemUser(merchant, IdGenerator.generateUniqueId(), "", Role.PublicApiAccessor));
     }
     
-    public Merchant getMerchantByUsername(String username) {
-        return getMerchant("username", username);
+    public SystemUser getOrCreatePrivateUser(Merchant merchant) {
+        List<SystemUser> list = getUserlist("merchant", merchant);
+        
+        for(SystemUser user : list) {
+            if(user.getRoles().contains(Role.PrivateApiAccessor)) {
+                return user;
+            }
+        }
+        
+        return getUsers().createAndRead(new SystemUser(merchant, IdGenerator.generateUniqueId(), "", Role.PrivateApiAccessor));
     }
-
-    private Merchant getMerchant(String key, String value) {
+    
+    public Crud.Complete<String, SystemUser> getUsers() {
+        LOG.debug("Retrieving SystemUserCrud");
+        if(userCrud==null) {
+            userCrud = (Crud.Complete) context.getBean("crud", em, SystemUser.class);
+        }
+        return userCrud;
+    }
+    
+    public SystemUser getUser(String username) {
+        return getUser("username", username);
+    }
+    
+    private SystemUser getUser(String key, String value) {
         Filter filter = new CompareFilter(key, value, CompareFilter.CompareType.Equals);
-        List<Merchant> list = getMerchants().list(filter, null);
+        List<SystemUser> list = getUsers().list(filter, null);
         return list.isEmpty() ? null : list.get(0);
+    }
+    
+    private List<SystemUser> getUserlist(String key, Object value) {
+        Filter filter = new CompareFilter(key, value, CompareFilter.CompareType.Equals);
+        return getUsers().list(filter, null);
     }
     
     public Transaction getTransactionByOrderNumber(Merchant m, String orderNumber) {
