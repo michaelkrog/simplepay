@@ -25,7 +25,7 @@ public class ApiAuthenticationProvider implements AuthenticationProvider {
     
     @Override
     public Authentication authenticate(Authentication a) throws AuthenticationException {
-        UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) a;
+        /*UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) a;
         
         Merchant m = service.getMerchantBySecretKey(token.getName());
         List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
@@ -42,10 +42,11 @@ public class ApiAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("Invalid key.");
         }
         
-        MerchantUserDetails mud = new MerchantUserDetails(m);
+        SystemUserDetails mud = new SystemUserDetails(m);
         mud.getAuthorities().addAll(authList);
         
-        return createSuccessfulAuthentication(mud, token);
+        return createSuccessfulAuthentication(mud, token);*/
+        return null;
     }
 
     @Override

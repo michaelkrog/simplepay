@@ -5,9 +5,10 @@ import dk.apaq.simplepay.gateway.PaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import dk.apaq.simplepay.model.Merchant;
+import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.model.TransactionStatus;
-import dk.apaq.simplepay.security.MerchantUserDetailsHolder;
+import dk.apaq.simplepay.security.SystemUserDetailsHolder;
 import java.text.NumberFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -72,7 +73,7 @@ public class TransactionController {
     
     
     private Merchant getMerchant() {
-        return MerchantUserDetailsHolder.getMerchantUserDetails().getMerchant();
+        return SystemUserDetailsHolder.getDetails().getUser().getMerchant();
     }
     
     private Transaction getTransaction(Merchant m, String token) {
@@ -85,7 +86,7 @@ public class TransactionController {
     
     
     @RequestMapping(value = "/form", method=RequestMethod.POST)
-    @Secured({"ROLE_PUBLIC","ROLE_PRIVATE"})
+    @Secured({"ROLE_PUBLICAPIACCESSOR","ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
     public FormData generateForm(HttpServletRequest request, String token, Long amount, String currency, String returnUrl, String cancelUrl) {
         Merchant m = getMerchant();
@@ -94,7 +95,8 @@ public class TransactionController {
         t.setCurrency(currency);
         service.getTransactions(m).update(t);
         
-        String callbackUrl = publicUrl + "/api/callback/quickpay/" + m.getPublicKey() + "/" + token;
+        SystemUser publicUser = service.getOrCreatePublicUser(m);
+        String callbackUrl = publicUrl + "/api/callback/quickpay/" + publicUser.getUsername() + "/" + token;
         
         FormData formData = new FormData();
         formData.setUrl("https://secure.quickpay.dk/form/");
@@ -127,7 +129,7 @@ public class TransactionController {
 
     @RequestMapping(value = "/transactions", method=RequestMethod.POST)
     @Transactional(readOnly=true)
-    @Secured({"ROLE_PUBLIC","ROLE_PRIVATE"})
+    @Secured({"ROLE_PUBLICAPIACCESSOR","ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
     public String createTransactions(@RequestParam String orderNumber, @RequestParam String description) {
         Merchant m = getMerchant();
@@ -145,7 +147,7 @@ public class TransactionController {
     
     @RequestMapping(value = "/transactions" , method=RequestMethod.GET)
     @Transactional(readOnly=true)
-    @Secured("ROLE_PRIVATE")
+    @Secured({"ROLE_PRIVATEAPIACCESSOR","ROLE_MERCHANT"})     
     @ResponseBody
     public List<Transaction> listTransactions() {
         Merchant m = getMerchant();
@@ -155,7 +157,7 @@ public class TransactionController {
     
     @RequestMapping(value="/transactions/{token}", method=RequestMethod.GET)
     @Transactional(readOnly=true)
-    @Secured("ROLE_PRIVATE")
+    @Secured({"ROLE_PRIVATEAPIACCESSOR","ROLE_MERCHANT"})     
     @ResponseBody
     public Transaction getTransaction(@PathVariable String token) {
         Merchant m = getMerchant();
@@ -165,7 +167,7 @@ public class TransactionController {
     
     @RequestMapping(value="/transactions/{token}/refund", method=RequestMethod.POST)
     @Transactional
-    @Secured("ROLE_PRIVATE")
+    @Secured({"ROLE_PRIVATEAPIACCESSOR","ROLE_MERCHANT"})     
     @ResponseBody
     public Transaction refundTransaction(@PathVariable String token, @RequestParam(required=false) Long amount) {
         Merchant m = getMerchant();
@@ -185,7 +187,7 @@ public class TransactionController {
     
     @RequestMapping(value="/transactions/{token}/charge", method=RequestMethod.POST)
     @Transactional
-    @Secured("ROLE_PRIVATE")
+    @Secured({"ROLE_PRIVATEAPIACCESSOR","ROLE_MERCHANT"})     
     @ResponseBody
     public Transaction chargeTransaction(@PathVariable String token, @RequestParam(required=false) Long amount) {
         Merchant m = getMerchant();
@@ -205,7 +207,7 @@ public class TransactionController {
     
     @RequestMapping(value="/transactions/{token}/cancel", method=RequestMethod.POST)
     @Transactional
-    @Secured("ROLE_PRIVATE")
+    @Secured({"ROLE_PRIVATEAPIACCESSOR","ROLE_MERCHANT"})     
     @ResponseBody
     public Transaction cancelTransaction(@PathVariable String token) {
         Merchant m = getMerchant();

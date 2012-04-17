@@ -1,6 +1,8 @@
 body {
     background:url(../img/background.png);
     font-family: 'Open Sans',arial,sans-serif;
+    padding-top:40px;
+    
 }
 
 body>.container {
@@ -54,7 +56,7 @@ body>.container {
 }
 
 .splash {
-    height:299px;
+    height:300px;
     background: white;
 }
 

@@ -7,29 +7,23 @@
            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
            http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
-
-    <http pattern="/api/**" create-session="stateless" authentication-manager-ref="serviceCredsAuthMgr">
+           <!-- Admin, PrivateApiAccessor, PublicApiAccessor, Merchant -->
+    <http pattern="/api/**" create-session="stateless">
         <intercept-url pattern="/api/callback/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/api/**" access="ROLE_PUBLIC,ROLE_PRIVATE" />
+        <intercept-url pattern="/api/**" access="ROLE_PUBLICAPIACCESSOR,ROLE_PRIVATEAPIACCESSOR, ROLE_MERCHANT" />
         <http-basic />
     </http>
     
-    <http authentication-manager-ref="mainAuthMgr">
-        <intercept-url pattern="/dashboard/**" access="ROLE_USER" />
+    <http>
+        <intercept-url pattern="/dashboard/**" access="ROLE_MERCHANT" />
         <intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
         
-        <form-login login-page="/login.htm" />
-        <logout logout-url="/logout" invalidate-session="true"/>
+        <form-login/><!-- login-page="/login.htm" /-->
+        <!--logout logout-url="/logout" invalidate-session="true"/-->
     </http>
 
     
-    <beans:bean id="apiAuthenticationProvider" class="dk.apaq.simplepay.security.ApiAuthenticationProvider"/>
-
-    <authentication-manager id="serviceCredsAuthMgr">
-        <authentication-provider ref="apiAuthenticationProvider" />
-    </authentication-manager>
-    
-    <authentication-manager id="mainAuthMgr" alias="authenticationManager">
+    <authentication-manager alias="authenticationManager">
         <authentication-provider user-service-ref="userDetailsManager" />
     </authentication-manager>
 

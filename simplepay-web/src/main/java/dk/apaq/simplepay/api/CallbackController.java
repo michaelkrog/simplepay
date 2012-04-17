@@ -8,6 +8,7 @@ import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.gateway.quickpay.QuickPay;
 import dk.apaq.simplepay.model.Merchant;
+import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.model.TransactionStatus;
 import java.util.List;
@@ -51,7 +52,11 @@ public class CallbackController {
     public void handleQuickpayEvent(MultipartHttpServletRequest request, @PathVariable String publicKey, @PathVariable String token) {
         LOG.debug("Payment event recieved");
         
-        Merchant merchant = service.getMerchantByPublicKey(publicKey);
+        SystemUser user = service.getUser(publicKey);
+        if(user == null) {
+            throw new ResourceNotFoundException("No user with the given key was found");
+        }
+        Merchant merchant = user.getMerchant();
         Crud.Complete<String, Transaction> transactions = service.getTransactions(merchant);
         String eventType = request.getParameter("msgtype");
         String qpstat = request.getParameter("qpstat");
