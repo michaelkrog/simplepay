@@ -1,4 +1,5 @@
-<script src="js/jquery-1.7.2.min.js"></script>
-	<script src="js/prettify/prettify.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/application.js"></script>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<script src="<spring:theme code="jquery-js"/>"></script>
+<script src="<spring:theme code="prettify-js"/>"></script>
+<script src="<spring:theme code="bootstrap-js"/>"></script>
+<script src="<spring:theme code="application-js"/>"></script>

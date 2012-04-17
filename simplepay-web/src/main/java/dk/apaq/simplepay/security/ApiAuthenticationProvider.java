@@ -1,5 +1,6 @@
 package dk.apaq.simplepay.security;
 
+import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.PayService;
 import dk.apaq.simplepay.model.Merchant;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class ApiAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
-    private PayService service;
+    private IPayService service;
     
     @Override
     public Authentication authenticate(Authentication a) throws AuthenticationException {

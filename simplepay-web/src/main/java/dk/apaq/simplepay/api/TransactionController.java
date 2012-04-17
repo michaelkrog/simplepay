@@ -1,14 +1,13 @@
 package dk.apaq.simplepay.api;
 
+import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.PayService;
 import dk.apaq.simplepay.gateway.PaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
-import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.model.TransactionStatus;
-import dk.apaq.simplepay.security.SystemUserDetailsHolder;
 import java.text.NumberFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,7 +44,7 @@ public class TransactionController {
     
     
     @Autowired
-    private PayService service;
+    private IPayService service;
     
     @Autowired
     private PaymentGatewayManager gatewayManager;
@@ -73,7 +73,9 @@ public class TransactionController {
     
     
     private Merchant getMerchant() {
-        return SystemUserDetailsHolder.getDetails().getUser().getMerchant();
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        SystemUser user = service.getUser(username); 
+        return user.getMerchant();
     }
     
     private Transaction getTransaction(Merchant m, String token) {
@@ -88,6 +90,7 @@ public class TransactionController {
     @RequestMapping(value = "/form", method=RequestMethod.POST)
     @Secured({"ROLE_PUBLICAPIACCESSOR","ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
+    @Transactional
     public FormData generateForm(HttpServletRequest request, String token, Long amount, String currency, String returnUrl, String cancelUrl) {
         Merchant m = getMerchant();
         Transaction t = getTransaction(token);
@@ -106,7 +109,7 @@ public class TransactionController {
         map.put("msgtype", "authorize");
         map.put("merchant", m.getGatewayUserId());
         map.put("language", request.getLocale().getLanguage());
-        map.put("ordernumber", nfQuickPayOrderNumber.format(t.getOrderNumber()));  //
+        map.put("ordernumber", t.getOrderNumber());  //
         map.put("amount", Long.toString(amount));
         map.put("currency", currency);
         map.put("continueurl", returnUrl);
@@ -128,7 +131,7 @@ public class TransactionController {
     }
 
     @RequestMapping(value = "/transactions", method=RequestMethod.POST)
-    @Transactional(readOnly=true)
+    @Transactional()
     @Secured({"ROLE_PUBLICAPIACCESSOR","ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
     public String createTransactions(@RequestParam String orderNumber, @RequestParam String description) {

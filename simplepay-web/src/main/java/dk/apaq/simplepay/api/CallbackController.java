@@ -3,6 +3,7 @@ package dk.apaq.simplepay.api;
 import dk.apaq.crud.Crud;
 import dk.apaq.filter.Filter;
 import dk.apaq.filter.core.CompareFilter;
+import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.PayService;
 import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
@@ -42,7 +43,7 @@ public class CallbackController {
                         "cardexpire", "splitpayment", "fraudprobability", "fraudremarks", "fraudreport", "fee"};
     
     @Autowired
-    private PayService service;
+    private IPayService service;
     
     @Autowired
     private PaymentGatewayManager gatewayManager;

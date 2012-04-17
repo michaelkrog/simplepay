@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class Bootstrap {
     
     @Autowired
-    private PayService payService;
+    private IPayService payService;
     
     @PostConstruct
     public void doBootstrap() {

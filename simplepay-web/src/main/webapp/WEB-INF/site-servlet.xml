@@ -30,6 +30,14 @@
     <bean id="publicUrl" class="java.lang.String">
         <constructor-arg value="${url.public}" />
     </bean>
+    
+    <bean id="themeSource" class="org.springframework.ui.context.support.ResourceBundleThemeSource">
+        <property name="basenamePrefix" value="dk.apaq.simplepay.site.theme." />
+    </bean>
+    
+    <bean id="themeResolver" class="org.springframework.web.servlet.theme.FixedThemeResolver">
+        <property name="defaultThemeName" value="simplepay"/>
+    </bean>
 
     <context:annotation-config />
     <context:component-scan base-package="dk.apaq.simplepay.site"/>

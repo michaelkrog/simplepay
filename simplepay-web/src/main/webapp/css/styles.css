@@ -43,6 +43,15 @@ body>.container {
     color:#1C5AC4;
 }
 
+.navbar .nav-button {
+    list-style: none;
+}
+
+.navbar .nav-button.pull-right {
+    margin-left: 10px;
+    margin-right: 0;
+}
+
 .navbar .divider-vertical {
     height: 40px;
     width: 1px;
@@ -67,6 +76,7 @@ body>.container {
 
 .content {
     overflow:hidden;
+    background:white;
 }
 
 #bottom {

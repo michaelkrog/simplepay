@@ -41,25 +41,35 @@
                 </div>
 
                 <div id="teaserwrapper1" class="row teaserwrapper">
-                    <div id="teaser1" class="span6">
+                    <div id="teaser1" class="span5">
                         <div style="margin:40px 0px 0px 40px;">
                             <h3>Nemt at implementere</h3>
-                            <pre class="prettyprint">
-$('#paybutton').click(function(){
-    //Disable button while handling payment
-    $(this).attr('disabled','disabled');
-    Pay.setPublicKey('<public key>');
-    Pay.createUnauthorizedToken(10028, 'An amazing order.', function(token) {
-        Pay.authorizeTokenRemote(token, 1000, 'DKK', 'http://localhost:8080/ok.html', 'http://localhost:8080/cancel.html');
-    });
-}); 
-                            </pre>
+                            <p>
+                            SimplePay er så nemt at implementere at man næsten ikke tror det. Af samme grund har vi valgt
+                            at vise her på forsiden alt hvad der skal sættes ind som <code>html</code> på din side for at 
+                            tage imod kreditkort betalinger. Du er igang på få minutter.
+                            </p>
+                            <p>
+                                Ja. Det er virkelig <strong>så enkelt!</strong>
+                            </p>
                         </div>    
                     </div>
-                    <div id="teaser2" class="span6">This is a teaser</div>
+                    <div id="teaser2" class="span7">
+                        <div style="margin:40px 40px 0px 20px;">
+                            <pre class="prettyprint linenums">
+&lt;script src="http://simplepay.dk/pay.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+Pay.setPublicKey('&lt;public key&gt;');
+Pay.createUnauthorizedToken('&lt;ordernummer&gt;', '&lt;Beskrivelse&gt;', function(token) {
+    Pay.authorizeTokenRemote(token, 1000, 'DKK', 'http://dinside.dk/ok.html', 'http://dinside.dk/cancel.html');
+});
+&lt;/script&gt;
+</pre>
+                        </div>
+                    </div>
                 </div>
 
-                <div id="teaserwrapper2" class="row teaserwrapper">
+                <!--div id="teaserwrapper2" class="row teaserwrapper">
                     <div id="teaser3" class="span6">This is a teaser</div>
                     <div id="teaser4" class="span6">This is a teaser</div>
                 </div>
@@ -67,7 +77,7 @@ $('#paybutton').click(function(){
                 <div id="teaserwrapper3" class="row teaserwrapper">
                     <div id="teaser5" class="span6">This is a teaser</div>
                     <div id="teaser6" class="span6">This is a teaser</div>
-                </div>
+                </div-->
                 
                 <jsp:include page="inc/footer.jsp" />
             </div>

@@ -45,8 +45,13 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>site</servlet-name>
-        <url-pattern>*.htm</url-pattern>
+        <url-pattern>/index.htm</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>site</servlet-name>
+        <url-pattern>/dashboard/*</url-pattern>
+    </servlet-mapping>
+
     
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
@@ -57,7 +62,9 @@
             30
         </session-timeout>
     </session-config>
+
     <welcome-file-list>
         <welcome-file>index.htm</welcome-file>
     </welcome-file-list>
+    
 </web-app>

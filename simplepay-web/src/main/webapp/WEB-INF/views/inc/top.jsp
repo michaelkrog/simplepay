@@ -7,16 +7,21 @@
                 <span class="icon-bar">Hjælp og support</span>
             </a>
             
-            <a class="brand">simple<span style="color:#1C5AC4;">pay</span></a>
-
+            <a href="/" class="brand">simple<span style="color:#1C5AC4;">pay</span></a>
+            
+            <div class="nav-collapse">
+                <ul class="nav-button pull-right nav-collapse">
+                    <li><a href="dashboard" class="btn btn-primary">Log ind</a></li>
+                </ul>
                 <ul class="nav pull-right nav-collapse">
                     <li><a href="dashboard">Administration</a></li>
                     <li><a href="doc">Dokumentation</a></li>
                     <li><a href="help">Hjælp og support</a></li>
                     <li class="divider-vertical"></li>
-                    <li><span class="btn btn-primary">Log ind</span></li>
                 </ul>
             
+                
+            </div>
         </div>
     </div>
 </div>
