@@ -19,12 +19,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author krog
  */
-public class PayService implements ApplicationContextAware {
+public class PayService implements ApplicationContextAware, IPayService {
     
     private static final Logger LOG = LoggerFactory.getLogger(PayService.class);
     
@@ -34,13 +36,14 @@ public class PayService implements ApplicationContextAware {
     private ApplicationContext context;
     private Crud.Complete<String, Merchant> merchantCrud;
     private Crud.Complete<String, SystemUser> userCrud;
-    private CrudSecurity.MerchantSecurity merchantSecurity = new CrudSecurity.MerchantSecurity();
+    private CrudSecurity.MerchantSecurity merchantSecurity = new CrudSecurity.MerchantSecurity(this);
 
     @Override
     public void setApplicationContext(ApplicationContext ac) throws BeansException {
         this.context=ac;
     }
     
+    @Override
     public Crud.Complete<String, Transaction> getTransactions(Merchant merchant) {
         LOG.debug("Retrieving TransactionCrud");
         
@@ -55,6 +58,7 @@ public class PayService implements ApplicationContextAware {
             
     }
     
+    @Override
     public Crud.Complete<String, Merchant> getMerchants() {
         LOG.debug("Retrieving MerchantCrud");
         if(merchantCrud==null) {
@@ -65,6 +69,8 @@ public class PayService implements ApplicationContextAware {
     }
     
     
+    @Transactional
+    @Override
     public SystemUser getOrCreatePublicUser(Merchant merchant) {
         List<SystemUser> list = getUserlist("merchant", merchant);
         
@@ -77,6 +83,8 @@ public class PayService implements ApplicationContextAware {
         return getUsers().createAndRead(new SystemUser(merchant, IdGenerator.generateUniqueId(), "", Role.PublicApiAccessor));
     }
     
+    @Transactional
+    @Override
     public SystemUser getOrCreatePrivateUser(Merchant merchant) {
         List<SystemUser> list = getUserlist("merchant", merchant);
         
@@ -89,6 +97,7 @@ public class PayService implements ApplicationContextAware {
         return getUsers().createAndRead(new SystemUser(merchant, IdGenerator.generateUniqueId(), "", Role.PrivateApiAccessor));
     }
     
+    @Override
     public Crud.Complete<String, SystemUser> getUsers() {
         LOG.debug("Retrieving SystemUserCrud");
         if(userCrud==null) {
@@ -97,8 +106,18 @@ public class PayService implements ApplicationContextAware {
         return userCrud;
     }
     
+    @Override
     public SystemUser getUser(String username) {
         return getUser("username", username);
+    }
+    
+    @Override
+    public SystemUser getCurrentUser() {
+        if(SecurityContextHolder.getContext().getAuthentication() == null) {
+            return null;
+        }
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return getUser(username); 
     }
     
     private SystemUser getUser(String key, String value) {
@@ -112,6 +131,7 @@ public class PayService implements ApplicationContextAware {
         return getUsers().list(filter, null);
     }
     
+    @Override
     public Transaction getTransactionByOrderNumber(Merchant m, String orderNumber) {
         Filter filter = new CompareFilter("orderNumber", orderNumber, CompareFilter.CompareType.Equals);
         List<Transaction> list = getTransactions(m).list(filter, null);

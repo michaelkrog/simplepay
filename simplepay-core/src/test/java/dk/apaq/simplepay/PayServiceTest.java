@@ -6,12 +6,13 @@ import dk.apaq.simplepay.model.Role;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.model.TransactionStatus;
-import dk.apaq.simplepay.security.SystemUserDetails;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -26,12 +27,12 @@ import static org.junit.Assert.*;
 public class PayServiceTest {
     
     @Autowired
-    private PayService service;
+    private IPayService service;
     
     private void login(SystemUser user) {
-        SystemUserDetails mud = new SystemUserDetails(user);
-        mud.getAuthorities().add(new SimpleGrantedAuthority("ROLE_" + Role.Merchant.name()));
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(mud, null, mud.getAuthorities()));
+        List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
+        authList.add(new SimpleGrantedAuthority("ROLE_" + Role.Merchant.name().toUpperCase()));
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), authList));
     }
     
     /**

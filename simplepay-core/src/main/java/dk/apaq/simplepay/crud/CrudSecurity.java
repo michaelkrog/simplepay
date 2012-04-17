@@ -7,10 +7,13 @@ import dk.apaq.crud.core.BaseCrudListener;
 import dk.apaq.filter.Filter;
 import dk.apaq.filter.core.AndFilter;
 import dk.apaq.filter.core.CompareFilter;
+import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.PayService;
 import dk.apaq.simplepay.model.Merchant;
+import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
-import dk.apaq.simplepay.security.SystemUserDetailsHolder;
+import java.util.Date;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  *
@@ -20,9 +23,17 @@ public class CrudSecurity {
     
     public static class MerchantSecurity extends BaseCrudListener<String, Merchant> {
 
+        private IPayService service;
+
+        public MerchantSecurity(PayService service) {
+            this.service = service;
+        }
+        
         @Override
         public void onBeforeEntityUpdate(WithIdAndEntity<String, Merchant> event) {
-            Merchant usersMerchant = SystemUserDetailsHolder.getDetails().getUser().getMerchant();
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            SystemUser user = service.getUser(username); 
+            Merchant usersMerchant = user.getMerchant();
             if(!usersMerchant.getId().equals(event.getEntity().getId())) {
                 throw new SecurityException("Not allowed to change other merchants.");
             }
@@ -31,7 +42,7 @@ public class CrudSecurity {
     }
     
     public static class TransactionSecurity extends BaseCrudListener<String, Transaction> {
-        private final PayService service;
+        private final IPayService service;
         private final Merchant owner;
 
         
@@ -59,6 +70,8 @@ public class CrudSecurity {
                 event.getEntity().setMerchant(owner);
             }
             
+            event.getEntity().setDateChanged(new Date());
+            
         }
 
         @Override
@@ -67,6 +80,7 @@ public class CrudSecurity {
                 throw new IllegalArgumentException("Ordernumber already used.");
             }
             event.getEntity().setMerchant(owner);
+            event.getEntity().setDateChanged(new Date());
         }
 
         @Override

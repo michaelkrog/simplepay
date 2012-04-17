@@ -2,6 +2,7 @@ package dk.apaq.simplepay.model;
 
 import dk.apaq.simplepay.gateway.CardType;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -39,6 +40,12 @@ public class Transaction {
     private CardType cardType;
     private String cardExpires;
     private String cardNumberTruncated;
+    
+    @NotNull
+    private Date dateCreated = new Date();
+    
+    @NotNull
+    private Date dateChanged = new Date();
     
     @JsonIgnore
     private String gatewayTransactionId;
@@ -164,5 +171,23 @@ public class Transaction {
     public void setCardType(CardType cardType) {
         this.cardType = cardType;
     }
+
+    public Date getDateChanged() {
+        return dateChanged;
+    }
+
+    public void setDateChanged(Date dateChanged) {
+        this.dateChanged = dateChanged;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+    
+    
     
 }

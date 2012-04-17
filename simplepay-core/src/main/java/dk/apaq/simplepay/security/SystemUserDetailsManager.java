@@ -1,60 +1,45 @@
 package dk.apaq.simplepay.security;
 
+import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.PayService;
 import dk.apaq.simplepay.model.Merchant;
+import dk.apaq.simplepay.model.Role;
 import dk.apaq.simplepay.model.SystemUser;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author krog
  */
-public class SystemUserDetailsManager implements UserDetailsManager {
+public class SystemUserDetailsManager implements UserDetailsService {
 
     @Autowired
-    private PayService service;
+    private IPayService service;
     
+  
     @Override
-    public void createUser(UserDetails user) {
-        SystemUserDetails mud = (SystemUserDetails) user;
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void updateUser(UserDetails user) {
-        SystemUserDetails mud = (SystemUserDetails) user;
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void deleteUser(String username) {
-        SystemUser user = service.getUser(username);
-        if(user!=null) {
-            service.getUsers().delete(user.getId());
-        }
-    }
-
-    @Override
-    public void changePassword(String oldPassword, String newPassword) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public boolean userExists(String username) {
-        return service.getUser(username) != null;
-    }
-
-    @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         SystemUser user = service.getUser(username);
         if(user==null) {
             throw new UsernameNotFoundException("User not found. [username="+username+"]");
         }
         
-        return new SystemUserDetails(user);
+        List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
+        for(Role role : user.getRoles()) {
+            authList.add(new SimpleGrantedAuthority("ROLE_" + role.name().toUpperCase()));
+        }
+        return new User(user.getUsername(), user.getPassword(), !user.isDisabled(), !user.isExpired(), !user.isCredentialsExpired(), !user.isLocked(), authList);
     }
     
 }
