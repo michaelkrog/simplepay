@@ -49,6 +49,10 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>site</servlet-name>
+        <url-pattern>/pay.js</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>site</servlet-name>
         <url-pattern>/dashboard/*</url-pattern>
     </servlet-mapping>
 
