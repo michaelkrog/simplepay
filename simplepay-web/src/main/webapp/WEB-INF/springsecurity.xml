@@ -27,6 +27,6 @@
         <authentication-provider user-service-ref="userDetailsManager" />
     </authentication-manager>
 
-    <beans:bean id="userDetailsManager" class="dk.apaq.simplepay.security.MerchantUserDetailsManager" />
+    <beans:bean id="userDetailsManager" class="dk.apaq.simplepay.security.SystemUserDetailsManager" />
 
 </beans:beans>

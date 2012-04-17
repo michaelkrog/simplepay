@@ -14,8 +14,8 @@
             
             <div id="contentwrapper" class="content">
                  
-                <div id="splash" class="row hidden-phone">
-                    <div id="splash1" class="splash">
+                <div id="splash" class="row">
+                    <div id="splash1" class="splash hidden-phone hidden-tablet">
                         <div class="span6">
                             <div style="margin:40px 0px 0px 40px;">
                             <h1>Betaling direkte på din hjemmeside</h1>
@@ -25,6 +25,14 @@
                         </div>
                         <div class="span6" align="center">
                             <img src="img/splash1.jpg">
+                        </div>
+
+                    </div>
+                    <div  class="splash hidden-desktop">
+                        <div class="span12" style="margin:40px 0px 0px 40px;">
+                            <h1>Betaling direkte på din hjemmeside</h1>
+                            <h3 style="margin:20px 0px;color:#6f6f6f;">SimplePay gør det nemt for dig at modtage betalinger på din hjemmeside - også uden programmering!</h3>
+                            <span class="btn btn-large btn-primary">Kom igang med SimplePay</span>
                         </div>
                     </div>
                     <div id="splash2" class="span12 splash hidden"></div>
