@@ -2,4 +2,5 @@
 <script src="<spring:theme code="jquery-js"/>"></script>
 <script src="<spring:theme code="prettify-js"/>"></script>
 <script src="<spring:theme code="bootstrap-js"/>"></script>
+<script src="<spring:theme code="bootstrap-modal-js"/>"></script>
 <script src="<spring:theme code="application-js"/>"></script>
