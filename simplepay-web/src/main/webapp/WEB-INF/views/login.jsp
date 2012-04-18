@@ -17,7 +17,7 @@
             <h3>Log ind</h3>
         </div>
         <div class="modal-body">
-            <form id="form-login" action="/j_spring_security_check" method="POST" class="form-horizontal">
+            <form id="form-login" action="<c:url value="/j_spring_security_check"/>" method="POST" class="form-horizontal">
                 <fieldset>
                     <div class="control-group">
                         <label class="control-label" for="username">Brugernavn</label>
