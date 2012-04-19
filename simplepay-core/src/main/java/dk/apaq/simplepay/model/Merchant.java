@@ -6,6 +6,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -30,7 +31,8 @@ public class Merchant {
     private String gatewaySecret;
     
     @Enumerated(EnumType.STRING)
-    private PaymentGatewayType gatewayType;
+    @NotNull
+    private PaymentGatewayType gatewayType = PaymentGatewayType.Test;
 
     public String getCity() {
         return city;
