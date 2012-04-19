@@ -24,13 +24,15 @@
                                 <th>Ordernummer</th>
                                 <th>Beløb</th>
                                 <th>Status</th>
+                                <th></th>
                             </tr>
                             <tbody>
                                 <c:forEach var="transaction" items="${transactions}">
                                     <tr>
                                       <td>${transaction.orderNumber}</td>
-                                      <td><fmt:formatNumber value='${1.0 * transaction.authorizedAmount}' currencyCode="${transaction.currency}" type='currency'/></td>
+                                      <td><fmt:formatNumber value='${1.0 * transaction.authorizedAmount / 100}' currencyCode="${transaction.currency}" type='currency'/></td>
                                       <td>${transaction.status}</td>
+                                      <td><button class="btn btn-mini">Capture</button></td>
                                     </tr>
                                 </c:forEach>
                           </thead>

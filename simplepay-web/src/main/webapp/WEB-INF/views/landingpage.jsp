@@ -45,12 +45,12 @@
                         <div style="margin:40px 0px 0px 40px;">
                             <h3>Nemt at implementere</h3>
                             <p>
-                            SimplePay er så nemt at implementere at man næsten ikke tror det. Af samme grund har vi valgt
-                            at vise her på forsiden alt hvad der skal sættes ind som <code>html</code> på din side for at 
-                            tage imod kreditkort betalinger. Du er igang på få minutter.
+                            SimplePay er s&aring; nemt at implementere at man n&aelig;sten ikke tror det. Af samme grund har vi valgt
+                            at vise her p&aring; forsiden alt hvad der skal s&aelig;ttes ind som <code>html</code> p&aring; din side for at 
+                            tage imod kreditkort betalinger. Du er igang med at teste det i l&oslash;bet af ingen tid. 
                             </p>
                             <p>
-                                Ja. Det er virkelig <strong>så enkelt!</strong>
+                                Ja. Det er virkelig <strong>så enkelt!</strong> <a href="#">Læs mere...</a>
                             </p>
                         </div>    
                     </div>
@@ -59,9 +59,9 @@
                             <pre class="prettyprint linenums">
 &lt;script src="http://simplepay.dk/pay.js"&gt;&lt;/script&gt;
 &lt;script&gt;
-Pay.setPublicKey('&lt;public key&gt;');
-Pay.createUnauthorizedToken('&lt;ordernummer&gt;', '&lt;Beskrivelse&gt;', function(token) {
-    Pay.authorizeTokenRemote(token, 1000, 'DKK', 'http://dinside.dk/ok.html', 'http://dinside.dk/cancel.html');
+Pay.setPublicKey('&lt;din tildelte n&oslash;gle&gt;');
+Pay.createToken('&lt;ordrenummer&gt;', '&lt;beskrivelse&gt;', function(token) {
+    Pay.authorizeRemote(token, &lt;bel&oslash;b&gt;, '&lt;valuta&gt;', '&lt;ok-side&gt;', '&lt;fejl-side&gt;');
 });
 &lt;/script&gt;
 </pre>

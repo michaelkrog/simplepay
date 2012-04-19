@@ -5,7 +5,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" ></script>
-        <script src="/pay.js"></script>
+        <script src="http://79.138.162.87/pay.js"></script>
     </head>
     <body>
         <button id='paybutton'>Betal</button>
@@ -17,7 +17,7 @@
         $('#paybutton').click(function(){
             $(this).attr('disabled','disabled');
             Pay.setPublicKey('qwerty');
-            Pay.setServiceRoot('http://10.42.43.1');
+            Pay.setServiceRoot('http://79.138.162.87');
             var orderNumber = new Date().getTime();
             Pay.createUnauthorizedToken(orderNumber, 'Dette er den vildeste ordre.', function(token) {
                 Pay.authorizeTokenRemote(token, 1000, 'DKK', 'http://localhost:8080/testshop/ok.html', 'http://localhost:8080/testshop/cancel.html');

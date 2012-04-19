@@ -64,7 +64,7 @@ public class CallbackController {
         String qpstatmsg = request.getParameter("qpstatmsg");
         String currency = request.getParameter("currency");
         String gatewayTransactionId = request.getParameter("transaction");
-        
+        String orderNumber = request.getParameter("ordernumber");
         
         String[] keys = "subscribe".equals(eventType) ? QUICKPAY_KEYS_SUBSCRIBE : QUICKPAY_KEYS;
         
@@ -81,17 +81,9 @@ public class CallbackController {
         }                                      
 
         
-        long orderNumber;
         long amount;
         
         LOG.debug("Payment event type is " + eventType);
-        
-        try {
-            orderNumber = Long.parseLong(request.getParameter("ordernumber"));
-        } catch(NumberFormatException ex) {
-            LOG.warn("Payment data was valid, but orderNumber is not a valid number!!! [ordernumber{}; remoteIp={}]", request.getParameter("ordernumber"), request.getRemoteAddr());
-            throw new InvalidRequestException("ordernumber not a valid number [value="+request.getParameter("ordernumber") +"]");
-        }
         
         try {
             amount = Long.parseLong(request.getParameter("amount"));

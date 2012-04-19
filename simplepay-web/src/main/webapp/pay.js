@@ -1,6 +1,6 @@
 function PayService (){
-    var publicKey;
-    var serviceRoot = "http://simplepay.eu";
+    this.publicKey;
+    this.serviceRoot = "http://simplepay.eu";
     
     this.setPublicKey = function(publicKey) {
         this.publicKey = publicKey;
@@ -11,7 +11,7 @@ function PayService (){
     }
 
     this.createUnauthorizedToken = function(orderNumber, description, callback) {
-        var url = serviceRoot + "/api/transactions";
+        var url = this.serviceRoot + "/api/transactions";
         var that=this;
         jQuery.support.cors = true;
         $.ajax({
@@ -31,7 +31,7 @@ function PayService (){
         //request url & fields
         var that=this;
         $.ajax({
-            url: serviceRoot + "/api/form",
+            url: this.serviceRoot + "/api/form",
             type: "POST",
             dataType:"json",
             beforeSend: function (xhr) { xhr.setRequestHeader ("SimplePayKey", that.publicKey); },
