@@ -5,7 +5,7 @@
     <meta name="author" content="">
 
     <!-- Le styles -->
-    <c:set var="styles" scope='request'>bootstrap-css,styles-css,bootstrap-responsive-css,prettify-css</c:set>
+    <c:set var="styles" scope='request'>bootstrap-css,styles-css,bootstrap-responsive-css,bootstrap-datepicker-css,prettify-css</c:set>
     <c:forTokens var="style" items="${styles}" delims=",">
         <c:set var="cssUrl"><spring:theme code='${style}'/></c:set>
         <link href="<c:url value='${cssUrl}'/>" rel="stylesheet">

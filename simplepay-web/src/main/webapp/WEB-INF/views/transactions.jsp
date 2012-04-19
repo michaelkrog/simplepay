@@ -15,9 +15,29 @@
         <jsp:include page="inc/top.jsp" />
 
         <div id="contentwrapper" class="content">
+            <div class="row" style="background: #FAFAFA;border-bottom: 1px solid #DFDFDF;">
+                <div class="span4">
+                    <h1 style="padding:20px;">Transaktioner</h1>
+                </div>
+                <div class="span8">
+                    <form class="form-inline pull-right" style="padding:20px;">
+                        <select class="input-small"><option>Før</option><option selected="true">Efter</option></select>
+                        <input type="text" class="input-small datepicker" value="02-16-2012">
+                        &nbsp;|&nbsp;
+                        <input type="text" class="input-medium datepicker" placeholder="Søgeord">
+                        &nbsp;|&nbsp;
+                        <select class="input-small">
+                            <option>Alle</option>
+                            <option>Authorized</option>
+                            <option>Captured</option>
+                            <option>Cancelled</option>
+                            <option>Failed</option>
+                        </select>
+                    </form>
+                </div>
+            </div>    
             <div class="row">
                 <div class="span12">
-                    <h1 style="padding:20px;background: #FAFAFA;border-bottom: 1px solid #DFDFDF;">Transaktioner</h1>
                     <table class="table">
                         <thead>
                             <tr>
@@ -65,10 +85,16 @@
     </div>
     <jsp:include page="inc/scripts.jsp" />
     <script>
-            
+        //var privateKey = '${privateKey}';    
         function main() {
             $('.transaction-row').click(function() {
                 $('#transactionModal').modal('show');
+            });
+            
+            $.ajax({
+              url: '/api/transactions'
+            }).done(function(data) {
+                alert(data);
             });
         }
             

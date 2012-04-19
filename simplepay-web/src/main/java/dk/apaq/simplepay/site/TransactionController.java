@@ -7,7 +7,9 @@ import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.PayService;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +28,14 @@ public class TransactionController {
     @RequestMapping("/dashboard")
     public ModelAndView showTransactions() {
         SystemUser user = service.getCurrentUser();
+        SystemUser privateUser = service.getOrCreatePrivateUser(user.getMerchant());
         
         List<Transaction> list =  service.getTransactions(user.getMerchant()).list(null, new Sorter("dateChanged", SortDirection.Descending), new Limit(300));
-        return new ModelAndView("transactions", "transactions", list);
+        
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put("transactions", list);
+        model.put("privateKey", privateUser.getUsername());
+        return new ModelAndView("transactions", model);
     }
     
     /*@RequestMapping("/dashboard")
