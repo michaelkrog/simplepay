@@ -55,6 +55,14 @@
         <servlet-name>site</servlet-name>
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>site</servlet-name>
+        <url-pattern>/paymentwindow</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>site</servlet-name>
+        <url-pattern>/paymentwindow/handle</url-pattern>
+    </servlet-mapping>
 
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>

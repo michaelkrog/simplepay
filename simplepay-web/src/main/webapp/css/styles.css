@@ -27,10 +27,16 @@ body>.container {
    filter:none;
 }
 
-.navbar .brand {
+.navbar .brand,
+.brand {
     color: #262626;
     text-shadow: 0px 1px rgba(255, 255, 255, 0.5);
-    
+    font-size: 20px;
+    font-weight: 200;
+}
+
+.brand .blue {
+    color:#1C5AC4;
 }
 
 .navbar .nav > li > a {

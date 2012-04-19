@@ -1,19 +1,16 @@
 package dk.apaq.simplepay.api;
 
 import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.PayService;
 import dk.apaq.simplepay.gateway.PaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
+import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.model.TransactionStatus;
 import java.text.NumberFormat;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,25 +50,6 @@ public class TransactionController {
     @Qualifier("publicUrl")
     private String publicUrl;
     
-    public class FormData {
-        private String url;
-        private Map<String, String> fields = new LinkedHashMap<String, String>();
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        public Map<String, String> getFields() {
-            return fields;
-        }
-        
-    }
-    
-    
     private Merchant getMerchant() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         SystemUser user = service.getUser(username); 
@@ -91,43 +69,18 @@ public class TransactionController {
     @Secured({"ROLE_PUBLICAPIACCESSOR","ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
     @Transactional
-    public FormData generateForm(HttpServletRequest request, String token, Long amount, String currency, String returnUrl, String cancelUrl) {
+    public PaymentGateway.FormData generateForm(HttpServletRequest request, String token, Long amount, String currency, String returnUrl, String cancelUrl) {
         Merchant m = getMerchant();
         Transaction t = getTransaction(token);
+        PaymentGatewayType gatewayType = t.getGatewayType();
         
         t.setCurrency(currency);
         service.getTransactions(m).update(t);
         
         SystemUser publicUser = service.getOrCreatePublicUser(m);
-        String callbackUrl = publicUrl + "/api/callback/quickpay/" + publicUser.getUsername() + "/" + token;
-        
-        FormData formData = new FormData();
-        formData.setUrl("https://secure.quickpay.dk/form/");
-        
-        Map<String, String> map = formData.getFields();
-        map.put("protocol", "4");
-        map.put("msgtype", "authorize");
-        map.put("merchant", m.getGatewayUserId());
-        map.put("language", request.getLocale().getLanguage());
-        map.put("ordernumber", t.getOrderNumber());  //
-        map.put("amount", Long.toString(amount));
-        map.put("currency", currency);
-        map.put("continueurl", returnUrl);
-        map.put("cancelurl", cancelUrl);
-        map.put("callbackurl", callbackUrl);
-        map.put("autocapture", "0");
-        map.put("cardtypelock", "creditcard");
-        map.put("splitpayment", "1");
-        
-        //md5
-        StringBuilder builder = new StringBuilder();
-        for(String value : map.values()) {
-            builder.append(value);
-        }
-        builder.append(m.getGatewaySecret());
-        map.put("md5check", DigestUtils.md5Hex(builder.toString()));
-        
-        return formData;
+        String callbackUrl = publicUrl + "/api/callback/" + gatewayType.name().toLowerCase() + "/" + publicUser.getUsername() + "/" + t.getId();
+        PaymentGateway gateway = gatewayManager.createPaymentGateway(m, gatewayType);
+        return gateway.generateFormdata(t, amount, currency, returnUrl, cancelUrl, callbackUrl, request.getLocale());
     }
 
     @RequestMapping(value = "/transactions", method=RequestMethod.POST)
@@ -181,8 +134,8 @@ public class TransactionController {
             amount = t.getAuthorizedAmount();
         }
         
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(t.getGatewayType(), m.getGatewayUserId(), m.getGatewaySecret());
-        gateway.refund(amount, t.getGatewayTransactionId());
+        PaymentGateway gateway = gatewayManager.createPaymentGateway(m, t.getGatewayType());
+        gateway.refund(t, amount);
         t.setStatus(TransactionStatus.Refunded);
         t.setRefundedAmount(amount);
         return service.getTransactions(m).update(t);
@@ -201,8 +154,8 @@ public class TransactionController {
             amount = t.getAuthorizedAmount();
         }
         
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(t.getGatewayType(), m.getGatewayUserId(), m.getGatewaySecret());
-        gateway.capture(amount, t.getGatewayTransactionId());
+        PaymentGateway gateway = gatewayManager.createPaymentGateway(m, t.getGatewayType());
+        gateway.capture(t, amount);
         t.setStatus(TransactionStatus.Captured);
         t.setCapturedAmount(amount);
         return service.getTransactions(m).update(t);
@@ -217,9 +170,10 @@ public class TransactionController {
         LOG.debug("Cancelling transaction. [merchant={}; token={}]", m.getId(), token);
         Transaction t = getTransaction(m, token);
         
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(t.getGatewayType(), m.getGatewayUserId(), m.getGatewaySecret());
-        gateway.cancel(t.getGatewayTransactionId());
+        PaymentGateway gateway = gatewayManager.createPaymentGateway(m, t.getGatewayType());
+        gateway.cancel(t);
         t.setStatus(TransactionStatus.Cancelled);
         return service.getTransactions(m).update(t);
     }
+    
 }

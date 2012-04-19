@@ -7,7 +7,7 @@
                 <span class="icon-bar">Hjælp og support</span>
             </a>
             
-            <a href="/" class="brand">simple<span style="color:#1C5AC4;">pay</span></a>
+            <a href="/" class="brand">simple<span class="blue">pay</span></a>
             
             <div class="nav-collapse">
                 <ul class="nav-button pull-right nav-collapse">
