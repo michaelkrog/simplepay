@@ -21,12 +21,12 @@
                 </div>
                 <div class="span8">
                     <form class="form-inline pull-right" style="padding:20px;">
-                        <select class="input-small"><option>Før</option><option selected="true">Efter</option></select>
-                        <input type="text" class="input-small datepicker" value="02-16-2012">
+                        <select class="searchfield input-small"><option>Før</option><option selected="true">Efter</option></select>
+                        <input type="text" class="searchfield input-small datepicker" value="02-16-2012">
                         &nbsp;|&nbsp;
-                        <input type="text" class="input-medium datepicker" placeholder="Søgeord">
+                        <input id="searchstring" type="text" class="searchfield input-medium datepicker" placeholder="Søgeord">
                         &nbsp;|&nbsp;
-                        <select class="input-small">
+                        <select class="searchfield input-small">
                             <option>Alle</option>
                             <option>Authorized</option>
                             <option>Captured</option>
@@ -48,7 +48,7 @@
                                 <th class="hidden-phone">Type</th>
                                 <th>Status</th>
                             </tr>
-                        <tbody>
+                        <tbody id="transactions-tbody">
                             <c:forEach var="transaction" items="${transactions}">
                                 <tr class="transaction-row" style="cursor:pointer;">
                                     <td>${transaction.orderNumber}</td>
@@ -84,17 +84,39 @@
         </div>
     </div>
     <jsp:include page="inc/scripts.jsp" />
+    <script id="transactionRowTemplate" type="text/x-jquery-tmpl">
+        <tr class="transaction-row" style="cursor:pointer;">
+            <td>\${orderNumber}</td>
+            <td class="hidden-phone">\${dateCreated}</td>
+            <td class="visible-phone">\${dateCreated}</td>
+            <td>\${1.0 * authorizedAmount / 100}</td>
+            <td class="hidden-phone">\${cardType}</td>
+            <td>\${status}</td>
+        </tr>
+    </script>
     <script>
+        var privateKey = '${privateKey}';
+        
+        function updateData() {
+            $("#transactions-tbody").empty();
+            $.ajax({
+              url: '/api/transactions',
+              data: {searchString:$('#searchstring').val()},
+              username:privateKey
+            }).done(function(data) {
+                $( "#transactionRowTemplate" ).tmpl( data ).appendTo( "#transactions-tbody" );
+            });
+        }
+        
         function main() {
             $('.transaction-row').click(function() {
                 $('#transactionModal').modal('show');
             });
             
-            $.ajax({
-              url: '/api/transactions'
-            }).done(function(data) {
-                alert(data);
+            $('.searchfield').change(function(){
+                updateData();
             });
+            
         }
             
         $(document).ready(main);

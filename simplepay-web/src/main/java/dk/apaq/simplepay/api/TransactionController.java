@@ -1,5 +1,10 @@
 package dk.apaq.simplepay.api;
 
+import dk.apaq.filter.Filter;
+import dk.apaq.filter.core.AndFilter;
+import dk.apaq.filter.core.CompareFilter;
+import dk.apaq.filter.core.LikeFilter;
+import dk.apaq.filter.core.OrFilter;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.gateway.PaymentGateway;
@@ -9,12 +14,14 @@ import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
 import java.text.NumberFormat;
+import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -105,10 +112,40 @@ public class TransactionController {
     @Transactional(readOnly=true)
     @Secured({"ROLE_PRIVATEAPIACCESSOR","ROLE_MERCHANT"})     
     @ResponseBody
-    public List<Transaction> listTransactions() {
+    public List<Transaction> listTransactions(@RequestParam(required=false) TransactionStatus status, @RequestParam(required=false) String searchString,
+                                                @RequestParam(required=false) Long beforeTimestamp, @RequestParam(required=false) Long afterTimestamp) {
         Merchant m = getMerchant();
         LOG.debug("Listing transactions. [merchant={}]", m.getId());
-        return service.getTransactions(m).list();
+        
+        //There a bug in the JPA-Filter code causing empty And-filter to create invalid HQL.
+        //We make sure not to use an empty AndFilter
+        boolean useFilter = status != null || searchString != null || beforeTimestamp != null || afterTimestamp != null;
+        
+        AndFilter filter = new AndFilter();
+        if(status != null) {
+            filter.addFilter(new CompareFilter("status", status, CompareFilter.CompareType.Equals));
+        }
+        
+        if(searchString != null) {
+            if(!searchString.endsWith("*")) {
+                searchString = searchString + "*";
+            }
+            filter.addFilter(new OrFilter(
+                    new LikeFilter("currency", searchString),
+                    new LikeFilter("description", searchString),
+                    new LikeFilter("orderNumber", searchString)
+                    ));
+        }
+        
+        if(beforeTimestamp != null) {
+            filter.addFilter(new CompareFilter("dateCreated", new Date(beforeTimestamp), CompareFilter.CompareType.LessOrEqual));
+        }
+        
+        if(afterTimestamp != null) {
+            filter.addFilter(new CompareFilter("dateCreated", new Date(afterTimestamp), CompareFilter.CompareType.GreaterOrEqual));
+        }
+        
+        return service.getTransactions(m).list(useFilter ? filter : null, null);
     }
     
     @RequestMapping(value="/transactions/{token}", method=RequestMethod.GET)
