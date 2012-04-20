@@ -21,13 +21,13 @@
                 </div>
                 <div class="span8">
                     <form class="form-inline pull-right" style="padding:20px;">
-                        <select class="searchfield input-small"><option>Før</option><option selected="true">Efter</option></select>
-                        <input type="text" class="searchfield input-small datepicker" value="02-16-2012">
+                        <select id="datemode" class="searchfield input-small"><option value="before">Før</option><option selected="true" value="after">Efter</option></select>
+                        <input id="datepicker" type="text" class="searchfield input-small datepicker" placeholder="Dato">
                         &nbsp;|&nbsp;
                         <input id="searchstring" type="text" class="searchfield input-medium datepicker" placeholder="Søgeord">
                         &nbsp;|&nbsp;
                         <select id="status" class="searchfield input-small">
-                            <option>Alle</option>
+                            <option value="All">Alle</option>
                             <option>Authorized</option>
                             <option>Captured</option>
                             <option>Cancelled</option>
@@ -41,7 +41,7 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th width="25%">Ordernummer</th>
+                                <th width="25%">Ordrenummer</th>
                                 <th width="25%" class="hidden-phone">Oprettet</th>
                                 <th width="25%" class="visible-phone">Oprettet</th>
                                 <th width="15%" style="text-align: right">Beløb</th>
@@ -63,13 +63,20 @@
     <div id="transactionModal" class="modal hide fade" style="display: block; ">
         <div class="modal-header">
             <a class="close" data-dismiss="modal">×</a>
-            <h3 id="transaction-title">Ordrenummer</h3>
+            <h3 id="transaction-title">Ordre: 12312121213</h3>
         </div>
         <div class="modal-body">
-            
+            <h1>DKK 401,25</h1>
+            <h6>Status:Godkendt</h6>
+            <h6>Dato:1/2/2012 14:54:34</h6>
+            <div class="well" style="margin-top:10px">
+                        Dette er en beskrivelse af det der er blevet godkendt til betaling.
+
+            </div>
         </div>
         <div class="modal-footer">
-            <div id="btn-pay" class="btn">Capture</div>
+            <div id="btn-pay" class="btn btn-danger">Annullér</div>
+            <div id="btn-pay" class="btn btn-success">Capture</div>
             <a href="#" class="btn btn-primary" data-dismiss="modal">Luk</a>
         </div>
     </div>
@@ -77,36 +84,70 @@
     <script id="transactionRowTemplate" type="text/x-jquery-tmpl">
         <tr class="transaction-row" style="cursor:pointer;">
             <td>\${orderNumber}</td>
-            <td class="hidden-phone">\${dateCreated}</td>
-            <td class="visible-phone">\${dateCreated}</td>
-            <td style="text-align: right">\${1.0 * authorizedAmount / 100}</td>
+            <td class="hidden-phone">\${$.format.date(new Date(dateCreated), "dd/MM/yyyy HH:mm:ss")}</td>
+            <td class="visible-phone">\${$.format.date(new Date(dateCreated), "dd/MM/yyyy")}</td>
+            <td style="text-align: right">\${formatMoney(currency, authorizedAmount / 100)} </td>
             <td class="hidden-phone">\${cardType}</td>
             <td>\${status}</td>
         </tr>
     </script>
     <script>
         var privateKey = '${privateKey}';
+        var chosenDate = null;
+        var numberFormat = {format:"#,###.00", locale:"dk"};
+        
+        function formatMoney(currency, number) {
+            return $.formatNumber(number, {format:currency + " #,###.00", locale:"dk"});
+        }
         
         function updateData() {
+            var data = {};
+            var searchString = $.trim($('#searchstring').val());
+            
+            if(searchString != '') {
+                data.searchString = searchString;
+            }
+            
+            if($('#status').val() != 'All') {
+                data.status = $('#status').val();
+            }
+            
+            if(chosenDate != null) {
+                if($('#datemode').val() == 'before') {
+                    data.beforeTimestamp = chosenDate.getTime()
+                } else {
+                    data.afterTimestamp = chosenDate.getTime();
+                }
+            }
+            
+            
             $("#transactions-tbody").empty();
             $.ajax({
               url: '/api/transactions',
-              data: {searchString:$('#searchstring').val(), status:$('#status').val()},
+              data: data,
               username:privateKey
             }).done(function(data) {
                 $( "#transactionRowTemplate" ).tmpl( data ).appendTo( "#transactions-tbody" );
+                $('.transaction-row').click(function() {
+                    $('#transactionModal').modal('show');
+                });
             });
         }
         
         function main() {
-            $('.transaction-row').click(function() {
-                $('#transactionModal').modal('show');
-            });
             
             $('.searchfield').change(function(){
                 updateData();
             });
             
+            $('.datepicker').datepicker({format:'dd/mm/yyyy', weekStart:1});
+            $('#datepicker').on('changeDate', function(ev){
+                chosenDate = ev.date;
+                $('#datepicker').datepicker('hide');
+                updateData();
+              });
+            
+            updateData();
         }
             
         $(document).ready(main);

@@ -5,6 +5,8 @@ import dk.apaq.filter.core.AndFilter;
 import dk.apaq.filter.core.CompareFilter;
 import dk.apaq.filter.core.LikeFilter;
 import dk.apaq.filter.core.OrFilter;
+import dk.apaq.filter.sort.SortDirection;
+import dk.apaq.filter.sort.Sorter;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.gateway.PaymentGateway;
@@ -145,7 +147,9 @@ public class TransactionController {
             filter.addFilter(new CompareFilter("dateCreated", new Date(afterTimestamp), CompareFilter.CompareType.GreaterOrEqual));
         }
         
-        return service.getTransactions(m).list(useFilter ? filter : null, null);
+        Sorter sorter = new Sorter("dateCreated", SortDirection.Descending);
+        
+        return service.getTransactions(m).list(useFilter ? filter : null, sorter);
     }
     
     @RequestMapping(value="/transactions/{token}", method=RequestMethod.GET)

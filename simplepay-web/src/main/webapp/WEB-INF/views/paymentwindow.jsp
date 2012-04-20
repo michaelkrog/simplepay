@@ -11,7 +11,7 @@
         <jsp:include page="inc/head.jsp" />
     </head>  
 
-    <div id="loginModal" class="modal" style="display: block; ">
+    <div id="payModal" class="modal" style="display: block; ">
         <div class="modal-header">
             <!--a class="close" data-dismiss="modal">×</a-->
             <div class="brand">simple<span class="blue">pay</span></div>
@@ -43,7 +43,7 @@
             </form>
         </div>
         <div class="modal-footer">
-            <!--a href="#" class="btn">Opret ny profil</a-->
+            <a id="btn-cancel" href="#" class="btn">Fortryd</a>
             <div id="btn-pay" class="btn btn-primary">Betal</div>
         </div>
     </div>
@@ -67,13 +67,18 @@
             });
             return false;
         }
-        function submitLogin() {
+        
+        function submitPayment() {
             $('#form-payment').submit();
         }
         
+        function cancelPayment() {
+            document.location = '${cancelUrl}';
+        }
         
         function main() {
-            $('#btn-pay').click(submitLogin);
+            $('#btn-pay').click(submitPayment);
+            $('#btn-cancel').click(cancelPayment);
             
             $('#form-payment').submit(handleSubmission);
         }
