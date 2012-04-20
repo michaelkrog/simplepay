@@ -1,13 +1,13 @@
 package dk.apaq.simplepay.api;
 
 import dk.apaq.simplepay.IPayService;
+import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.gateway.PaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
-import dk.apaq.simplepay.model.TransactionStatus;
 import java.text.NumberFormat;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;

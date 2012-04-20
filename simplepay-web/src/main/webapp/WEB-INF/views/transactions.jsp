@@ -85,7 +85,6 @@
     </div>
     <jsp:include page="inc/scripts.jsp" />
     <script>
-        //var privateKey = '${privateKey}';    
         function main() {
             $('.transaction-row').click(function() {
                 $('#transactionModal').modal('show');

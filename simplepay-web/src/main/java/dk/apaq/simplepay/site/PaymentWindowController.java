@@ -1,18 +1,16 @@
 package dk.apaq.simplepay.site;
 
 import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.PayService;
-import dk.apaq.simplepay.gateway.CardType;
+import dk.apaq.simplepay.common.CardType;
+import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
-import dk.apaq.simplepay.model.TransactionStatus;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
