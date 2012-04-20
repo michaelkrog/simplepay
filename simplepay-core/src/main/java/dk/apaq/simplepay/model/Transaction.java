@@ -39,7 +39,9 @@ public class Transaction {
     
     private String currency;
     private String description;
-    private CardType cardType;
+    
+    @NotNull
+    private CardType cardType = CardType.Unknown;
     private String cardExpires;
     private String cardNumberTruncated;
     
