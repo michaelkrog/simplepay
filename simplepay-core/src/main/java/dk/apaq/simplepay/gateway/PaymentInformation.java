@@ -1,5 +1,7 @@
 package dk.apaq.simplepay.gateway;
 
+import dk.apaq.simplepay.common.CardType;
+import dk.apaq.simplepay.common.TransactionStatus;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -19,10 +21,7 @@ public class PaymentInformation {
     private final String merchantId;
     private final String merchantEmail;
     private final String transactionId;
-    private final String cardType;
-    private final String cardNumber;
-    private final String cardExpire;
-    private final boolean splitPayment;
+    private final CardType cardType;
     
     public class HistoryEntry {
         private String type;
@@ -61,8 +60,7 @@ public class PaymentInformation {
     }
 
     public PaymentInformation(TransactionStatus transactionStatus, List<HistoryEntry> history, String orderNumber, int amount, String currency, 
-            String gatewayStatus, String merchantId, String merchantEmail, String transactionId, String cardType, String cardNumber, 
-            String cardExpire, boolean splitPayment) {
+            String gatewayStatus, String merchantId, String merchantEmail, String transactionId, CardType cardType) {
         this.transationStatus = transactionStatus;
         this.history = history;
         this.orderNumber = orderNumber;
@@ -73,25 +71,11 @@ public class PaymentInformation {
         this.merchantEmail = merchantEmail;
         this.transactionId = transactionId;
         this.cardType = cardType;
-        this.cardNumber = cardNumber;
-        this.cardExpire = cardExpire;
-        this.splitPayment = splitPayment;
+        
     }
 
     public int getAmount() {
         return amount;
-    }
-
-    public String getCardExpire() {
-        return cardExpire;
-    }
-
-    public String getCardNumber() {
-        return cardNumber;
-    }
-
-    public String getCardType() {
-        return cardType;
     }
 
     public String getCurrency() {
@@ -120,10 +104,6 @@ public class PaymentInformation {
 
     public TransactionStatus getTransationStatus() {
         return transationStatus;
-    }
-
-    public boolean isSplitPayment() {
-        return splitPayment;
     }
 
     public String getTransactionId() {

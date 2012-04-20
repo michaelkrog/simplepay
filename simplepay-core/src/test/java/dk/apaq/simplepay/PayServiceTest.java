@@ -1,11 +1,11 @@
 package dk.apaq.simplepay;
 
+import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Role;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
-import dk.apaq.simplepay.model.TransactionStatus;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
@@ -81,7 +81,7 @@ public class PayServiceTest {
         
         //Make sure the right data has been set
         assertEquals(m.getId(), t.getMerchant().getId());
-        assertEquals(TransactionStatus.Unauthorized, t.getStatus());
+        assertEquals(TransactionStatus.New, t.getStatus());
         
         //Make sure that transactions are only available throught he right merchants
         List<Transaction> tlist = service.getTransactions(m).list();

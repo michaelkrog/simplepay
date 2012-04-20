@@ -1,13 +1,12 @@
 package dk.apaq.simplepay.gateway.test;
 
 import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.PayService;
+import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.gateway.PaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentInformation;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
-import dk.apaq.simplepay.model.TransactionStatus;
 import java.util.Locale;
 
 /**

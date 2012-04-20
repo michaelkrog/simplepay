@@ -2,7 +2,8 @@ package dk.apaq.simplepay.gateway.quickpay;
 
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.PayService;
-import dk.apaq.simplepay.gateway.CardType;
+import dk.apaq.simplepay.common.TransactionStatus;
+import dk.apaq.simplepay.common.CardType;
 import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.gateway.PaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentInformation;
@@ -36,7 +37,7 @@ public class QuickPay implements PaymentGateway {
 
     private static final Logger LOG = LoggerFactory.getLogger(QuickPay.class);
 
-    private Merchant merchant = null;
+    //private Merchant merchant = null;
     private IPayService service;
     private String apiUrl = "https://secure.quickpay.dk/api";
     private String formUrl = "https://secure.quickpay.dk/form/";
@@ -49,7 +50,7 @@ public class QuickPay implements PaymentGateway {
     }
 
     public void setMerchant(Merchant merchant) {
-        this.merchant = merchant;
+        //this.merchant = merchant;
     }
 
     public void setTestMode(boolean testMode) {
@@ -76,14 +77,14 @@ public class QuickPay implements PaymentGateway {
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
             nvps.add(md5.getBasicNameValuePair("protocol", protocolVersion));
             nvps.add(md5.getBasicNameValuePair("msgtype", "cancel"));
-            nvps.add(md5.getBasicNameValuePair("merchant", merchant.getGatewayUserId()));
+            nvps.add(md5.getBasicNameValuePair("merchant", transaction.getMerchant().getGatewayUserId()));
             nvps.add(md5.getBasicNameValuePair("transaction", transaction.getGatewayTransactionId()));
             
             if(testMode) {
                 nvps.add(md5.getBasicNameValuePair("testmode", "1"));
             }
             
-            md5.add(merchant.getGatewaySecret());
+            md5.add(transaction.getMerchant().getGatewaySecret());
             nvps.add(new BasicNameValuePair("md5check", md5.getMD5Result()));
             post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 
@@ -111,14 +112,14 @@ public class QuickPay implements PaymentGateway {
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
             nvps.add(md5.getBasicNameValuePair("protocol", protocolVersion));
             nvps.add(md5.getBasicNameValuePair("msgtype", "status"));
-            nvps.add(md5.getBasicNameValuePair("merchant", merchant.getGatewayUserId()));
+            nvps.add(md5.getBasicNameValuePair("merchant", transaction.getMerchant().getGatewayUserId()));
             nvps.add(md5.getBasicNameValuePair("transaction", transaction.getGatewayTransactionId()));
             
             if(testMode) {
                 nvps.add(md5.getBasicNameValuePair("testmode", "1"));
             }
             
-            md5.add(merchant.getGatewaySecret());
+            md5.add(transaction.getMerchant().getGatewaySecret());
             nvps.add(new BasicNameValuePair("md5check", md5.getMD5Result()));
             post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 
@@ -129,8 +130,21 @@ public class QuickPay implements PaymentGateway {
             String result = new String(ba.toByteArray(), 0, ba.size());
             
             QuickPayResult qpresult = new QuickPayResult(result);
-            //TODO
-            return null;
+            
+            List<PaymentInformation.HistoryEntry> history = new ArrayList();
+            
+            return new PaymentInformation(getStatusFromState(Integer.parseInt(qpresult.getParameter("state"))),
+                                            history, 
+                                            qpresult.getParameter("ordernumber"), 
+                                            Integer.parseInt(qpresult.getParameter("amount")),
+                                            qpresult.getParameter("currency"), 
+                                            qpresult.getParameter("qpstat") + ": " + qpresult.getParameter("qpstatmsg"),
+                                            qpresult.getParameter("merchant"),
+                                            qpresult.getParameter("merchantemail"),
+                                            qpresult.getParameter("transaction"),
+                                            getCardTypeFromString(qpresult.getParameter("cardtype")));
+            
+            
         } catch (IOException ex) {
             LOG.error("Unable to get status for payment.", ex);
             throw new PaymentException("Unable to get status for payment.", ex);
@@ -148,7 +162,7 @@ public class QuickPay implements PaymentGateway {
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
             nvps.add(md5.getBasicNameValuePair("protocol", protocolVersion));
             nvps.add(md5.getBasicNameValuePair("msgtype", "capture"));
-            nvps.add(md5.getBasicNameValuePair("merchant", merchant.getGatewayUserId()));
+            nvps.add(md5.getBasicNameValuePair("merchant", transaction.getMerchant().getGatewayUserId()));
             nvps.add(md5.getBasicNameValuePair("amount", "" + amountInCents));
             nvps.add(md5.getBasicNameValuePair("finalize", "1"));
             nvps.add(md5.getBasicNameValuePair("transaction", transaction.getGatewayTransactionId()));
@@ -156,7 +170,7 @@ public class QuickPay implements PaymentGateway {
                 nvps.add(md5.getBasicNameValuePair("testmode", "1"));
             }
             
-            md5.add(merchant.getGatewaySecret());
+            md5.add(transaction.getMerchant().getGatewaySecret());
             nvps.add(new BasicNameValuePair("md5check", md5.getMD5Result()));
             post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 
@@ -182,7 +196,7 @@ public class QuickPay implements PaymentGateway {
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
             nvps.add(md5.getBasicNameValuePair("protocol", protocolVersion));
             nvps.add(md5.getBasicNameValuePair("msgtype", "capture"));
-            nvps.add(md5.getBasicNameValuePair("merchant", merchant.getGatewayUserId()));
+            nvps.add(md5.getBasicNameValuePair("merchant", transaction.getMerchant().getGatewayUserId()));
             nvps.add(md5.getBasicNameValuePair("ordernumber", orderNumber));
             nvps.add(md5.getBasicNameValuePair("amount", "" + amountInCents));
             nvps.add(md5.getBasicNameValuePair("currency", currency));
@@ -193,7 +207,7 @@ public class QuickPay implements PaymentGateway {
                 nvps.add(md5.getBasicNameValuePair("testmode", "1"));
             }
             
-            md5.add(merchant.getGatewaySecret());
+            md5.add(transaction.getMerchant().getGatewaySecret());
             nvps.add(new BasicNameValuePair("md5check", md5.getMD5Result()));
             post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 
@@ -217,14 +231,14 @@ public class QuickPay implements PaymentGateway {
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
             nvps.add(md5.getBasicNameValuePair("protocol", protocolVersion));
             nvps.add(md5.getBasicNameValuePair("msgtype", "renew"));
-            nvps.add(md5.getBasicNameValuePair("merchant", merchant.getGatewayUserId()));
+            nvps.add(md5.getBasicNameValuePair("merchant", transaction.getMerchant().getGatewayUserId()));
             nvps.add(md5.getBasicNameValuePair("transaction", transaction.getGatewayTransactionId()));
             
             if(testMode) {
                 nvps.add(md5.getBasicNameValuePair("testmode", "1"));
             }
             
-            md5.add(merchant.getGatewaySecret());
+            md5.add(transaction.getMerchant().getGatewaySecret());
             nvps.add(new BasicNameValuePair("md5check", md5.getMD5Result()));
             post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 
@@ -250,7 +264,7 @@ public class QuickPay implements PaymentGateway {
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
             nvps.add(md5.getBasicNameValuePair("protocol", protocolVersion));
             nvps.add(md5.getBasicNameValuePair("msgtype", "refund"));
-            nvps.add(md5.getBasicNameValuePair("merchant", merchant.getGatewayUserId()));
+            nvps.add(md5.getBasicNameValuePair("merchant", transaction.getMerchant().getGatewayUserId()));
             nvps.add(md5.getBasicNameValuePair("amount", "" + amountInCents));
             nvps.add(md5.getBasicNameValuePair("transaction", transaction.getGatewayTransactionId()));
             
@@ -258,7 +272,7 @@ public class QuickPay implements PaymentGateway {
                 nvps.add(md5.getBasicNameValuePair("testmode", "1"));
             }
             
-            md5.add(merchant.getGatewaySecret());
+            md5.add(transaction.getMerchant().getGatewaySecret());
             nvps.add(new BasicNameValuePair("md5check", md5.getMD5Result()));
             post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 
@@ -281,7 +295,7 @@ public class QuickPay implements PaymentGateway {
         Map<String, String> map = formData.getFields();
         map.put("protocol", "4");
         map.put("msgtype", "authorize");
-        map.put("merchant", merchant.getGatewayUserId());
+        map.put("merchant", transaction.getMerchant().getGatewayUserId());
         map.put("language", locale.getLanguage());
         map.put("ordernumber", transaction.getOrderNumber()); 
         map.put("amount", Long.toString(amount));
@@ -298,13 +312,28 @@ public class QuickPay implements PaymentGateway {
         for(String value : map.values()) {
             builder.append(value);
         }
-        builder.append(merchant.getGatewaySecret());
+        builder.append(transaction.getMerchant().getGatewaySecret());
         map.put("md5check", DigestUtils.md5Hex(builder.toString()));
         
         return formData;
     }
     
-    
+    public static TransactionStatus getStatusFromState(int state) {
+        switch(state) {
+            case 0:
+                return TransactionStatus.New;
+            case 1:
+                return TransactionStatus.Authorized;
+            case 3:
+                return TransactionStatus.Captured;
+            case 5:
+                return TransactionStatus.Cancelled;
+            case 7:
+                return TransactionStatus.Refunded;
+            default:
+                return null;
+        }
+    }
 
     public static CardType getCardTypeFromString(String type) {
         if("american-express".equals(type) || "american-express-dk".equals(type)) {

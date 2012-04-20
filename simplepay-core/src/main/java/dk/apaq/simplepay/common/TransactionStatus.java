@@ -1,4 +1,4 @@
-package dk.apaq.simplepay.gateway;
+package dk.apaq.simplepay.common;
 
 /**
  *
@@ -33,6 +33,6 @@ public enum TransactionStatus {
     /**
      * Transaction is a subscription. You can make several recurring payments from the same customer, eg. a subscription for a magazine or music download.
      */
-    Subscribed
+    //Subscribed
 
 }

@@ -1,6 +1,7 @@
 package dk.apaq.simplepay.model;
 
-import dk.apaq.simplepay.gateway.CardType;
+import dk.apaq.simplepay.common.TransactionStatus;
+import dk.apaq.simplepay.common.CardType;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import java.util.Date;
 import javax.persistence.Entity;
@@ -57,7 +58,7 @@ public class Transaction {
     
     @Enumerated(EnumType.STRING)
     @NotNull
-    private TransactionStatus status = TransactionStatus.Unauthorized;
+    private TransactionStatus status = TransactionStatus.New;
 
     public long getAuthorizedAmount() {
         return authorizedAmount;

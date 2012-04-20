@@ -1,4 +1,4 @@
-package dk.apaq.simplepay.gateway;
+package dk.apaq.simplepay.common;
 
 /**
  *
