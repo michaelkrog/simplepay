@@ -26,7 +26,7 @@
                         &nbsp;|&nbsp;
                         <input id="searchstring" type="text" class="searchfield input-medium datepicker" placeholder="Søgeord">
                         &nbsp;|&nbsp;
-                        <select class="searchfield input-small">
+                        <select id="status" class="searchfield input-small">
                             <option>Alle</option>
                             <option>Authorized</option>
                             <option>Captured</option>
@@ -36,30 +36,20 @@
                     </form>
                 </div>
             </div>    
-            <div class="row">
+            <div class="row" style="min-height: 400px">
                 <div class="span12">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Ordernummer</th>
-                                <th class="hidden-phone">Oprettet</th>
-                                <th class="visible-phone">Oprettet</th>
-                                <th>Beløb</th>
-                                <th class="hidden-phone">Type</th>
-                                <th>Status</th>
+                                <th width="25%">Ordernummer</th>
+                                <th width="25%" class="hidden-phone">Oprettet</th>
+                                <th width="25%" class="visible-phone">Oprettet</th>
+                                <th width="15%" style="text-align: right">Beløb</th>
+                                <th width="15%" class="hidden-phone">Type</th>
+                                <th width="20%">Status</th>
                             </tr>
-                        <tbody id="transactions-tbody">
-                            <c:forEach var="transaction" items="${transactions}">
-                                <tr class="transaction-row" style="cursor:pointer;">
-                                    <td>${transaction.orderNumber}</td>
-                                    <td class="hidden-phone"><fmt:formatDate value="${transaction.dateCreated}" type="both" timeStyle="medium" dateStyle="short" /></td>
-                                    <td class="visible-phone"><fmt:formatDate value="${transaction.dateCreated}" type="date" dateStyle="short" /></td>
-                                    <td><fmt:formatNumber value='${1.0 * transaction.authorizedAmount / 100}' currencyCode="${transaction.currency}" type='currency'/></td>
-                                    <td class="hidden-phone">${transaction.cardType}</td>
-                                    <td>${transaction.status}</td>
-                                </tr>
-                            </c:forEach>
-                            </thead>
+                        </thead>
+                        <tbody id="transactions-tbody"/>
                     </table>
 
                 </div>
@@ -89,7 +79,7 @@
             <td>\${orderNumber}</td>
             <td class="hidden-phone">\${dateCreated}</td>
             <td class="visible-phone">\${dateCreated}</td>
-            <td>\${1.0 * authorizedAmount / 100}</td>
+            <td style="text-align: right">\${1.0 * authorizedAmount / 100}</td>
             <td class="hidden-phone">\${cardType}</td>
             <td>\${status}</td>
         </tr>
@@ -101,7 +91,7 @@
             $("#transactions-tbody").empty();
             $.ajax({
               url: '/api/transactions',
-              data: {searchString:$('#searchstring').val()},
+              data: {searchString:$('#searchstring').val(), status:$('#status').val()},
               username:privateKey
             }).done(function(data) {
                 $( "#transactionRowTemplate" ).tmpl( data ).appendTo( "#transactions-tbody" );
