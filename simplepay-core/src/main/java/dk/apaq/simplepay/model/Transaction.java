@@ -10,6 +10,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
@@ -43,9 +44,11 @@ public class Transaction {
     private String cardNumberTruncated;
     
     @NotNull
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date dateCreated = new Date();
     
     @NotNull
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date dateChanged = new Date();
     
     @JsonIgnore

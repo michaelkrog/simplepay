@@ -304,7 +304,9 @@ public class QuickPay implements PaymentGateway {
         map.put("cancelurl", cancelUrl);
         map.put("callbackurl", callbackUrl);
         map.put("autocapture", "0");
+        map.put("autofee", "0");
         map.put("cardtypelock", "creditcard");
+        map.put("description", transaction.getDescription());
         map.put("splitpayment", "1");
         
         //md5
