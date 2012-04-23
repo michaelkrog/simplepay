@@ -1,13 +1,16 @@
 package dk.apaq.simplepay.site;
 
 import dk.apaq.simplepay.IPayService;
+import dk.apaq.simplepay.api.ApiHelper;
 import dk.apaq.simplepay.common.CardType;
 import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
+import dk.apaq.simplepay.model.TransactionEvent;
 import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +30,8 @@ public class PaymentWindowController {
     @Autowired
     private IPayService service;
     
+
+    
     @RequestMapping(value="/paymentwindow", method=RequestMethod.POST)
     public ModelAndView showPaymentWindow(@RequestParam String token, @RequestParam String publicKey, @RequestParam long amount, @RequestParam String currency, @RequestParam String returnUrl, @RequestParam String cancelUrl) {
         Map<String, Object> model = new HashMap<String, Object>();
@@ -42,7 +47,7 @@ public class PaymentWindowController {
     @RequestMapping(value="/paymentwindow/handle", method=RequestMethod.POST)
     @ResponseBody
     @Transactional
-    public String handlePaymentWindow(@RequestParam String token, @RequestParam String publicKey, @RequestParam long amount, @RequestParam String currency) {
+    public String handlePaymentWindow(HttpServletRequest request, @RequestParam String token, @RequestParam String publicKey, @RequestParam long amount, @RequestParam String currency) {
         SystemUser user = service.getUser(publicKey);
         Merchant merchant = user.getMerchant();
         
@@ -52,7 +57,10 @@ public class PaymentWindowController {
         transaction.setStatus(TransactionStatus.Authorized);
         transaction.setCardType(CardType.Unknown);
         transaction.setCardNumberTruncated("4571xxxxxxxxxxxxxxxx");
-        service.getTransactions(merchant).update(transaction);
+        transaction = service.getTransactions(merchant).update(transaction);
+        
+        service.getEvents(merchant, TransactionEvent.class).create(new TransactionEvent(transaction, ApiHelper.getUsername(), TransactionStatus.Authorized, request.getRemoteAddr()));
+            
         return "OK";
     }
 }

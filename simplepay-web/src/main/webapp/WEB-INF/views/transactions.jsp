@@ -124,6 +124,12 @@
                 });
             }
         }
+        
+        function cancelPayment() {
+            service.transactions.cancel(selectedTransaction.id, function(transaction){
+                updateDialog(transaction);
+            });
+        }
  
         function formatMoney(currency, number) {
             return $.formatNumber(number, {format:currency + " "+numberFormat, locale:locale});
@@ -138,7 +144,7 @@
             
             var newTransaction = transaction.status == "New";
             var cancelable = newTransaction || transaction.status == "Authorized";
-            var changeable = !newTransaction && transaction.status != "Refunded";
+            var changeable = !newTransaction && transaction.status != "Refunded" && transaction.status != "Cancelled";
             var nextStateText;
             
             switch(transaction.status) {
@@ -213,6 +219,7 @@
             service.transactions.addListener(transactionListener);
             $('.searchfield').change(updateData);
             $('#btn-nextstate').click(advanceTransactionState);
+            $('#btn-cancelpayment').click(cancelPayment);
             
             $('.datepicker').datepicker({format:dateFormat, weekStart:firstDayOfWeek});
             $('#datepicker').on('changeDate', function(ev){

@@ -11,6 +11,7 @@ import dk.apaq.simplepay.gateway.quickpay.QuickPay;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
+import dk.apaq.simplepay.model.TransactionEvent;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -105,6 +106,8 @@ public class CallbackController {
             if(!currency.equals(transaction.getCurrency())) {
                 throw new InvalidRequestException("Currency does not match what originally was requested.");
             }
+            
+            service.getEvents(merchant, TransactionEvent.class).create(new TransactionEvent(transaction, request.getUserPrincipal().getName(), TransactionStatus.Authorized, request.getRemoteAddr()));
             
             //markér som authorized med den givne amount og sæt andre info
             transaction.setAuthorizedAmount(amount);
