@@ -1,67 +1,87 @@
 
 function TransactionCrud(key) {
-    this.key = key;
+    this._key = key;
+    this._listeners = []
+    
+    this.addListener = function(listener) {
+        this._listeners.push(listener);
+    }
+    
+    this._onUpdate = function(transaction) {
+        $.each(this._listeners, function(index, val) {
+           if(val.onUpdate) {
+               val.onUpdate(transaction);
+           } 
+        });
+    }
     
     this.list = function(search, dateBefore, dateAfter, status, callback) {
-        var data = {};
-        var search = (search == null ? "" : $.trim(search));
+        var params = {};
+        
+        search = (search == null ? "" : $.trim(search));
             
         if(search != '') {
-            data.searchString = search;
+            params.searchString = search;
         }
             
         if(status != null && status != '') {
-            data.status = $('#status').val();
+            params.status = $('#status').val();
         }
             
         if(dateBefore != null) {
-            data.beforeTimestamp = dateBefore;
+            params.beforeTimestamp = dateBefore;
         }
         
         if(dateAfter != null) {
-            data.afterTimestamp = dateAfter;
+            params.afterTimestamp = dateAfter;
         }
 
         $.ajax({
             url: '/api/transactions',
-            data: data,
-            username:this.key
-        }).done(callback(data));
+            data: params,
+            username:this._key
+        }).done(callback);
     }
     
     this.read = function(id, callback) {
         $.ajax({
             url: '/api/transactions'+id,
-            username:this.key
-        }).done(callback(data));
+            username:this._key
+        }).done(callback);
     }
     
     this.charge = function(id, amount, callback) {
+        var that = this;
         $.ajax({
             url: '/api/transactions/'+id+'/charge' + (amount != null ? '?amount='+amount : ''),
             type:'POST',
-            username:this.key
+            username:this._key
         }).done(function(data) {
+            that._onUpdate(data);
             callback(data);
         });
     }
     
     this.refund = function(id, amount, callback) {
+        var that = this;
         $.ajax({
             url: '/api/transactions/'+id+'/refund' + (amount != null ? '?amount='+amount : ''),
             type:'POST',
-            username:this.key
+            username:this._key
         }).done(function(data) {
+            that._onUpdate(data);
             callback(data);
         });
     }
     
     this.cancel = function(id, callback) {
+        var that = this;
         $.ajax({
             url: '/api/transactions/'+id+'/cancel',
             type:'POST',
-            username:this.key
+            username:this._key
         }).done(function(data) {
+            that._onUpdate(data);
             callback(data);
         });
     }

@@ -83,12 +83,14 @@
     </div>
         
     <jsp:include page="inc/scripts.jsp" />
+    <jsp:include page="inc/scripts_ui.jsp" />
+    <jsp:include page="inc/scripts_service.jsp" />
     
     <script id="transactionRowTemplate" type="text/x-jquery-tmpl">
-        <tr class="transaction-row" style="cursor:pointer;" transactionid="\${id}">
+        <tr class="transaction-row" style="cursor:pointer;background:white;" transactionid="\${id}">
             <td>\${orderNumber}</td>
-            <td class="hidden-phone">\${$.format.date(new Date(dateCreated), "dd/MM/yyyy HH:mm:ss")}</td>
-            <td class="visible-phone">\${$.format.date(new Date(dateCreated), "dd/MM/yyyy")}</td>
+            <td class="hidden-phone">\${$.format.date(new Date(dateCreated), dateTimeFormat)}</td>
+            <td class="visible-phone">\${$.format.date(new Date(dateCreated), dateFormat)}</td>
             <td style="text-align: right">\${formatMoney(currency, authorizedAmount / 100)} </td>
             <td class="hidden-phone">\${cardType}</td>
             <td>\${status}</td>
@@ -96,53 +98,50 @@
     </script>
     <script>
         var privateKey = '${privateKey}';
+        var firstDayOfWeek = 1;
+        var dateFormat = 'dd/mm/yyyy';
+        var dateTimeFormat = 'dd/MM/yyyy HH:mm:ss';
+        var numberFormat = '#,###.00';
+        var locale = "dk";
+        
+        var service = new Service(privateKey);
+        var transactionListener = { onUpdate: updateRow };
+        
         var chosenDate = null;
         var lastRetrievedData = null;
         var selectedTransaction = null;
-        
+ 
         function advanceTransactionState() {
             if(selectedTransaction.status == 'Authorized') {
-                captureTransaction(selectedTransaction, function(){alert('captured');})
+                service.transactions.charge(selectedTransaction.id, null, function(transaction){
+                    updateDialog(transaction);
+                });
             }
-
         }
-        
-        function captureTransaction(transaction, callback) {
-            $.ajax({
-              url: '/api/transactions/'+transaction.id+'/charge',
-              type:'POST',
-              username:privateKey
-            }).done(function(data) {
-                callback(data);
-            });
-        }
-        
-        function cancelTransaction(transaction, callback) {
-            $.ajax({
-              url: '/api/transactions/'+transaction.id+'/cancel',
-              type:'POST',
-              username:privateKey
-            }).done(function(data) {
-                callback(data);
-            });
-        }
-        
+ 
         function formatMoney(currency, number) {
-            return $.formatNumber(number, {format:currency + " #,###.00", locale:"dk"});
+            return $.formatNumber(number, {format:currency + " "+numberFormat, locale:locale});
         }
         
-        function updateTransaction(id) {
-            $.ajax({
-              url: '/api/transactions/'+id,
-              data: data,
-              username:privateKey
-            }).done(function(data) {
-                lastRetrievedData = data;
-                
-            });
+        function updateDialog(transaction) {
+            $('#dialog-amount').text(formatMoney(transaction.currency,transaction.authorizedAmount/100));
+            $('#dialog-status').text(transaction.status);
+            $('#dialog-ordernumber').text(transaction.orderNumber);
+            $('#dialog-description').text(transaction.description);
+            $('#dialog-timestamp').text($.format.date(new Date(transaction.dateCreated), dateTimeFormat));
+                            
+        }
+        
+        function updateRow(transaction) {
+            $('tr[transactionid="'+transaction.id+'"]').replaceWith($( "#transactionRowTemplate" ).tmpl( transaction ));
         }
         
         function updateData() {
+        
+            var beforeDate = null;
+            var afterDate = null;
+            var status = null;
+        
             var data = {};
             var searchString = $.trim($('#searchstring').val());
             
@@ -151,24 +150,19 @@
             }
             
             if($('#status').val() != 'All') {
-                data.status = $('#status').val();
+                status = $('#status').val();
             }
             
             if(chosenDate != null) {
                 if($('#datemode').val() == 'before') {
-                    data.beforeTimestamp = chosenDate.getTime()
+                    beforeDate = chosenDate;
                 } else {
-                    data.afterTimestamp = chosenDate.getTime();
+                    afterDate = chosenDate;
                 }
             }
             
-            
             $("#transactions-tbody").empty();
-            $.ajax({
-              url: '/api/transactions',
-              data: data,
-              username:privateKey
-            }).done(function(data) {
+            service.transactions.list($('#searchstring').val(), beforeDate, afterDate, status, function(data) {
                 lastRetrievedData = data;
                 $( "#transactionRowTemplate" ).tmpl( data ).appendTo( "#transactions-tbody" );
                 $('.transaction-row').click(function(evt) {
@@ -176,11 +170,7 @@
                     $.each(lastRetrievedData, function(index, value) {
                         if(value.id == id) {
                             selectedTransaction = value;
-                            $('#dialog-amount').text(formatMoney(value.currency,value.authorizedAmount/100));
-                            $('#dialog-status').text(value.status);
-                            $('#dialog-ordernumber').text(value.orderNumber);
-                            $('#dialog-description').text(value.description);
-                            $('#dialog-timestamp').text($.format.date(new Date(value.dateCreated), "dd/MM/yyyy HH:mm:ss"));
+                            updateDialog(value);
                             $('#transactionModal').modal('show');
                         }
                     });
@@ -190,11 +180,11 @@
         }
         
         function main() {
-            
+            service.transactions.addListener(transactionListener);
             $('.searchfield').change(updateData);
             $('#btn-nextstate').click(advanceTransactionState);
             
-            $('.datepicker').datepicker({format:'dd/mm/yyyy', weekStart:1});
+            $('.datepicker').datepicker({format:dateFormat, weekStart:firstDayOfWeek});
             $('#datepicker').on('changeDate', function(ev){
                 chosenDate = ev.date;
                 $('#datepicker').datepicker('hide');
