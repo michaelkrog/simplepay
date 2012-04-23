@@ -9,6 +9,7 @@
         <meta charset="utf-8">
         <title></title>
         <jsp:include page="inc/head.jsp" />
+        
     </head>  
     <div class="container">
 
@@ -63,26 +64,28 @@
     <div id="transactionModal" class="modal hide fade" style="display: block; ">
         <div class="modal-header">
             <a class="close" data-dismiss="modal">×</a>
-            <h3 id="transaction-title">Ordre: 12312121213</h3>
+            <h3 id="transaction-title">Ordre: <span id="dialog-ordernumber"></span></h3>
         </div>
         <div class="modal-body">
-            <h1>DKK 401,25</h1>
-            <h6>Status:Godkendt</h6>
-            <h6>Dato:1/2/2012 14:54:34</h6>
-            <div class="well" style="margin-top:10px">
-                        Dette er en beskrivelse af det der er blevet godkendt til betaling.
+            <h1 id="dialog-amount">DKK 401,25</h1>
+            <h5>Status: <span id="dialog-status">Godkendt</span></h5>
+            <h6>Dato: <span id="dialog-timestamp">1/2/2012 14:54:34</span></h6>
+            <div id="dialog-description" class="well" style="margin-top:10px">
+                Dette er en beskrivelse af det der er blevet godkendt til betaling.
 
             </div>
         </div>
         <div class="modal-footer">
-            <div id="btn-pay" class="btn btn-danger">Annullér</div>
-            <div id="btn-pay" class="btn btn-success">Capture</div>
+            <div id="btn-cancelpayment" class="btn btn-danger">Annullér</div>
+            <div id="btn-nextstate" class="btn btn-success">Capture</div>
             <a href="#" class="btn btn-primary" data-dismiss="modal">Luk</a>
         </div>
     </div>
+        
     <jsp:include page="inc/scripts.jsp" />
+    
     <script id="transactionRowTemplate" type="text/x-jquery-tmpl">
-        <tr class="transaction-row" style="cursor:pointer;">
+        <tr class="transaction-row" style="cursor:pointer;" transactionid="\${id}">
             <td>\${orderNumber}</td>
             <td class="hidden-phone">\${$.format.date(new Date(dateCreated), "dd/MM/yyyy HH:mm:ss")}</td>
             <td class="visible-phone">\${$.format.date(new Date(dateCreated), "dd/MM/yyyy")}</td>
@@ -94,10 +97,49 @@
     <script>
         var privateKey = '${privateKey}';
         var chosenDate = null;
-        var numberFormat = {format:"#,###.00", locale:"dk"};
+        var lastRetrievedData = null;
+        var selectedTransaction = null;
+        
+        function advanceTransactionState() {
+            if(selectedTransaction.status == 'Authorized') {
+                captureTransaction(selectedTransaction, function(){alert('captured');})
+            }
+
+        }
+        
+        function captureTransaction(transaction, callback) {
+            $.ajax({
+              url: '/api/transactions/'+transaction.id+'/charge',
+              type:'POST',
+              username:privateKey
+            }).done(function(data) {
+                callback(data);
+            });
+        }
+        
+        function cancelTransaction(transaction, callback) {
+            $.ajax({
+              url: '/api/transactions/'+transaction.id+'/cancel',
+              type:'POST',
+              username:privateKey
+            }).done(function(data) {
+                callback(data);
+            });
+        }
         
         function formatMoney(currency, number) {
             return $.formatNumber(number, {format:currency + " #,###.00", locale:"dk"});
+        }
+        
+        function updateTransaction(id) {
+            $.ajax({
+              url: '/api/transactions/'+id,
+              data: data,
+              username:privateKey
+            }).done(function(data) {
+                lastRetrievedData = data;
+                
+            });
         }
         
         function updateData() {
@@ -127,18 +169,30 @@
               data: data,
               username:privateKey
             }).done(function(data) {
+                lastRetrievedData = data;
                 $( "#transactionRowTemplate" ).tmpl( data ).appendTo( "#transactions-tbody" );
-                $('.transaction-row').click(function() {
-                    $('#transactionModal').modal('show');
+                $('.transaction-row').click(function(evt) {
+                    var id = evt.currentTarget.attributes.transactionid.value;
+                    $.each(lastRetrievedData, function(index, value) {
+                        if(value.id == id) {
+                            selectedTransaction = value;
+                            $('#dialog-amount').text(formatMoney(value.currency,value.authorizedAmount/100));
+                            $('#dialog-status').text(value.status);
+                            $('#dialog-ordernumber').text(value.orderNumber);
+                            $('#dialog-description').text(value.description);
+                            $('#dialog-timestamp').text($.format.date(new Date(value.dateCreated), "dd/MM/yyyy HH:mm:ss"));
+                            $('#transactionModal').modal('show');
+                        }
+                    });
+                    
                 });
             });
         }
         
         function main() {
             
-            $('.searchfield').change(function(){
-                updateData();
-            });
+            $('.searchfield').change(updateData);
+            $('#btn-nextstate').click(advanceTransactionState);
             
             $('.datepicker').datepicker({format:'dd/mm/yyyy', weekStart:1});
             $('#datepicker').on('changeDate', function(ev){
