@@ -129,6 +129,10 @@
             $('#dialog-ordernumber').text(transaction.orderNumber);
             $('#dialog-description').text(transaction.description);
             $('#dialog-timestamp').text($.format.date(new Date(transaction.dateCreated), dateTimeFormat));
+            
+            //Update visibility of cancel button
+            //
+            //Update text on advance state button
                             
         }
         
