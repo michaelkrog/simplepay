@@ -9,6 +9,7 @@ import dk.apaq.filter.core.AndFilter;
 import dk.apaq.filter.core.CompareFilter;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.PayService;
+import dk.apaq.simplepay.model.Event;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
@@ -70,6 +71,8 @@ public class CrudSecurity {
                 event.getEntity().setMerchant(owner);
             }
             
+            //TODO: Check for legal transaction status
+            
             event.getEntity().setDateChanged(new Date());
             
         }
@@ -79,12 +82,53 @@ public class CrudSecurity {
             if(service.getTransactionByOrderNumber(owner, event.getEntity().getOrderNumber()) != null) {
                 throw new IllegalArgumentException("Ordernumber already used.");
             }
+            
+            //TODO: Check for legal transaction status
+            
             event.getEntity().setMerchant(owner);
             event.getEntity().setDateChanged(new Date());
         }
 
         @Override
         public void onBeforeList(List<String, Transaction> event) {
+            Filter merchantFilter = new CompareFilter("merchant", owner, CompareFilter.CompareType.Equals);
+            if(event.getListSpecification().getFilter() != null) {
+                event.getListSpecification().setFilter(new AndFilter(merchantFilter, event.getListSpecification().getFilter()));
+            } else {
+                event.getListSpecification().setFilter(merchantFilter);
+            }
+        }
+        
+        
+        
+    }
+    
+    public static class EventSecurity extends BaseCrudListener<String, Event> {
+        private final IPayService service;
+        private final Merchant owner;
+
+        
+        public EventSecurity(PayService service, Merchant owner) {
+            if(owner.getId() == null) {
+                throw new IllegalArgumentException("Merchant has never been persisted.");
+            }
+            this.owner = owner;
+            this.service = service;
+        }
+
+        @Override
+        public void onBeforeEntityUpdate(WithIdAndEntity<String, Event> event) {
+            throw new SecurityException("Events cannot be changed.");
+            
+        }
+
+        @Override
+        public void onBeforeEntityCreate(WithEntity<String, Event> event) {
+            event.getEntity().setMerchant(owner);
+        }
+
+        @Override
+        public void onBeforeList(List<String, Event> event) {
             Filter merchantFilter = new CompareFilter("merchant", owner, CompareFilter.CompareType.Equals);
             if(event.getListSpecification().getFilter() != null) {
                 event.getListSpecification().setFilter(new AndFilter(merchantFilter, event.getListSpecification().getFilter()));

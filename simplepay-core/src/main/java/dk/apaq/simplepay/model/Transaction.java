@@ -3,13 +3,16 @@ package dk.apaq.simplepay.model;
 import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.common.CardType;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -193,7 +196,6 @@ public class Transaction {
     public void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;
     }
-    
-    
+
     
 }

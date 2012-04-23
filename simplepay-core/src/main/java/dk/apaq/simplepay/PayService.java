@@ -5,6 +5,7 @@ import dk.apaq.crud.Crud.Complete;
 import dk.apaq.crud.CrudNotifier;
 import dk.apaq.filter.Filter;
 import dk.apaq.filter.core.CompareFilter;
+import dk.apaq.simplepay.model.Event;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.crud.CrudSecurity;
@@ -56,6 +57,19 @@ public class PayService implements ApplicationContextAware, IPayService {
         
         return crud;
             
+    }
+
+    public <T extends Event> Complete<String, T> getEvents(Merchant merchant, Class<T> type) {
+        LOG.debug("Retrieving TransactionCrud");
+        
+        if(merchant.getId() == null) {
+            throw new IllegalArgumentException("Merchant must have been persisted before used for retrieving transactions.");
+        }
+        
+        Complete<String, T> crud = (Crud.Complete<String,T>) context.getBean("crud", em, type);
+        ((CrudNotifier)crud).addListener(new CrudSecurity.EventSecurity(this, merchant));
+        
+        return crud;
     }
     
     @Override

@@ -5,6 +5,7 @@
     <class>dk.apaq.simplepay.model.Merchant</class>
     <class>dk.apaq.simplepay.model.Transaction</class>
     <class>dk.apaq.simplepay.model.SystemUser</class>
+    <class>dk.apaq.simplepay.model.TransactionEvent</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
   </persistence-unit>
 </persistence>
