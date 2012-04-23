@@ -117,6 +117,12 @@
                     updateDialog(transaction);
                 });
             }
+            
+            if(selectedTransaction.status == 'Captured') {
+                service.transactions.refund(selectedTransaction.id, null, function(transaction){
+                    updateDialog(transaction);
+                });
+            }
         }
  
         function formatMoney(currency, number) {
@@ -130,13 +136,33 @@
             $('#dialog-description').text(transaction.description);
             $('#dialog-timestamp').text($.format.date(new Date(transaction.dateCreated), dateTimeFormat));
             
+            var newTransaction = transaction.status == "New";
+            var cancelable = newTransaction || transaction.status == "Authorized";
+            var changeable = !newTransaction && transaction.status != "Refunded";
+            var nextStateText;
+            
+            switch(transaction.status) {
+                case 'Authorized':
+                    nextStateText = 'Charge';
+                    break;
+                case 'Captured':
+                    nextStateText = 'Refund';
+                    break;
+            }
+            
             //Update visibility of cancel button
-            //
+            $('#btn-cancelpayment').css('display', (cancelable ? '':'none'));
+            
+            //Update visibility of next state button
+            $('#btn-nextstate').css('display', (changeable ? '':'none'));
+            
             //Update text on advance state button
+            $('#btn-nextstate').text(nextStateText);                
                             
         }
         
         function updateRow(transaction) {
+            selectedTransaction = transaction;
             $('tr[transactionid="'+transaction.id+'"]').replaceWith($( "#transactionRowTemplate" ).tmpl( transaction ));
         }
         
