@@ -1,3 +1,5 @@
+<%@page import="dk.apaq.simplepay.security.SecurityHelper"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <div class="navbar">
     <div class="navbar-inner">
         <div class="container">
@@ -11,7 +13,11 @@
             
             <div class="nav-collapse">
                 <ul class="nav-button pull-right nav-collapse">
-                    <li><a href="dashboard" class="btn btn-primary">Log ind</a></li>
+                    <% if(SecurityHelper.isAnonymousUser()) { %>
+                       <li><a href="dashboard" class="btn btn-primary">Log ind</a></li>
+                    <% } else { %>
+                       <li><a href="/logout" class="btn btn-primary">Log ud</a></li>
+                    <% } %>
                 </ul>
                 <ul class="nav pull-right nav-collapse">
                     <li><a href="dashboard">Administration</a></li>

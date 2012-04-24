@@ -1,5 +1,6 @@
 package dk.apaq.simplepay.api;
 
+import dk.apaq.simplepay.security.SecurityHelper;
 import dk.apaq.filter.Filter;
 import dk.apaq.filter.core.CompareFilter;
 import dk.apaq.filter.limit.Limit;
@@ -32,7 +33,7 @@ public class EventController {
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
     public List listEvents(@RequestParam(required = false) String type, @RequestParam(required = false) String entityId) {
-        Merchant m = ApiHelper.getMerchant(service);
+        Merchant m = SecurityHelper.getMerchant(service);
         if ("transaction".equals(type)) {
             Filter filter = null;
             if(entityId != null) {

@@ -1,7 +1,7 @@
 package dk.apaq.simplepay.site;
 
 import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.api.ApiHelper;
+import dk.apaq.simplepay.security.SecurityHelper;
 import dk.apaq.simplepay.common.CardType;
 import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.model.Merchant;
@@ -59,7 +59,7 @@ public class PaymentWindowController {
         transaction.setCardNumberTruncated("4571xxxxxxxxxxxxxxxx");
         transaction = service.getTransactions(merchant).update(transaction);
         
-        service.getEvents(merchant, TransactionEvent.class).create(new TransactionEvent(transaction, ApiHelper.getUsername(), TransactionStatus.Authorized, request.getRemoteAddr()));
+        service.getEvents(merchant, TransactionEvent.class).create(new TransactionEvent(transaction, SecurityHelper.getUsername(), TransactionStatus.Authorized, request.getRemoteAddr()));
             
         return "OK";
     }

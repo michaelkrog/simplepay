@@ -30,7 +30,7 @@
                         <select id="status" class="searchfield input-small">
                             <option value="All">Alle</option>
                             <option>Authorized</option>
-                            <option>Captured</option>
+                            <option>Charged</option>
                             <option>Cancelled</option>
                             <option>Failed</option>
                         </select>
@@ -151,7 +151,7 @@
                 case 'Authorized':
                     nextStateText = 'Charge';
                     break;
-                case 'Captured':
+                case 'Charged':
                     nextStateText = 'Refund';
                     break;
             }
