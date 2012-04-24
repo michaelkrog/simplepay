@@ -16,9 +16,9 @@ public enum TransactionStatus {
     Authorized, 
     
     /**
-     * You have captured the money. You have asked the acquirer to transfer the money from the customers bank account to yours.
+     * You have charged the money. You have asked the acquirer to transfer the money from the customers bank account to yours.
      */
-    Captured, 
+    Charged, 
     
     /**
      * Transaction cancelled. You have cancelled the transaction, eg. if you or the customer does not want to complete the order.

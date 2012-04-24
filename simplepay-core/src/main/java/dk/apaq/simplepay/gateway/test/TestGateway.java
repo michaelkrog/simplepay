@@ -28,7 +28,7 @@ public class TestGateway implements PaymentGateway {
     
     public void capture(Transaction transaction, long amountInCents) {
         transaction.setCapturedAmount(amountInCents);
-        transaction.setStatus(TransactionStatus.Captured);
+        transaction.setStatus(TransactionStatus.Charged);
         service.getTransactions(merchant).update(transaction);
     }
 

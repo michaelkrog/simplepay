@@ -327,7 +327,7 @@ public class QuickPay implements PaymentGateway {
             case 1:
                 return TransactionStatus.Authorized;
             case 3:
-                return TransactionStatus.Captured;
+                return TransactionStatus.Charged;
             case 5:
                 return TransactionStatus.Cancelled;
             case 7:
