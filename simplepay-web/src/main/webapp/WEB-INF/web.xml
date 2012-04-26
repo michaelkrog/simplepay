@@ -36,6 +36,10 @@
         <servlet-name>api</servlet-name>
         <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>api</servlet-name>
+        <url-pattern>/dashboard/api/*</url-pattern>
+    </servlet-mapping>
     
     <!-- SITE DISPATCHER -->
     <servlet>

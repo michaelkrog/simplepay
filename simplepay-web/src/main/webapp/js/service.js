@@ -37,25 +37,25 @@ function TransactionCrud(key) {
         }
 
         $.ajax({
-            url: '/api/transactions',
-            data: params,
-            username:this._key
+            url: '/dashboard/api/transactions',
+            data: params/*,
+            username:this._key*/
         }).done(callback);
     }
     
     this.read = function(id, callback) {
         $.ajax({
-            url: '/api/transactions'+id,
-            username:this._key
+            url: '/dashboard/api/transactions'+id/*,
+            username:this._key*/
         }).done(callback);
     }
     
     this.charge = function(id, amount, callback) {
         var that = this;
         $.ajax({
-            url: '/api/transactions/'+id+'/charge' + (amount != null ? '?amount='+amount : ''),
-            type:'POST',
-            username:this._key
+            url: '/dashboard/api/transactions/'+id+'/charge' + (amount != null ? '?amount='+amount : ''),
+            type:'POST'/*,
+            username:this._key*/
         }).done(function(data) {
             that._onUpdate(data);
             callback(data);
@@ -65,9 +65,9 @@ function TransactionCrud(key) {
     this.refund = function(id, amount, callback) {
         var that = this;
         $.ajax({
-            url: '/api/transactions/'+id+'/refund' + (amount != null ? '?amount='+amount : ''),
-            type:'POST',
-            username:this._key
+            url: '/dashboard/api/transactions/'+id+'/refund' + (amount != null ? '?amount='+amount : ''),
+            type:'POST'/*,
+            username:this._key*/
         }).done(function(data) {
             that._onUpdate(data);
             callback(data);
@@ -77,9 +77,9 @@ function TransactionCrud(key) {
     this.cancel = function(id, callback) {
         var that = this;
         $.ajax({
-            url: '/api/transactions/'+id+'/cancel',
-            type:'POST',
-            username:this._key
+            url: '/dashboard/api/transactions/'+id+'/cancel',
+            type:'POST'/*,
+            username:this._key*/
         }).done(function(data) {
             that._onUpdate(data);
             callback(data);
