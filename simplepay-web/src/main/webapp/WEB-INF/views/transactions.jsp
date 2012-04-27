@@ -17,16 +17,16 @@
 
         <div id="contentwrapper" class="content">
             <div class="row" style="background: #FAFAFA;border-bottom: 1px solid #DFDFDF;">
-                <div class="span4">
+                <div class="span5">
                     <ul class="nav nav-pills" style="padding:6px 20px; margin:0px;">
                       <li>
-                        <a href="#">Oversigt</a>
+                          <a href="<c:url value="/dashboard"/>">Oversigt</a>
                       </li>
-                      <li><a href="#">Indstillinger</a></li>
-                      <li class="active"><a href="#">Transaktioner</a></li>
+                      <li><a href="<c:url value="/dashboard/config"/>">Indstillinger</a></li>
+                      <li class="active"><a href="<c:url value="/dashboard/transactions"/>">Transaktioner</a></li>
                     </ul>
                 </div>
-                <div id="transaktion-search" class="span8">
+                <div id="transaktion-search" class="span7">
                     <form class="form-inline pull-right" style="padding:10px 20px 6px 0px; margin:0px;">
                         <select id="datemode" class="searchfield input-small"><option value="before">Før</option><option selected="true" value="after">Efter</option></select>
                         <input id="datepicker" type="text" class="searchfield input-small datepicker" placeholder="Dato">

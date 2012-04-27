@@ -53,7 +53,15 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>site</servlet-name>
-        <url-pattern>/dashboard/*</url-pattern>
+        <url-pattern>/dashboard</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>site</servlet-name>
+        <url-pattern>/dashboard/config</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>site</servlet-name>
+        <url-pattern>/dashboard/transactions</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>site</servlet-name>

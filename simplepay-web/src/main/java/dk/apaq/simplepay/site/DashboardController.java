@@ -20,12 +20,12 @@ import org.springframework.web.servlet.ModelAndView;
  * @author michael
  */
 @Controller
-public class TransactionController {
+public class DashboardController {
     
     @Autowired
     private IPayService service;
     
-    @RequestMapping("/dashboard")
+    @RequestMapping("/dashboard/transactions")
     public ModelAndView showTransactions() {
         SystemUser user = service.getCurrentUser();
         SystemUser privateUser = service.getOrCreatePrivateUser(user.getMerchant());
@@ -38,8 +38,13 @@ public class TransactionController {
         return new ModelAndView("transactions", model);
     }
     
-    /*@RequestMapping("/dashboard")
-    public String showDashboard() {
-        return "redirect:/dashboard/transactions";
-    }*/
+    @RequestMapping("/dashboard")
+    public ModelAndView showDashboard() {
+        return new ModelAndView("dashboard");
+    }
+    
+    @RequestMapping("/dashboard/config")
+    public ModelAndView shoConfig() {
+        return new ModelAndView("config");
+    }
 }
