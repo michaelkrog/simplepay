@@ -33,14 +33,12 @@
         
 
         <div id="contentwrapper" class="content">
-            <jsp:include page="inc/dashboard_nav.jsp" />
+            <!--jsp:include page="inc/dashboard_nav.jsp" /-->
             <div class="row" style="background: #FAFAFA;border-bottom: 1px solid #DFDFDF;">
-                <div class="span4">
-                    <h1 style="padding:20px;">Transaktioner</h1>
-                </div>
-                <div class="span8">
-                    <form class="form-inline pull-right" style="padding:20px;">
-                        <select id="datemode" class="searchfield input-small"><option value="before">Før</option><option selected="true" value="after">Efter</option></select>
+                <div class="span12">
+                    <form class="form-inline" style="padding:10px 0px 6px 20px; margin:0px">
+                            <label class="control-label">Transaktioner: </label>
+                              <select id="datemode" class="searchfield input-small"><option value="before">Før</option><option selected="true" value="after">Efter</option></select>
                         <input id="datepicker" type="text" class="searchfield input-small datepicker" placeholder="Dato">
                         &nbsp;|&nbsp;
                         <input id="searchstring" type="text" class="searchfield input-medium datepicker" placeholder="Søgeord">
