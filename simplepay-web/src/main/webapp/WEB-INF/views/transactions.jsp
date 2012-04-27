@@ -9,13 +9,31 @@
         <meta charset="utf-8">
         <title></title>
         <jsp:include page="inc/head.jsp" />
-        
+        <style>
+            .subnav {
+                width: 1170px;
+                height: 36px;
+                background-color: #EEE;
+                background-repeat: repeat-x;
+                background-image: -moz-linear-gradient(top, whiteSmoke 0%, #EEE 100%);
+                background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,whiteSmoke), color-stop(100%,#EEE));
+                background-image: -webkit-linear-gradient(top, whiteSmoke 0%,#EEE 100%);
+                background-image: -ms-linear-gradient(top, whiteSmoke 0%,#EEE 100%);
+                background-image: -o-linear-gradient(top, whiteSmoke 0%,#EEE 100%);
+                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f5f5', endColorstr='#eeeeee',GradientType=0 );
+                background-image: linear-gradient(top, whiteSmoke 0%,#EEE 100%);
+                border-bottom: 1px solid #BDBDBD;
+                padding:6px 4px 4px 16px;
+            }
+        </style>
     </head>  
     <div class="container">
 
         <jsp:include page="inc/top.jsp" />
+        
 
         <div id="contentwrapper" class="content">
+            <jsp:include page="inc/dashboard_nav.jsp" />
             <div class="row" style="background: #FAFAFA;border-bottom: 1px solid #DFDFDF;">
                 <div class="span4">
                     <h1 style="padding:20px;">Transaktioner</h1>
@@ -67,13 +85,10 @@
             <h3 id="transaction-title">Ordre: <span id="dialog-ordernumber"></span></h3>
         </div>
         <div class="modal-body">
-            <h1 id="dialog-amount">DKK 401,25</h1>
-            <h5>Status: <span id="dialog-status">Godkendt</span></h5>
-            <h6>Dato: <span id="dialog-timestamp">1/2/2012 14:54:34</span></h6>
-            <div id="dialog-description" class="well" style="margin-top:10px">
-                Dette er en beskrivelse af det der er blevet godkendt til betaling.
-
-            </div>
+            <h1 id="dialog-amount"></h1>
+            <h5>Status: <span id="dialog-status"></span></h5>
+            <h6>Dato: <span id="dialog-timestamp"></span></h6>
+            <div id="dialog-description" class="well" style="margin-top:10px"> </div>
         </div>
         <div class="modal-footer">
             <div id="btn-cancelpayment" class="btn btn-danger">Annullér</div>
@@ -97,14 +112,13 @@
         </tr>
     </script>
     <script>
-        var privateKey = '${privateKey}';
         var firstDayOfWeek = 1;
         var dateFormat = 'dd/mm/yyyy';
         var dateTimeFormat = 'dd/MM/yyyy HH:mm:ss';
         var numberFormat = '#,###.00';
         var locale = "dk";
         
-        var service = new Service(privateKey);
+        var service = new Service();
         var transactionListener = { onUpdate: updateRow };
         
         var chosenDate = null;
