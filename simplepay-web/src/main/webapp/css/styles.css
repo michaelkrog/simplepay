@@ -85,8 +85,9 @@ body>.container {
     background:white;
 }
 
+
 #bottom {
-    height:200px;
+    padding:20px;
     background: #1f1f1f;
     background-image: -moz-linear-gradient(top, #333, #000);
     background-image: -ms-linear-gradient(top, #333, #000);

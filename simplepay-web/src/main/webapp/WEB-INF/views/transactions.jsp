@@ -9,36 +9,26 @@
         <meta charset="utf-8">
         <title></title>
         <jsp:include page="inc/head.jsp" />
-        <style>
-            .subnav {
-                width: 1170px;
-                height: 36px;
-                background-color: #EEE;
-                background-repeat: repeat-x;
-                background-image: -moz-linear-gradient(top, whiteSmoke 0%, #EEE 100%);
-                background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,whiteSmoke), color-stop(100%,#EEE));
-                background-image: -webkit-linear-gradient(top, whiteSmoke 0%,#EEE 100%);
-                background-image: -ms-linear-gradient(top, whiteSmoke 0%,#EEE 100%);
-                background-image: -o-linear-gradient(top, whiteSmoke 0%,#EEE 100%);
-                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f5f5', endColorstr='#eeeeee',GradientType=0 );
-                background-image: linear-gradient(top, whiteSmoke 0%,#EEE 100%);
-                border-bottom: 1px solid #BDBDBD;
-                padding:6px 4px 4px 16px;
-            }
-        </style>
+        
     </head>  
     <div class="container">
 
         <jsp:include page="inc/top.jsp" />
-        
 
         <div id="contentwrapper" class="content">
-            <!--jsp:include page="inc/dashboard_nav.jsp" /-->
             <div class="row" style="background: #FAFAFA;border-bottom: 1px solid #DFDFDF;">
-                <div class="span12">
-                    <form class="form-inline" style="padding:10px 0px 6px 20px; margin:0px">
-                            <label class="control-label">Transaktioner: </label>
-                              <select id="datemode" class="searchfield input-small"><option value="before">Før</option><option selected="true" value="after">Efter</option></select>
+                <div class="span4">
+                    <ul class="nav nav-pills" style="padding:6px 20px; margin:0px;">
+                      <li>
+                        <a href="#">Oversigt</a>
+                      </li>
+                      <li><a href="#">Indstillinger</a></li>
+                      <li class="active"><a href="#">Transaktioner</a></li>
+                    </ul>
+                </div>
+                <div id="transaktion-search" class="span8">
+                    <form class="form-inline pull-right" style="padding:10px 20px 6px 0px; margin:0px;">
+                        <select id="datemode" class="searchfield input-small"><option value="before">Før</option><option selected="true" value="after">Efter</option></select>
                         <input id="datepicker" type="text" class="searchfield input-small datepicker" placeholder="Dato">
                         &nbsp;|&nbsp;
                         <input id="searchstring" type="text" class="searchfield input-medium datepicker" placeholder="Søgeord">
