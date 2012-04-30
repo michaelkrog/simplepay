@@ -52,11 +52,11 @@ public class PaymentWindowController {
         Merchant merchant = user.getMerchant();
         
         Transaction transaction = service.getTransactions(merchant).read(token);
-        transaction.setAuthorizedAmount(amount);
+        //transaction.setAuthorizedAmount(amount);
         transaction.setCurrency(currency);
         transaction.setStatus(TransactionStatus.Authorized);
-        transaction.setCardType(CardType.Unknown);
-        transaction.setCardNumberTruncated("4571xxxxxxxxxxxxxxxx");
+       // transaction.setCardType(CardType.Unknown);
+        //transaction.setCardNumberTruncated("4571xxxxxxxxxxxxxxxx");
         transaction = service.getTransactions(merchant).update(transaction);
         
         service.getEvents(merchant, TransactionEvent.class).create(new TransactionEvent(transaction, SecurityHelper.getUsername(), TransactionStatus.Authorized, request.getRemoteAddr()));

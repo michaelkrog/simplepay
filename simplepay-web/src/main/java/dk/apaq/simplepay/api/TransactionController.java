@@ -14,7 +14,9 @@ import dk.apaq.simplepay.gateway.PaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import dk.apaq.simplepay.model.Merchant;
+import dk.apaq.simplepay.model.RemoteAuthorizedToken;
 import dk.apaq.simplepay.model.SystemUser;
+import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.model.TransactionEvent;
 import java.text.NumberFormat;
@@ -70,23 +72,7 @@ public class TransactionController {
     }
     
     
-    @RequestMapping(value = "/form", method=RequestMethod.POST)
-    @Secured({"ROLE_PUBLICAPIACCESSOR","ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
-    @ResponseBody
-    @Transactional
-    public PaymentGateway.FormData generateForm(HttpServletRequest request, String token, Long amount, String currency, String returnUrl, String cancelUrl) {
-        Merchant m = SecurityHelper.getMerchant(service);
-        Transaction t = getTransaction(token);
-        PaymentGatewayType gatewayType = t.getGatewayType();
-        
-        t.setCurrency(currency);
-        service.getTransactions(m).update(t);
-        
-        SystemUser publicUser = service.getOrCreatePublicUser(m);
-        String callbackUrl = publicUrl + "/api/callback/" + gatewayType.name().toLowerCase() + "/" + publicUser.getUsername() + "/" + t.getId();
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(m, gatewayType);
-        return gateway.generateFormdata(t, amount, currency, returnUrl, cancelUrl, callbackUrl, request.getLocale());
-    }
+
 
     @RequestMapping(value = "/transactions", method=RequestMethod.POST)
     @Transactional()
@@ -100,7 +86,7 @@ public class TransactionController {
         Transaction transaction = new Transaction();
         transaction.setOrderNumber(orderNumber);
         transaction.setDescription(description);
-        transaction.setGatewayType(m.getGatewayType());
+        //transaction.setToken(null);
         transaction = service.getTransactions(m).createAndRead(transaction);
         service.getEvents(m, TransactionEvent.class).create(new TransactionEvent(transaction, SecurityHelper.getUsername(), TransactionStatus.New, request.getRemoteAddr()));
         return transaction.getId();
@@ -164,17 +150,18 @@ public class TransactionController {
     @Transactional
     @Secured({"ROLE_PRIVATEAPIACCESSOR","ROLE_MERCHANT"})     
     @ResponseBody
-    public Transaction refundTransaction(HttpServletRequest request, @PathVariable String token, @RequestParam(required=false) Long amount) {
+    public Transaction refundTransaction(HttpServletRequest request, @PathVariable String tokenId, @RequestParam(required=false) Long amount) {
         Merchant m = SecurityHelper.getMerchant(service);
-        LOG.debug("Refunding transaction. [merchant={}; token={}; amount={}]", new Object[]{m.getId(), token, amount});
-        Transaction t = getTransaction(m, token);
+        LOG.debug("Refunding transaction. [merchant={}; token={}; amount={}]", new Object[]{m.getId(), tokenId, amount});
+        Transaction t = getTransaction(m, tokenId);
         
         if(amount == null) {
-            amount = t.getAuthorizedAmount();
+            amount = t.getCapturedAmount();
         }
         
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(m, t.getGatewayType());
-        gateway.refund(t, amount);
+        Token token = t.getToken();
+        PaymentGateway gateway = gatewayManager.createPaymentGateway(m, token.getGatewayType());
+        gateway.refund(token, amount);
         
         service.getEvents(m, TransactionEvent.class).create(new TransactionEvent(t, SecurityHelper.getUsername(), TransactionStatus.Refunded, request.getRemoteAddr()));
         t.setStatus(TransactionStatus.Refunded);
@@ -186,17 +173,22 @@ public class TransactionController {
     @Transactional
     @Secured({"ROLE_PRIVATEAPIACCESSOR","ROLE_MERCHANT"})     
     @ResponseBody
-    public Transaction chargeTransaction(HttpServletRequest request, @PathVariable String token, @RequestParam(required=false) Long amount) {
+    public Transaction chargeTransaction(HttpServletRequest request, @PathVariable String tokenId, @RequestParam(required=false) Long amount) {
         Merchant m = SecurityHelper.getMerchant(service);
-        LOG.debug("Charging transaction. [merchant={}; token={}; amount={}]", new Object[]{m.getId(), token, amount});
-        Transaction t = getTransaction(m, token);
+        LOG.debug("Charging transaction. [merchant={}; token={}; amount={}]", new Object[]{m.getId(), tokenId, amount});
+        Transaction t = getTransaction(m, tokenId);
         
+        Token token = t.getToken();
         if(amount == null) {
-            amount = t.getAuthorizedAmount();
+            if(token instanceof RemoteAuthorizedToken) {
+                amount = ((RemoteAuthorizedToken)token).getAuthorizedAmount();
+            } else {
+                throw new IllegalArgumentException("No amount specified");
+            }
         }
         
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(m, t.getGatewayType());
-        gateway.capture(t, amount);
+        PaymentGateway gateway = gatewayManager.createPaymentGateway(m, token.getGatewayType());
+        gateway.capture(token, amount);
         
         service.getEvents(m, TransactionEvent.class).create(new TransactionEvent(t, SecurityHelper.getUsername(), TransactionStatus.Charged, request.getRemoteAddr()));
         t.setStatus(TransactionStatus.Charged);
@@ -208,14 +200,15 @@ public class TransactionController {
     @Transactional
     @Secured({"ROLE_PRIVATEAPIACCESSOR","ROLE_MERCHANT"})     
     @ResponseBody
-    public Transaction cancelTransaction(HttpServletRequest request, @PathVariable String token) {
+    public Transaction cancelTransaction(HttpServletRequest request, @PathVariable String tokenId) {
         Merchant m = SecurityHelper.getMerchant(service);
-        LOG.debug("Cancelling transaction. [merchant={}; token={}]", m.getId(), token);
-        Transaction t = getTransaction(m, token);
+        LOG.debug("Cancelling transaction. [merchant={}; token={}]", m.getId(), tokenId);
+        Transaction t = getTransaction(m, tokenId);
+        Token token = t.getToken();
         
         
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(m, t.getGatewayType());
-        gateway.cancel(t);
+        PaymentGateway gateway = gatewayManager.createPaymentGateway(m, token.getGatewayType());
+        gateway.cancel(token);
         
         service.getEvents(m, TransactionEvent.class).create(new TransactionEvent(t, SecurityHelper.getUsername(), TransactionStatus.Cancelled, request.getRemoteAddr()));
         t.setStatus(TransactionStatus.Cancelled);

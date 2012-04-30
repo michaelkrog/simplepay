@@ -110,13 +110,13 @@ public class CallbackController {
             service.getEvents(merchant, TransactionEvent.class).create(new TransactionEvent(transaction, request.getUserPrincipal().getName(), TransactionStatus.Authorized, request.getRemoteAddr()));
             
             //markér som authorized med den givne amount og sæt andre info
-            transaction.setAuthorizedAmount(amount);
+            /*transaction.setAuthorizedAmount(amount);
             transaction.setStatus(TransactionStatus.Authorized);
             transaction.setGatewayTransactionId(gatewayTransactionId);
             transaction.setCardType(QuickPay.getCardTypeFromString(request.getParameter("cardtype")));
             transaction.setCardExpires(request.getParameter("cardexpire"));
             transaction.setCardNumberTruncated(request.getParameter("cardnumber"));
-            transactions.update(transaction);
+            transactions.update(transaction);*/
             
         }
     }
