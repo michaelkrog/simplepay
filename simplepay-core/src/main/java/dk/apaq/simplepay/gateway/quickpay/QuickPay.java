@@ -5,7 +5,7 @@ import dk.apaq.simplepay.PayService;
 import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.common.CardType;
 import dk.apaq.simplepay.gateway.PaymentException;
-import dk.apaq.simplepay.gateway.PaymentGateway;
+import dk.apaq.simplepay.gateway.RemoteAuthPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentInformation;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.RemoteAuthorizedToken;
@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author krog
  */
-public class QuickPay implements PaymentGateway {
+public class QuickPay implements RemoteAuthPaymentGateway {
 
     private static final Logger LOG = LoggerFactory.getLogger(QuickPay.class);
 
