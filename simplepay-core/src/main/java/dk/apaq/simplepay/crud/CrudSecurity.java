@@ -136,8 +136,41 @@ public class CrudSecurity {
                 event.getListSpecification().setFilter(merchantFilter);
             }
         }
+    }
+    
+    public static class TokenSecurity extends BaseCrudListener<String, Event> {
+        private final IPayService service;
+        private final Merchant owner;
+
         
-        
-        
+        public TokenSecurity(PayService service, Merchant owner) {
+            if(owner.getId() == null) {
+                throw new IllegalArgumentException("Merchant has never been persisted.");
+            }
+            this.owner = owner;
+            this.service = service;
+        }
+
+        @Override
+        public void onBeforeEntityUpdate(WithIdAndEntity<String, Event> event) {
+            if(!event.getEntity().getMerchant().getId().equals(owner.getId())) {
+                throw new SecurityException("Unable to change owner of token.");
+            }
+        }
+
+        @Override
+        public void onBeforeEntityCreate(WithEntity<String, Event> event) {
+            event.getEntity().setMerchant(owner);
+        }
+
+        @Override
+        public void onBeforeList(List<String, Event> event) {
+            Filter merchantFilter = new CompareFilter("merchant", owner, CompareFilter.CompareType.Equals);
+            if(event.getListSpecification().getFilter() != null) {
+                event.getListSpecification().setFilter(new AndFilter(merchantFilter, event.getListSpecification().getFilter()));
+            } else {
+                event.getListSpecification().setFilter(merchantFilter);
+            }
+        }
     }
 }

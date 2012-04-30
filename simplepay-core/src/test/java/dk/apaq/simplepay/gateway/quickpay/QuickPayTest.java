@@ -3,6 +3,7 @@ package dk.apaq.simplepay.gateway.quickpay;
 import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.gateway.PaymentInformation;
 import dk.apaq.simplepay.model.Merchant;
+import dk.apaq.simplepay.model.RemoteAuthorizedToken;
 import dk.apaq.simplepay.model.Transaction;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -50,10 +51,10 @@ public class QuickPayTest {
 
         quickPay.setHttpClient(mockHttpClient);
 
-        Transaction t = new Transaction();
-        t.setGatewayTransactionId("123");
-        t.setMerchant(merchant);
-        quickPay.cancel(t);
+        RemoteAuthorizedToken token = new RemoteAuthorizedToken();
+        token.setGatewayTransactionId("123");
+        token.setMerchant(merchant);
+        quickPay.cancel(token);
 
     }
 
@@ -111,10 +112,10 @@ public class QuickPayTest {
         Mockito.when(mockHttpClient.execute(Mockito.any(HttpUriRequest.class))).thenReturn(response);
 
         quickPay.setHttpClient(mockHttpClient);
-        Transaction t = new Transaction();
-        t.setGatewayTransactionId("123");
-        t.setMerchant(merchant);
-        PaymentInformation status = quickPay.getPaymentInformation(t);
+        RemoteAuthorizedToken token = new RemoteAuthorizedToken();
+        token.setGatewayTransactionId("123");
+        token.setMerchant(merchant);
+        PaymentInformation status = quickPay.getPaymentInformation(token);
 
         assertEquals(TransactionStatus.Refunded, status.getTransationStatus());
     }
@@ -136,10 +137,10 @@ public class QuickPayTest {
 
         quickPay.setHttpClient(mockHttpClient);
 
-        Transaction t = new Transaction();
-        t.setGatewayTransactionId("123");
-        t.setMerchant(merchant);
-        quickPay.capture(t, 10000);
+        RemoteAuthorizedToken token = new RemoteAuthorizedToken();
+        token.setGatewayTransactionId("123");
+        token.setMerchant(merchant);
+        quickPay.capture(token, 10000);
     }
 
     /**
@@ -180,10 +181,10 @@ public class QuickPayTest {
 
         quickPay.setHttpClient(mockHttpClient);
 
-        Transaction t = new Transaction();
-        t.setGatewayTransactionId("123");
-        t.setMerchant(merchant);
-        quickPay.renew(t, 10000);
+        RemoteAuthorizedToken token = new RemoteAuthorizedToken();
+        token.setGatewayTransactionId("123");
+        token.setMerchant(merchant);
+        quickPay.renew(token, 10000);
     }
 
     /**
@@ -203,10 +204,10 @@ public class QuickPayTest {
 
         quickPay.setHttpClient(mockHttpClient);
 
-        Transaction t = new Transaction();
-        t.setGatewayTransactionId("123");
-        t.setMerchant(merchant);
-        quickPay.refund(t, 10000);
+        RemoteAuthorizedToken token = new RemoteAuthorizedToken();
+        token.setGatewayTransactionId("123");
+        token.setMerchant(merchant);
+        quickPay.refund(token, 10000);
     }
 
     private HttpResponse prepareResponse(int expectedResponseStatus, String expectedResponseBody) {

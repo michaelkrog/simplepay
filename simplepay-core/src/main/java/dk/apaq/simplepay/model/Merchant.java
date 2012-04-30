@@ -1,6 +1,7 @@
 package dk.apaq.simplepay.model;
 
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
+import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -14,7 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
  * @author krog
  */
 @Entity
-public class Merchant {
+public class Merchant implements Serializable {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")

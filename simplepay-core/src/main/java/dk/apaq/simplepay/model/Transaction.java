@@ -3,6 +3,7 @@ package dk.apaq.simplepay.model;
 import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.common.CardType;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,13 +24,13 @@ import org.hibernate.annotations.GenericGenerator;
  * @author krog
  */
 @Entity
-public class Transaction {
+public class Transaction implements Serializable {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
     private String id;
-    private long authorizedAmount;
-    private long capturedAmount;
+    
+    private long chargedAmount;
     private long refundedAmount;
     
     @NotNull
@@ -43,10 +44,11 @@ public class Transaction {
     private String currency;
     private String description;
     
+    private Token token;
+    
+    @Enumerated(EnumType.STRING)
     @NotNull
-    private CardType cardType = CardType.Unknown;
-    private String cardExpires;
-    private String cardNumberTruncated;
+    private TransactionStatus status = TransactionStatus.New;
     
     @NotNull
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -55,33 +57,13 @@ public class Transaction {
     @NotNull
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date dateChanged = new Date();
-    
-    @JsonIgnore
-    private String gatewayTransactionId;
-    
-    @JsonIgnore
-    @Enumerated(EnumType.STRING)
-    @NotNull
-    private PaymentGatewayType gatewayType;
-    
-    @Enumerated(EnumType.STRING)
-    @NotNull
-    private TransactionStatus status = TransactionStatus.New;
-
-    public long getAuthorizedAmount() {
-        return authorizedAmount;
-    }
-
-    public void setAuthorizedAmount(long authorizedAmount) {
-        this.authorizedAmount = authorizedAmount;
-    }
 
     public long getCapturedAmount() {
-        return capturedAmount;
+        return chargedAmount;
     }
 
     public void setCapturedAmount(long capturedAmount) {
-        this.capturedAmount = capturedAmount;
+        this.chargedAmount = capturedAmount;
     }
 
     public String getCurrency() {
@@ -98,22 +80,6 @@ public class Transaction {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getGatewayTransactionId() {
-        return gatewayTransactionId;
-    }
-
-    public void setGatewayTransactionId(String gatewayTransactionId) {
-        this.gatewayTransactionId = gatewayTransactionId;
-    }
-
-    public PaymentGatewayType getGatewayType() {
-        return gatewayType;
-    }
-
-    public void setGatewayType(PaymentGatewayType gatewayType) {
-        this.gatewayType = gatewayType;
     }
 
     public String getId() {
@@ -157,30 +123,6 @@ public class Transaction {
         this.status = status;
     }
 
-    public String getCardExpires() {
-        return cardExpires;
-    }
-
-    public void setCardExpires(String cardExpires) {
-        this.cardExpires = cardExpires;
-    }
-
-    public String getCardNumberTruncated() {
-        return cardNumberTruncated;
-    }
-
-    public void setCardNumberTruncated(String cardNumberTruncated) {
-        this.cardNumberTruncated = cardNumberTruncated;
-    }
-
-    public CardType getCardType() {
-        return cardType;
-    }
-
-    public void setCardType(CardType cardType) {
-        this.cardType = cardType;
-    }
-
     public Date getDateChanged() {
         return dateChanged;
     }
@@ -197,5 +139,12 @@ public class Transaction {
         this.dateCreated = dateCreated;
     }
 
+    public Token getToken() {
+        return token;
+    }
+
+    public void setToken(Token token) {
+        this.token = token;
+    }
     
 }

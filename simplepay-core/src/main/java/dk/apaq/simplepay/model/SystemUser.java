@@ -1,5 +1,6 @@
 package dk.apaq.simplepay.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +20,7 @@ import org.hibernate.annotations.GenericGenerator;
  * @author michael
  */
 @Entity
-public class SystemUser {
+public class SystemUser implements Serializable {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")

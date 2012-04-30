@@ -11,6 +11,7 @@ import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.crud.CrudSecurity;
 import dk.apaq.simplepay.model.Role;
 import dk.apaq.simplepay.model.SystemUser;
+import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.util.IdGenerator;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -54,6 +55,20 @@ public class PayService implements ApplicationContextAware, IPayService {
         
         Complete<String, Transaction> crud = (Crud.Complete<String, Transaction>) context.getBean("crud", em, Transaction.class);
         ((CrudNotifier)crud).addListener(new CrudSecurity.TransactionSecurity(this, merchant));
+        
+        return crud;
+    }
+    
+    @Override
+    public Crud.Complete<String, Token> getTokens(Merchant merchant) {
+        LOG.debug("Retrieving TokenCrud");
+        
+        if(merchant.getId() == null) {
+            throw new IllegalArgumentException("Merchant must have been persisted before used for retrieving tokens.");
+        }
+        
+        Complete<String, Token> crud = (Crud.Complete<String, Token>) context.getBean("crud", em, Token.class);
+        ((CrudNotifier)crud).addListener(new CrudSecurity.TokenSecurity(this, merchant));
         
         return crud;
             

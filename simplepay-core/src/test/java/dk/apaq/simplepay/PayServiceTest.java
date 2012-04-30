@@ -3,6 +3,7 @@ package dk.apaq.simplepay;
 import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import dk.apaq.simplepay.model.Merchant;
+import dk.apaq.simplepay.model.RemoteAuthorizedToken;
 import dk.apaq.simplepay.model.Role;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
@@ -70,13 +71,13 @@ public class PayServiceTest {
         //Create transaction for m
         Transaction t = new Transaction();
         t.setOrderNumber("T_123");
-        t.setGatewayType(PaymentGatewayType.QuickPay);
+        t.setToken(new RemoteAuthorizedToken(PaymentGatewayType.QuickPay));
         t = service.getTransactions(m).createAndRead(t);
         
         //Create transaction for m2
         Transaction t2 = new Transaction();
         t2.setOrderNumber("T_321");
-        t2.setGatewayType(PaymentGatewayType.QuickPay);
+        t2.setToken(new RemoteAuthorizedToken(PaymentGatewayType.QuickPay));
         t2 = service.getTransactions(m2).createAndRead(t2);
         
         //Make sure the right data has been set

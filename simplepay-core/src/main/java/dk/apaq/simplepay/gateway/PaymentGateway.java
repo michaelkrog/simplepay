@@ -3,6 +3,8 @@ package dk.apaq.simplepay.gateway;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.PayService;
 import dk.apaq.simplepay.model.Merchant;
+import dk.apaq.simplepay.model.RemoteAuthorizedToken;
+import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Transaction;
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -40,7 +42,7 @@ public interface PaymentGateway {
      * Captures an already authorized amount.
      * @param amountInCents The amount in cents(smallest denominator in the currency.)
      */
-    public void capture(Transaction transaction, long amountInCents);
+    public void capture(Token token, long amountInCents);
     
     /**
      * Authorizes a new amount for a transaction already authorized for recurrings transactions.
@@ -56,26 +58,26 @@ public interface PaymentGateway {
      * Renews an existing auhorization.
      * @param amountInCents The amount in cents(smallest denominator in the currency.)
      */
-    public void renew(Transaction transaction, long amountInCents);
+    public void renew(Token token, long amountInCents);
 
     /**
      * Refund a transaction
      * @param amountInCents The amount in cents(smallest denominator in the currency.)
      */
-    public void refund(Transaction transaction, long amountInCents);
+    public void refund(Token token, long amountInCents);
     
     /**
      * Cancels an transaction.
      */
-    public void cancel(Transaction transaction);
+    public void cancel(Token token);
 
     /**
      * Retrieves all information about the transaction.
      */
-    public PaymentInformation getPaymentInformation(Transaction transaction);
+    public PaymentInformation getPaymentInformation(Token token);
 
     /**
      * Generates form data to let the transaction be authorized remotely in a payment window.
      */
-    public FormData generateFormdata(Transaction transaction, long amount, String currency, String returnUrl, String cancelUrl, String callbackUrl, Locale locale);
+    public FormData generateFormdata(RemoteAuthorizedToken token, long amount, String currency, String returnUrl, String cancelUrl, String callbackUrl, Locale locale);
 }
