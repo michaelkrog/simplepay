@@ -1,7 +1,7 @@
 package dk.apaq.simplepay.api;
 
 import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.gateway.PaymentGateway;
+import dk.apaq.simplepay.gateway.RemoteAuthPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import dk.apaq.simplepay.model.Merchant;
@@ -53,7 +53,7 @@ public class TokenController {
     @Secured({"ROLE_PUBLICAPIACCESSOR","ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
     @Transactional
-    public PaymentGateway.FormData generateForm(HttpServletRequest request, String token, Long amount, String currency, String returnUrl, String cancelUrl) {
+    public RemoteAuthPaymentGateway.FormData generateForm(HttpServletRequest request, String token, Long amount, String currency, String returnUrl, String cancelUrl) {
         Merchant m = SecurityHelper.getMerchant(service);
         Token t = getToken(token);
         
@@ -69,7 +69,7 @@ public class TokenController {
         
         SystemUser publicUser = service.getOrCreatePublicUser(m);
         String callbackUrl = publicUrl + "/api/callback/" + gatewayType.name().toLowerCase() + "/" + publicUser.getUsername() + "/" + t.getId();
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(m, gatewayType);
+        RemoteAuthPaymentGateway gateway = gatewayManager.createPaymentGateway(m, gatewayType);
         return gateway.generateFormdata(rat, amount, currency, returnUrl, cancelUrl, callbackUrl, request.getLocale());
     }
     

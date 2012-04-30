@@ -10,7 +10,7 @@ import dk.apaq.filter.sort.SortDirection;
 import dk.apaq.filter.sort.Sorter;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.common.TransactionStatus;
-import dk.apaq.simplepay.gateway.PaymentGateway;
+import dk.apaq.simplepay.gateway.RemoteAuthPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import dk.apaq.simplepay.model.Merchant;
@@ -160,7 +160,7 @@ public class TransactionController {
         }
         
         Token token = t.getToken();
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(m, token.getGatewayType());
+        RemoteAuthPaymentGateway gateway = gatewayManager.createPaymentGateway(m, token.getGatewayType());
         gateway.refund(token, amount);
         
         service.getEvents(m, TransactionEvent.class).create(new TransactionEvent(t, SecurityHelper.getUsername(), TransactionStatus.Refunded, request.getRemoteAddr()));
@@ -187,7 +187,7 @@ public class TransactionController {
             }
         }
         
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(m, token.getGatewayType());
+        RemoteAuthPaymentGateway gateway = gatewayManager.createPaymentGateway(m, token.getGatewayType());
         gateway.capture(token, amount);
         
         service.getEvents(m, TransactionEvent.class).create(new TransactionEvent(t, SecurityHelper.getUsername(), TransactionStatus.Charged, request.getRemoteAddr()));
@@ -207,7 +207,7 @@ public class TransactionController {
         Token token = t.getToken();
         
         
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(m, token.getGatewayType());
+        RemoteAuthPaymentGateway gateway = gatewayManager.createPaymentGateway(m, token.getGatewayType());
         gateway.cancel(token);
         
         service.getEvents(m, TransactionEvent.class).create(new TransactionEvent(t, SecurityHelper.getUsername(), TransactionStatus.Cancelled, request.getRemoteAddr()));
