@@ -14,7 +14,7 @@ import dk.apaq.simplepay.gateway.RemoteAuthPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import dk.apaq.simplepay.model.Merchant;
-import dk.apaq.simplepay.model.RemoteAuthorizedToken;
+import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Transaction;
@@ -88,7 +88,7 @@ public class TransactionController {
         transaction.setDescription(description);
         //transaction.setToken(null);
         transaction = service.getTransactions(m).createAndRead(transaction);
-        service.getEvents(m, TransactionEvent.class).create(new TransactionEvent(transaction, SecurityHelper.getUsername(), TransactionStatus.New, request.getRemoteAddr()));
+        service.getEvents(m, TransactionEvent.class).create(new TransactionEvent(transaction, SecurityHelper.getUsername(), TransactionStatus.Ready, request.getRemoteAddr()));
         return transaction.getId();
         
     }
@@ -180,8 +180,8 @@ public class TransactionController {
         
         Token token = t.getToken();
         if(amount == null) {
-            if(token instanceof RemoteAuthorizedToken) {
-                amount = ((RemoteAuthorizedToken)token).getAuthorizedAmount();
+            if(token instanceof Token) {
+                amount = ((Token)token).getAuthorizedAmount();
             } else {
                 throw new IllegalArgumentException("No amount specified");
             }

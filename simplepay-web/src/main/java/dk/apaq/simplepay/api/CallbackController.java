@@ -107,7 +107,7 @@ public class CallbackController {
                 throw new InvalidRequestException("Currency does not match what originally was requested.");
             }
             
-            service.getEvents(merchant, TransactionEvent.class).create(new TransactionEvent(transaction, request.getUserPrincipal().getName(), TransactionStatus.Authorized, request.getRemoteAddr()));
+            service.getEvents(merchant, TransactionEvent.class).create(new TransactionEvent(transaction, request.getUserPrincipal().getName(), TransactionStatus.Ready, request.getRemoteAddr()));
             
             //markér som authorized med den givne amount og sæt andre info
             /*transaction.setAuthorizedAmount(amount);

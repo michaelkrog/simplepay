@@ -5,7 +5,7 @@ import dk.apaq.simplepay.gateway.RemoteAuthPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import dk.apaq.simplepay.model.Merchant;
-import dk.apaq.simplepay.model.RemoteAuthorizedToken;
+import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.security.SecurityHelper;
@@ -57,11 +57,11 @@ public class TokenController {
         Merchant m = SecurityHelper.getMerchant(service);
         Token t = getToken(token);
         
-        if(!(t instanceof RemoteAuthorizedToken)) {
+        if(!(t instanceof Token)) {
             throw new IllegalArgumentException("The token specificed is not a token for remote authorization.");
         }
         
-        RemoteAuthorizedToken rat = (RemoteAuthorizedToken) t;
+        Token rat = (Token) t;
         PaymentGatewayType gatewayType = t.getGatewayType();
         
         rat.setCurrency(currency);
@@ -83,7 +83,7 @@ public class TokenController {
         
         Token token = null;
         if("Remote".equalsIgnoreCase(type)) {
-            RemoteAuthorizedToken rat = new RemoteAuthorizedToken();
+            Token rat = new Token();
             rat.setGatewayType(m.getGatewayType());
             token = rat;
         } else {

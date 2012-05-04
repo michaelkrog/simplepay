@@ -2,7 +2,7 @@ package dk.apaq.simplepay.site;
 
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.security.SecurityHelper;
-import dk.apaq.simplepay.common.CardType;
+import dk.apaq.simplepay.common.PaymentMethod;
 import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
@@ -51,15 +51,17 @@ public class PaymentWindowController {
         SystemUser user = service.getUser(publicKey);
         Merchant merchant = user.getMerchant();
         
+        //TODO Find token and mark it authorized
+        
         Transaction transaction = service.getTransactions(merchant).read(token);
         //transaction.setAuthorizedAmount(amount);
         transaction.setCurrency(currency);
-        transaction.setStatus(TransactionStatus.Authorized);
+        transaction.setStatus(TransactionStatus.Ready);
        // transaction.setCardType(CardType.Unknown);
         //transaction.setCardNumberTruncated("4571xxxxxxxxxxxxxxxx");
         transaction = service.getTransactions(merchant).update(transaction);
         
-        service.getEvents(merchant, TransactionEvent.class).create(new TransactionEvent(transaction, SecurityHelper.getUsername(), TransactionStatus.Authorized, request.getRemoteAddr()));
+        service.getEvents(merchant, TransactionEvent.class).create(new TransactionEvent(transaction, SecurityHelper.getUsername(), TransactionStatus.Ready, request.getRemoteAddr()));
             
         return "OK";
     }
