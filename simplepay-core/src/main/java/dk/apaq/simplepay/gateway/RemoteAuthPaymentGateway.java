@@ -3,7 +3,7 @@ package dk.apaq.simplepay.gateway;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.PayService;
 import dk.apaq.simplepay.model.Merchant;
-import dk.apaq.simplepay.model.RemoteAuthorizedToken;
+import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Transaction;
 import java.util.LinkedHashMap;
@@ -37,5 +37,5 @@ public interface RemoteAuthPaymentGateway extends PaymentGateway {
     /**
      * Generates form data to let the transaction be authorized remotely in a payment window.
      */
-    public FormData generateFormdata(RemoteAuthorizedToken token, long amount, String currency, String returnUrl, String cancelUrl, String callbackUrl, Locale locale);
+    public FormData generateFormdata(Token token, long amount, String currency, String returnUrl, String cancelUrl, String callbackUrl, Locale locale);
 }

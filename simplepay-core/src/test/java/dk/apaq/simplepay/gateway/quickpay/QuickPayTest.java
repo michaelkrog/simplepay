@@ -1,9 +1,10 @@
 package dk.apaq.simplepay.gateway.quickpay;
 
 import dk.apaq.simplepay.common.TransactionStatus;
+import dk.apaq.simplepay.gateway.PaymentGatewayTransactionStatus;
 import dk.apaq.simplepay.gateway.PaymentInformation;
 import dk.apaq.simplepay.model.Merchant;
-import dk.apaq.simplepay.model.RemoteAuthorizedToken;
+import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Transaction;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -51,7 +52,7 @@ public class QuickPayTest {
 
         quickPay.setHttpClient(mockHttpClient);
 
-        RemoteAuthorizedToken token = new RemoteAuthorizedToken();
+        Token token = new Token();
         token.setGatewayTransactionId("123");
         token.setMerchant(merchant);
         quickPay.cancel(token);
@@ -112,12 +113,12 @@ public class QuickPayTest {
         Mockito.when(mockHttpClient.execute(Mockito.any(HttpUriRequest.class))).thenReturn(response);
 
         quickPay.setHttpClient(mockHttpClient);
-        RemoteAuthorizedToken token = new RemoteAuthorizedToken();
+        Token token = new Token();
         token.setGatewayTransactionId("123");
         token.setMerchant(merchant);
         PaymentInformation status = quickPay.getPaymentInformation(token);
 
-        assertEquals(TransactionStatus.Refunded, status.getTransationStatus());
+        assertEquals(PaymentGatewayTransactionStatus.Refunded, status.getTransationStatus());
     }
 
     /**
@@ -137,7 +138,7 @@ public class QuickPayTest {
 
         quickPay.setHttpClient(mockHttpClient);
 
-        RemoteAuthorizedToken token = new RemoteAuthorizedToken();
+        Token token = new Token();
         token.setGatewayTransactionId("123");
         token.setMerchant(merchant);
         quickPay.capture(token, 10000);
@@ -181,7 +182,7 @@ public class QuickPayTest {
 
         quickPay.setHttpClient(mockHttpClient);
 
-        RemoteAuthorizedToken token = new RemoteAuthorizedToken();
+        Token token = new Token();
         token.setGatewayTransactionId("123");
         token.setMerchant(merchant);
         quickPay.renew(token, 10000);
@@ -204,7 +205,7 @@ public class QuickPayTest {
 
         quickPay.setHttpClient(mockHttpClient);
 
-        RemoteAuthorizedToken token = new RemoteAuthorizedToken();
+        Token token = new Token();
         token.setGatewayTransactionId("123");
         token.setMerchant(merchant);
         quickPay.refund(token, 10000);

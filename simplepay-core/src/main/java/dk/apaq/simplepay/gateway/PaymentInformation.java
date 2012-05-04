@@ -1,6 +1,6 @@
 package dk.apaq.simplepay.gateway;
 
-import dk.apaq.simplepay.common.CardType;
+import dk.apaq.simplepay.common.PaymentMethod;
 import dk.apaq.simplepay.common.TransactionStatus;
 import java.util.Collections;
 import java.util.Date;
@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class PaymentInformation {
     
-    private final TransactionStatus transationStatus;
+    private final PaymentGatewayTransactionStatus transationStatus;
     private final List<HistoryEntry> history;
     private final String orderNumber;
     private final int amount;
@@ -21,7 +21,7 @@ public class PaymentInformation {
     private final String merchantId;
     private final String merchantEmail;
     private final String transactionId;
-    private final CardType cardType;
+    private final PaymentMethod cardType;
     
     public class HistoryEntry {
         private String type;
@@ -59,8 +59,8 @@ public class PaymentInformation {
         }
     }
 
-    public PaymentInformation(TransactionStatus transactionStatus, List<HistoryEntry> history, String orderNumber, int amount, String currency, 
-            String gatewayStatus, String merchantId, String merchantEmail, String transactionId, CardType cardType) {
+    public PaymentInformation(PaymentGatewayTransactionStatus transactionStatus, List<HistoryEntry> history, String orderNumber, int amount, String currency, 
+            String gatewayStatus, String merchantId, String merchantEmail, String transactionId, PaymentMethod cardType) {
         this.transationStatus = transactionStatus;
         this.history = history;
         this.orderNumber = orderNumber;
@@ -102,7 +102,7 @@ public class PaymentInformation {
         return orderNumber;
     }
 
-    public TransactionStatus getTransationStatus() {
+    public PaymentGatewayTransactionStatus getTransationStatus() {
         return transationStatus;
     }
 

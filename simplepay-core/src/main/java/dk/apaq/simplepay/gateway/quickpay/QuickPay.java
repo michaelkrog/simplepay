@@ -3,12 +3,13 @@ package dk.apaq.simplepay.gateway.quickpay;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.PayService;
 import dk.apaq.simplepay.common.TransactionStatus;
-import dk.apaq.simplepay.common.CardType;
+import dk.apaq.simplepay.common.PaymentMethod;
 import dk.apaq.simplepay.gateway.PaymentException;
+import dk.apaq.simplepay.gateway.PaymentGatewayTransactionStatus;
 import dk.apaq.simplepay.gateway.RemoteAuthPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentInformation;
 import dk.apaq.simplepay.model.Merchant;
-import dk.apaq.simplepay.model.RemoteAuthorizedToken;
+import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Transaction;
@@ -290,7 +291,7 @@ public class QuickPay implements RemoteAuthPaymentGateway {
         }
     }
 
-    public FormData generateFormdata(RemoteAuthorizedToken transaction, long amount, String currency, String okUrl, String cancelUrl, String callbackUrl, Locale locale) {
+    public FormData generateFormdata(Token transaction, long amount, String currency, String okUrl, String cancelUrl, String callbackUrl, Locale locale) {
         FormData formData = new FormData();
         formData.setUrl("https://secure.quickpay.dk/form/");
         
@@ -322,55 +323,55 @@ public class QuickPay implements RemoteAuthPaymentGateway {
         return formData;
     }
     
-    public static TransactionStatus getStatusFromState(int state) {
+    public static PaymentGatewayTransactionStatus getStatusFromState(int state) {
         switch(state) {
             case 0:
-                return TransactionStatus.New;
+                return PaymentGatewayTransactionStatus.New;
             case 1:
-                return TransactionStatus.Authorized;
+                return PaymentGatewayTransactionStatus.Authorized;
             case 3:
-                return TransactionStatus.Charged;
+                return PaymentGatewayTransactionStatus.Charged;
             case 5:
-                return TransactionStatus.Cancelled;
+                return PaymentGatewayTransactionStatus.Cancelled;
             case 7:
-                return TransactionStatus.Refunded;
+                return PaymentGatewayTransactionStatus.Refunded;
             default:
                 return null;
         }
     }
 
-    public static CardType getCardTypeFromString(String type) {
+    public static PaymentMethod getCardTypeFromString(String type) {
         if("american-express".equals(type) || "american-express-dk".equals(type)) {
-            return CardType.American_Express;
+            return PaymentMethod.American_Express;
         }
         
         if("dankort".equals(type)) {
-            return CardType.Dankort;
+            return PaymentMethod.Dankort;
         }
         
         if("diners-express".equals(type) || "diners-express-dk".equals(type)) {
-            return CardType.Diners;
+            return PaymentMethod.Diners;
         }
         
         if("jcb".equals(type)) {
-            return CardType.Jcb;
+            return PaymentMethod.Jcb;
         }
         
         if("mastercard".equals(type) || "mastercard-dk".equals(type)) {
-            return CardType.Mastercard;
+            return PaymentMethod.Mastercard;
         }
         
         if("visa".equals(type) || "visa-dk".equals(type)) {
-            return CardType.Visa;
+            return PaymentMethod.Visa;
         }
         
         if("visa-electron".equals(type) || "visa-electron-dk".equals(type)) {
-            return CardType.Visa_Electron;
+            return PaymentMethod.Visa_Electron;
         }
-        return CardType.Unknown;
+        return PaymentMethod.Unknown;
     }
     
-    public static String getStringFromCardType(CardType type) {
+    public static String getStringFromCardType(PaymentMethod type) {
         switch(type) {
             case American_Express:
                 return "american-express";

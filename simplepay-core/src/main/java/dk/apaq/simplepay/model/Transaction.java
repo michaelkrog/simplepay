@@ -1,7 +1,7 @@
 package dk.apaq.simplepay.model;
 
 import dk.apaq.simplepay.common.TransactionStatus;
-import dk.apaq.simplepay.common.CardType;
+import dk.apaq.simplepay.common.PaymentMethod;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -44,11 +44,13 @@ public class Transaction implements Serializable {
     private String currency;
     private String description;
     
+    @NotNull
+    @ManyToOne
     private Token token;
     
     @Enumerated(EnumType.STRING)
     @NotNull
-    private TransactionStatus status = TransactionStatus.New;
+    private TransactionStatus status = TransactionStatus.Ready;
     
     @NotNull
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -57,6 +59,14 @@ public class Transaction implements Serializable {
     @NotNull
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date dateChanged = new Date();
+
+    public Transaction() {
+    }
+    
+    public Transaction(Token token) {
+        this.token = token;
+    }
+    
 
     public long getCapturedAmount() {
         return chargedAmount;

@@ -9,9 +9,11 @@ import dk.apaq.filter.core.AndFilter;
 import dk.apaq.filter.core.CompareFilter;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.PayService;
+import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.model.Event;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
+import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Transaction;
 import java.util.Date;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -57,7 +59,7 @@ public class CrudSecurity {
 
         @Override
         public void onBeforeEntityUpdate(WithIdAndEntity<String, Transaction> event) {
-            Transaction stale = service.getTransactionByOrderNumber(owner, event.getEntity().getOrderNumber());
+            Transaction stale = service.getTransactions(owner).read(event.getEntityId());
             if(stale != null && !stale.getId().equals(event.getEntityId())) {
                 throw new IllegalArgumentException("Ordernumber already used.");
             }
@@ -65,13 +67,14 @@ public class CrudSecurity {
             stale = event.getCrud().read(event.getEntityId());
             if(stale.getMerchant()!=null && stale.getMerchant().getId() != null) {
               if(!stale.getMerchant().getId().equals(event.getEntity().getMerchant().getId())) {
-                  throw new SecurityException("Not allowed to take other merchants transcations.");
+                  throw new SecurityException("Not allowed to take other merchants transactions.");
               }
             } else {
                 event.getEntity().setMerchant(owner);
             }
             
-            //TODO: Check for legal transaction status
+            checkStatus(event.getEntity());
+            checkToken(event.getEntity());
             
             event.getEntity().setDateChanged(new Date());
             
@@ -80,10 +83,11 @@ public class CrudSecurity {
         @Override
         public void onBeforeEntityCreate(WithEntity<String, Transaction> event) {
             if(service.getTransactionByOrderNumber(owner, event.getEntity().getOrderNumber()) != null) {
-                throw new IllegalArgumentException("Ordernumber already used.");
+                throw new IllegalArgumentException("Ordernumber already used. [Merchant="+owner.getId()+";orderNumber="+event.getEntity().getOrderNumber()+"]");
             }
             
-            //TODO: Check for legal transaction status
+            checkStatus(event.getEntity());
+            checkToken(event.getEntity());
             
             event.getEntity().setMerchant(owner);
             event.getEntity().setDateChanged(new Date());
@@ -96,6 +100,60 @@ public class CrudSecurity {
                 event.getListSpecification().setFilter(new AndFilter(merchantFilter, event.getListSpecification().getFilter()));
             } else {
                 event.getListSpecification().setFilter(merchantFilter);
+            }
+        }
+        
+        private void checkToken(Transaction t) {
+            Token token = t.getToken();
+            
+            if(token == null || token.getId() == null) {
+                throw new IllegalArgumentException("A transactation must have a persisted token.");
+            }
+            
+            Token existingToken = service.getTokens(owner).read(token.getId());
+            
+            if(t.getId() == null) { //new transaction
+                if(existingToken.isUsed()) {
+                    throw new SecurityException("Cannot use a token that has already been used.");
+                }
+                
+                token.setUsed(true);
+            } else {
+               Transaction existingTransaction = service.getTransactions(owner).read(t.getId());
+               if(!existingTransaction.getToken().getId().equals(token.getId())) {
+                   throw new SecurityException("Cannot change token on transaction.");
+               } 
+            }
+            
+        }
+        
+        private void checkStatus(Transaction t) {
+            if(t.getId() == null) { //New transaction
+                if(t.getStatus() != TransactionStatus.Ready) {
+                    throw new SecurityException("A new transaction status can only be persisted with status Ready.");
+                }
+            } else {
+                //These are valid flows:
+                //  Ready -> Cancelled
+                //  Ready -> Charged -> Refunded
+                
+                //TODO We cannot check the flow because we dont detach hibernate objects.
+                // Therefore when we read a transaction, changes its status and updates it, then the object we read for comparison
+                // is the same object as we have changed. Need to figure out how to test this.
+                
+                /*
+                Transaction existingTransaction = service.getTransactions(owner).read(t.getId());
+                if(t.getStatus() == TransactionStatus.Cancelled && existingTransaction.getStatus() != TransactionStatus.Ready) {
+                    throw new SecurityException("Only transactions in status Ready can be cancelled.");
+                }
+                
+                if(t.getStatus() == TransactionStatus.Charged && existingTransaction.getStatus() != TransactionStatus.Ready) {
+                    throw new SecurityException("Only transactions in status Ready can be charged.");
+                }
+                
+                if(t.getStatus() == TransactionStatus.Refunded && existingTransaction.getStatus() != TransactionStatus.Charged) {
+                    throw new SecurityException("Only transactions in status Charged can be refunded.");
+                }*/
             }
         }
         
@@ -138,7 +196,7 @@ public class CrudSecurity {
         }
     }
     
-    public static class TokenSecurity extends BaseCrudListener<String, Event> {
+    public static class TokenSecurity extends BaseCrudListener<String, Token> {
         private final IPayService service;
         private final Merchant owner;
 
@@ -152,19 +210,28 @@ public class CrudSecurity {
         }
 
         @Override
-        public void onBeforeEntityUpdate(WithIdAndEntity<String, Event> event) {
+        public void onBeforeEntityUpdate(WithIdAndEntity<String, Token> event) {
             if(!event.getEntity().getMerchant().getId().equals(owner.getId())) {
                 throw new SecurityException("Unable to change owner of token.");
+            }
+            
+            Token existingToken = service.getTokens(owner).read(event.getEntityId());
+            if(existingToken == null) {
+                throw new IllegalArgumentException("No token for merchant with specified entityid[id="+event.getEntityId()+"]");
+            }
+            
+            if(existingToken.isUsed()) {
+                throw new SecurityException("Cannot change token that has been used.");
             }
         }
 
         @Override
-        public void onBeforeEntityCreate(WithEntity<String, Event> event) {
-            event.getEntity().setMerchant(owner);
+        public void onBeforeEntityCreate(WithEntity<String, Token> token) {
+            token.getEntity().setMerchant(owner);
         }
 
         @Override
-        public void onBeforeList(List<String, Event> event) {
+        public void onBeforeList(List<String, Token> event) {
             Filter merchantFilter = new CompareFilter("merchant", owner, CompareFilter.CompareType.Equals);
             if(event.getListSpecification().getFilter() != null) {
                 event.getListSpecification().setFilter(new AndFilter(merchantFilter, event.getListSpecification().getFilter()));

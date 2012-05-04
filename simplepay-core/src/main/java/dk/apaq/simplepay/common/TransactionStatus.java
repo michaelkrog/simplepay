@@ -6,14 +6,9 @@ package dk.apaq.simplepay.common;
  */
 public enum TransactionStatus {
     /**
-     * Transaction started, but not completed. Eg. the customer may have left the payment window without completing the payment.
+     * Transaction started, hasn an authorized token, but not completed.
      */
-    New, 
-    
-    /**
-     * Transaction authorized by acquirer and can be captured. The customer has completed the payment in the payment window.
-     */
-    Authorized, 
+    Ready, 
     
     /**
      * You have charged the money. You have asked the acquirer to transfer the money from the customers bank account to yours.
@@ -30,9 +25,6 @@ public enum TransactionStatus {
      */
     Refunded, 
     
-    /**
-     * Transaction is a subscription. You can make several recurring payments from the same customer, eg. a subscription for a magazine or music download.
-     */
-    //Subscribed
+
 
 }

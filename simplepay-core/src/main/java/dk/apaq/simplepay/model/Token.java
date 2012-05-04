@@ -1,55 +1,213 @@
-/*
- * No one but emploeyees at Apaq is allowed to use this code.
- * It may not be copied or used in any context unless by Apaq.
- */
 package dk.apaq.simplepay.model;
 
-import dk.apaq.simplepay.common.CardType;
+import dk.apaq.simplepay.common.PaymentMethod;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
-import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.validation.constraints.NotNull;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  *
  * @author krog
  */
-public interface Token extends Serializable{
+@Entity
+public class Token {
     
-    public String getId();
     
-    public Merchant getMerchant() ;
-
-    public void setMerchant(Merchant merchant) ;
-
-    public String getCardExpires();
-
-    public String getCardNumberTruncated();
-
-    public CardType getCardType() ;
+    @Id
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    private String id;
+        
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod = PaymentMethod.Unknown;
+    private int cardExpireMonth;
+    private int cardExpireYear;
+    private String cardNumberTruncated;
+    private long authorizedAmount;
+    private boolean authorized = false;
+    private boolean used = false;
     
-    public Date getDateChanged();
+    @NotNull
+    private String currency;
+    
+    @NotNull
+    private TokenPurpose purpose = TokenPurpose.SinglePayment;
+    
+    
+    @NotNull
+    @ManyToOne
+    private Merchant merchant;
+    
+    @NotNull
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date dateCreated = new Date();
+    
+    @NotNull
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date dateChanged = new Date();
+    
+    //Variables we dont want in a JSON output is here.
+    //TODO Move the ignore descision to the JSON mapper instead
+    @JsonIgnore
+    private String gatewayTransactionId;
+    
+    @JsonIgnore
+    private String cardNumber;
+    
+    @JsonIgnore
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private PaymentGatewayType gatewayType = PaymentGatewayType.Test;
 
-    public Date getDateCreated();
+    
+    public Token(String currency, PaymentGatewayType gatewayType) {
+        this.currency = currency;
+        this.gatewayType = gatewayType;
+    }
 
-    public String getGatewayTransactionId();
+    public Token() {
+    }
+    
+    public String getCardNumber() {
+        return cardNumber;
+    }
 
-    public PaymentGatewayType getGatewayType();
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
 
+    public Date getDateChanged() {
+        return dateChanged;
+    }
 
+    public Date getDateCreated() {
+        return dateCreated;
+    }
 
-    public void setCardExpires(String cardExpires);
+    public String getGatewayTransactionId() {
+        return gatewayTransactionId;
+    }
 
-    public void setCardNumberTruncated(String cardNumberTruncated);
+    public PaymentGatewayType getGatewayType() {
+        return gatewayType;
+    }
 
-    public void setCardType(CardType cardType);
+    public String getId() {
+        return id;
+    }
 
-    public void setDateChanged(Date dateChanged);
+    public Merchant getMerchant() {
+        return merchant;
+    }
 
-    public void setDateCreated(Date dateCreated);
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
+    }
 
-    public void setGatewayTransactionId(String gatewayTransactionId);
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
 
-    public void setGatewayType(PaymentGatewayType gatewayType);
+    public void setDateChanged(Date dateChanged) {
+        this.dateChanged = dateChanged;
+    }
 
- 
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public void setGatewayTransactionId(String gatewayTransactionId) {
+        this.gatewayTransactionId = gatewayTransactionId;
+    }
+
+    public void setGatewayType(PaymentGatewayType gatewayType) {
+        this.gatewayType = gatewayType;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setMerchant(Merchant merchant) {
+        this.merchant = merchant;
+    }
+    
+
+    
+
+    public long getAuthorizedAmount() {
+        return authorizedAmount;
+    }
+
+    public void setAuthorizedAmount(long authorizedAmount) {
+        this.authorizedAmount = authorizedAmount;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public TokenPurpose getPurpose() {
+        return purpose;
+    }
+
+    public void setPurpose(TokenPurpose purpose) {
+        this.purpose = purpose;
+    }
+
+    public boolean isAuthorized() {
+        return authorized;
+    }
+
+    public boolean isUsed() {
+        return used;
+    }
+
+    public void setAuthorized(boolean authorized) {
+        this.authorized = authorized;
+    }
+
+    public void setUsed(boolean used) {
+        this.used = used;
+    }
+
+    public String getCardNumberTruncated() {
+        return cardNumberTruncated;
+    }
+
+    public void setCardNumberTruncated(String cardNumberTruncated) {
+        this.cardNumberTruncated = cardNumberTruncated;
+    }
+
+    public int getCardExpireMonth() {
+        return cardExpireMonth;
+    }
+
+    public void setCardExpireMonth(int cardExpireMonth) {
+        this.cardExpireMonth = cardExpireMonth;
+    }
+
+    public int getCardExpireYear() {
+        return cardExpireYear;
+    }
+
+    public void setCardExpireYear(int cardExpireYear) {
+        this.cardExpireYear = cardExpireYear;
+    }
+    
+    
 }
