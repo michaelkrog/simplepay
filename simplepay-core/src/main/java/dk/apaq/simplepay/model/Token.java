@@ -36,6 +36,7 @@ public class Token {
     private long authorizedAmount;
     private boolean authorized = false;
     private boolean used = false;
+    private String description;
     
     @NotNull
     private String currency;
@@ -208,6 +209,15 @@ public class Token {
     public void setCardExpireYear(int cardExpireYear) {
         this.cardExpireYear = cardExpireYear;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    
     
     
 }

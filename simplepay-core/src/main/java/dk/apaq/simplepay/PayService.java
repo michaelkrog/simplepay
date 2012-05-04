@@ -9,6 +9,8 @@ import dk.apaq.simplepay.model.Event;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.crud.CrudSecurity;
+import dk.apaq.simplepay.crud.ITokenCrud;
+import dk.apaq.simplepay.crud.ITransactionCrud;
 import dk.apaq.simplepay.model.Role;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Token;
@@ -46,7 +48,7 @@ public class PayService implements ApplicationContextAware, IPayService {
     }
     
     @Override
-    public Crud.Complete<String, Transaction> getTransactions(Merchant merchant) {
+    public ITransactionCrud getTransactions(Merchant merchant) {
         LOG.debug("Retrieving TransactionCrud");
         
         if(merchant.getId() == null) {
@@ -56,11 +58,11 @@ public class PayService implements ApplicationContextAware, IPayService {
         Complete<String, Transaction> crud = (Crud.Complete<String, Transaction>) context.getBean("crud", em, Transaction.class);
         ((CrudNotifier)crud).addListener(new CrudSecurity.TransactionSecurity(this, merchant));
         
-        return crud;
+        return null;//crud;
     }
     
     @Override
-    public Crud.Complete<String, Token> getTokens(Merchant merchant) {
+    public ITokenCrud getTokens(Merchant merchant) {
         LOG.debug("Retrieving TokenCrud");
         
         if(merchant.getId() == null) {
@@ -70,7 +72,7 @@ public class PayService implements ApplicationContextAware, IPayService {
         Complete<String, Token> crud = (Crud.Complete<String, Token>) context.getBean("crud", em, Token.class);
         ((CrudNotifier)crud).addListener(new CrudSecurity.TokenSecurity(this, merchant));
         
-        return crud;
+        return null;// crud;
             
     }
 

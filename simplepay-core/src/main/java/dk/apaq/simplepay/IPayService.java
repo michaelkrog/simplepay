@@ -1,6 +1,8 @@
 package dk.apaq.simplepay;
 
 import dk.apaq.crud.Crud;
+import dk.apaq.simplepay.crud.ITokenCrud;
+import dk.apaq.simplepay.crud.ITransactionCrud;
 import dk.apaq.simplepay.model.Event;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
@@ -24,8 +26,9 @@ public interface IPayService {
     Crud.Complete<String, Merchant> getMerchants();
 
     Transaction getTransactionByOrderNumber(Merchant m, String orderNumber);
-    Crud.Complete<String, Transaction> getTransactions(Merchant merchant);
-    Crud.Complete<String, Token> getTokens(Merchant merchant);
+    
+    ITransactionCrud getTransactions(Merchant merchant);
+    ITokenCrud getTokens(Merchant merchant);
 
     <T extends Event> Crud.Complete<String, T> getEvents(Merchant merchant, Class<T> type);
 }

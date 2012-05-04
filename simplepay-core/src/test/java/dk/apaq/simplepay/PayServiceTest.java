@@ -1,5 +1,6 @@
 package dk.apaq.simplepay;
 
+import dk.apaq.simplepay.common.PaymentMethod;
 import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import dk.apaq.simplepay.model.Merchant;
@@ -70,20 +71,14 @@ public class PayServiceTest {
             fail("Should not be able to update merchant.");
         } catch(Exception ex) { }
         
-        Token token1 = service.getTokens(m).createAndRead(new Token("USD", PaymentGatewayType.QuickPay));
-        Token token2 = service.getTokens(m2).createAndRead(new Token("USD", PaymentGatewayType.QuickPay));
+        Token token1 = service.getTokens(m).createNew(PaymentGatewayType.QuickPay, "");
+        Token token2 = service.getTokens(m2).createNew(PaymentGatewayType.QuickPay, "");
         
         //Create transaction for m
-        Transaction t = new Transaction();
-        t.setOrderNumber("T_123");
-        t.setToken(token1);
-        t = service.getTransactions(m).createAndRead(t);
+        Transaction t = service.getTransactions(m).createNew(token1, "T_123");
         
         //Create transaction for m2
-        Transaction t2 = new Transaction();
-        t2.setOrderNumber("T_321");
-        t2.setToken(token2);
-        t2 = service.getTransactions(m2).createAndRead(t2);
+        Transaction t2 = service.getTransactions(m2).createNew(token2, "T_321");
         
         //Make sure the right data has been set
         assertEquals(m.getId(), t.getMerchant().getId());
@@ -104,32 +99,25 @@ public class PayServiceTest {
         Merchant m = new Merchant();
         m = service.getMerchants().createAndRead(m);
         
-        Token token = service.getTokens(m).createAndRead(new Token("USD", PaymentGatewayType.QuickPay));
+        Token token = service.getTokens(m).createNew(PaymentGatewayType.QuickPay, "");
         assertFalse(token.isUsed());
         assertFalse(token.isAuthorized());
         
-        token.setAuthorized(true);
-        token.setAuthorizedAmount(300);
-        token = service.getTokens(m).update(token);
+        token = service.getTokens(m).authorizedRemote(token, "DKK", 300, PaymentMethod.Visa, 8, 12, "XXXX XXXX XXXX 1234", null);
         assertFalse(token.isUsed());
         assertTrue(token.isAuthorized());
         
         //Create transaction for m
-        Transaction t = new Transaction();
-        t.setOrderNumber("T_123342");
-        t.setToken(token);
-        t = service.getTransactions(m).createAndRead(t);
+        Transaction t = service.getTransactions(m).createNew(token, "T_13123");
         assertEquals(t.getToken().getId(), token.getId());
         assertTrue(t.getToken().isAuthorized());
         assertTrue(t.getToken().isUsed());
         assertEquals(TransactionStatus.Ready, t.getStatus());
         
-        t.setStatus(TransactionStatus.Charged);
-        t = service.getTransactions(m).update(t);
+        t = service.getTransactions(m).charge(t, 300);
         assertEquals(TransactionStatus.Charged, t.getStatus());
         
-        t.setStatus(TransactionStatus.Refunded);
-        t = service.getTransactions(m).update(t);
+        t = service.getTransactions(m).refund(t, 300);
         assertEquals(TransactionStatus.Refunded, t.getStatus());
         
     }
@@ -139,34 +127,25 @@ public class PayServiceTest {
         Merchant m = new Merchant();
         m = service.getMerchants().createAndRead(m);
         
-        Token token = service.getTokens(m).createAndRead(new Token("USD", PaymentGatewayType.QuickPay));
+        Token token = service.getTokens(m).createNew(PaymentGatewayType.QuickPay, "");
         assertFalse(token.isUsed());
         assertFalse(token.isAuthorized());
         
-        token.setAuthorized(true);
-        token.setAuthorizedAmount(300);
-        token = service.getTokens(m).update(token);
+        token = service.getTokens(m).authorizedRemote(token, "DKK", 300, PaymentMethod.Visa, 8, 12, "XXXX XXXX XXXX 1234", null);
         assertFalse(token.isUsed());
         assertTrue(token.isAuthorized());
         
         //Create transaction for m
-        Transaction t = new Transaction();
-        t.setOrderNumber("T_81234243334");
-        t.setToken(token);
-        t = service.getTransactions(m).createAndRead(t);
+        Transaction t = service.getTransactions(m).createNew(token, "T_1312");
         
-        //Create transaction for m
-        Transaction t2 = new Transaction();
-        t2.setOrderNumber("T_1234");
-        t2.setToken(token);
         try {
-            t2 = service.getTransactions(m).createAndRead(t2);
+            service.getTransactions(m).createNew(token, "T_1234");
             fail("Should not allow same token twice.");
         } catch(SecurityException ex) { }
         
         //The orginal token is not uptodate and persisting it will change it to not used which is not allowed
         try {
-            token = service.getTokens(m).update(token);
+            token = service.getTokens(m).authorizedRemote(token, "DKK", 300, PaymentMethod.Visa, 8, 12, "XXXX XXXX XXXX 1234", null);
             fail("Should not allow persisting token as not used");
         } catch(SecurityException ex) { }
     }
