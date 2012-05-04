@@ -61,38 +61,23 @@ public class TokenController {
             throw new IllegalArgumentException("The token specificed is not a token for remote authorization.");
         }
         
-        Token rat = (Token) t;
         PaymentGatewayType gatewayType = t.getGatewayType();
-        
-        rat.setCurrency(currency);
-        service.getTokens(m).update(rat);
         
         SystemUser publicUser = service.getOrCreatePublicUser(m);
         String callbackUrl = publicUrl + "/api/callback/" + gatewayType.name().toLowerCase() + "/" + publicUser.getUsername() + "/" + t.getId();
         RemoteAuthPaymentGateway gateway = gatewayManager.createPaymentGateway(m, gatewayType);
-        return gateway.generateFormdata(rat, amount, currency, returnUrl, cancelUrl, callbackUrl, request.getLocale());
+        return gateway.generateFormdata(t, amount, currency, returnUrl, cancelUrl, callbackUrl, request.getLocale());
     }
     
     @RequestMapping(value = "/tokens", method=RequestMethod.POST)
     @Transactional()
     @Secured({"ROLE_PUBLICAPIACCESSOR","ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
-    public String createToken(HttpServletRequest request, @RequestParam String type) {
+    public String createToken(HttpServletRequest request, @RequestParam(required=false) String description) {
         Merchant m = SecurityHelper.getMerchant(service);
-        LOG.debug("Creating token. [merchant={}; type={}]", m.getId(), type);
-        
-        Token token = null;
-        if("Remote".equalsIgnoreCase(type)) {
-            Token rat = new Token();
-            rat.setGatewayType(m.getGatewayType());
-            token = rat;
-        } else {
-            throw new IllegalArgumentException("Unknown type [type="+type+"]");
-        }
-        token = service.getTokens(m).createAndRead(token);
-        //service.getEvents(m, TransactionEvent.class).create(new TransactionEvent(transaction, SecurityHelper.getUsername(), TransactionStatus.New, request.getRemoteAddr()));
-        return token.getId();
-        
+        LOG.debug("Creating token. [merchant={}]", m.getId());
+        //TODO Implement support for tokens that are not authorized remotely.
+        return service.getTokens(m).createNew(m.getGatewayType(), description).getId();
     }
     
     
@@ -103,7 +88,6 @@ public class TokenController {
     public List<Token> listTokens() {
         Merchant m = SecurityHelper.getMerchant(service);
         LOG.debug("Listing transactions. [merchant={}]", m.getId());
-        
         return service.getTokens(m).list();
     }
     

@@ -70,27 +70,16 @@ public class TransactionController {
         }
         return t;
     }
-    
-    
-
-
+  
     @RequestMapping(value = "/transactions", method=RequestMethod.POST)
     @Transactional()
     @Secured({"ROLE_PUBLICAPIACCESSOR","ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
-    public String createTransactions(HttpServletRequest request, @RequestParam String orderNumber, @RequestParam String description) {
+    public String createTransactions(HttpServletRequest request, @RequestParam(value="token") String tokenId, @RequestParam String orderNumber) {
         Merchant m = SecurityHelper.getMerchant(service);
-        LOG.debug("Creating transaction. [merchant={}; orderNumber={}]", m.getId(), orderNumber);
-        
-        
-        Transaction transaction = new Transaction();
-        transaction.setOrderNumber(orderNumber);
-        transaction.setDescription(description);
-        //transaction.setToken(null);
-        transaction = service.getTransactions(m).createAndRead(transaction);
-        service.getEvents(m, TransactionEvent.class).create(new TransactionEvent(transaction, SecurityHelper.getUsername(), TransactionStatus.Ready, request.getRemoteAddr()));
-        return transaction.getId();
-        
+        LOG.debug("Creating transaction. [merchant={}; token={}; orderNumber={}]", new Object[]{m.getId(), tokenId, orderNumber});
+        Token token = service.getTokens(m).read(tokenId);
+        return service.getTransactions(m).createNew(token, orderNumber).getId();
     }
     
     
@@ -103,7 +92,7 @@ public class TransactionController {
         Merchant m = SecurityHelper.getMerchant(service);
         LOG.debug("Listing transactions. [merchant={}]", m.getId());
         
-        //There a bug in the JPA-Filter code causing empty And-filter to create invalid HQL.
+        //There is a bug in the JPA-Filter code causing empty And-filter to create invalid HQL.
         //We make sure not to use an empty AndFilter
         boolean useFilter = status != null || searchString != null || beforeTimestamp != null || afterTimestamp != null;
         
@@ -159,14 +148,7 @@ public class TransactionController {
             amount = t.getCapturedAmount();
         }
         
-        Token token = t.getToken();
-        RemoteAuthPaymentGateway gateway = gatewayManager.createPaymentGateway(m, token.getGatewayType());
-        gateway.refund(token, amount);
-        
-        service.getEvents(m, TransactionEvent.class).create(new TransactionEvent(t, SecurityHelper.getUsername(), TransactionStatus.Refunded, request.getRemoteAddr()));
-        t.setStatus(TransactionStatus.Refunded);
-        t.setRefundedAmount(amount);
-        return service.getTransactions(m).update(t);
+        return service.getTransactions(m).refund(t, amount);
     }
     
     @RequestMapping(value="/transactions/{token}/charge", method=RequestMethod.POST)
@@ -180,20 +162,14 @@ public class TransactionController {
         
         Token token = t.getToken();
         if(amount == null) {
-            if(token instanceof Token) {
+            if(token.getAuthorizedAmount()>0) {
                 amount = ((Token)token).getAuthorizedAmount();
             } else {
                 throw new IllegalArgumentException("No amount specified");
             }
         }
         
-        RemoteAuthPaymentGateway gateway = gatewayManager.createPaymentGateway(m, token.getGatewayType());
-        gateway.capture(token, amount);
-        
-        service.getEvents(m, TransactionEvent.class).create(new TransactionEvent(t, SecurityHelper.getUsername(), TransactionStatus.Charged, request.getRemoteAddr()));
-        t.setStatus(TransactionStatus.Charged);
-        t.setCapturedAmount(amount);
-        return service.getTransactions(m).update(t);
+        return service.getTransactions(m).charge(t, amount);
     }
     
     @RequestMapping(value="/transactions/{token}/cancel", method=RequestMethod.POST)
@@ -204,15 +180,7 @@ public class TransactionController {
         Merchant m = SecurityHelper.getMerchant(service);
         LOG.debug("Cancelling transaction. [merchant={}; token={}]", m.getId(), tokenId);
         Transaction t = getTransaction(m, tokenId);
-        Token token = t.getToken();
-        
-        
-        RemoteAuthPaymentGateway gateway = gatewayManager.createPaymentGateway(m, token.getGatewayType());
-        gateway.cancel(token);
-        
-        service.getEvents(m, TransactionEvent.class).create(new TransactionEvent(t, SecurityHelper.getUsername(), TransactionStatus.Cancelled, request.getRemoteAddr()));
-        t.setStatus(TransactionStatus.Cancelled);
-        return service.getTransactions(m).update(t);
+        return service.getTransactions(m).cancel(t);
     }
     
 }

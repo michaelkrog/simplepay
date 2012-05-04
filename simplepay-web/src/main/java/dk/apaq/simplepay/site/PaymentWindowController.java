@@ -6,6 +6,7 @@ import dk.apaq.simplepay.common.PaymentMethod;
 import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
+import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.model.TransactionEvent;
 import java.util.HashMap;
@@ -47,21 +48,17 @@ public class PaymentWindowController {
     @RequestMapping(value="/paymentwindow/handle", method=RequestMethod.POST)
     @ResponseBody
     @Transactional
-    public String handlePaymentWindow(HttpServletRequest request, @RequestParam String token, @RequestParam String publicKey, @RequestParam long amount, @RequestParam String currency) {
+    public String handlePaymentWindow(HttpServletRequest request, @RequestParam String tokenId, @RequestParam String orderNumber, @RequestParam String publicKey, 
+                                        @RequestParam long amount, @RequestParam String currency, String cardNumber, String cvc, int expireMonth, int expireYear) {
         SystemUser user = service.getUser(publicKey);
         Merchant merchant = user.getMerchant();
         
-        //TODO Find token and mark it authorized
+        //TODO Detect payment method
+        PaymentMethod paymentMethod = PaymentMethod.Unknown;
         
-        Transaction transaction = service.getTransactions(merchant).read(token);
-        //transaction.setAuthorizedAmount(amount);
-        transaction.setCurrency(currency);
-        transaction.setStatus(TransactionStatus.Ready);
-       // transaction.setCardType(CardType.Unknown);
-        //transaction.setCardNumberTruncated("4571xxxxxxxxxxxxxxxx");
-        transaction = service.getTransactions(merchant).update(transaction);
-        
-        service.getEvents(merchant, TransactionEvent.class).create(new TransactionEvent(transaction, SecurityHelper.getUsername(), TransactionStatus.Ready, request.getRemoteAddr()));
+        Token token = service.getTokens(merchant).read(tokenId);
+        token = service.getTokens(merchant).authorize(token, currency, amount, paymentMethod, cardNumber, cvc, expireMonth, expireYear);
+        service.getTransactions(merchant).createNew(token, orderNumber);
             
         return "OK";
     }
