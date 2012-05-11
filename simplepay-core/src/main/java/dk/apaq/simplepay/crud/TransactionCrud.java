@@ -59,7 +59,7 @@ public class TransactionCrud extends EntityManagerCrudForSpring<String, Transact
         transaction.setStatus(TransactionStatus.Refunded);
         
         PaymentGateway gateway = gatewayManager.createPaymentGateway(transaction.getMerchant(), transaction.getToken().getGatewayType());
-        gateway.capture(transaction.getToken(), amount);
+        gateway.refund(transaction.getToken(), amount);
         
         return update(transaction);
     }

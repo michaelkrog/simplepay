@@ -291,16 +291,16 @@ public class QuickPay implements RemoteAuthPaymentGateway {
         }
     }
 
-    public FormData generateFormdata(Token transaction, long amount, String currency, String okUrl, String cancelUrl, String callbackUrl, Locale locale) {
+    public FormData generateFormdata(Token token, long amount, String currency, String okUrl, String cancelUrl, String callbackUrl, Locale locale) {
         FormData formData = new FormData();
         formData.setUrl("https://secure.quickpay.dk/form/");
         
         Map<String, String> map = formData.getFields();
         map.put("protocol", "4");
         map.put("msgtype", "authorize");
-        map.put("merchant", transaction.getMerchant().getGatewayUserId());
+        map.put("merchant", token.getMerchant().getGatewayUserId());
         map.put("language", locale.getLanguage());
-        map.put("ordernumber", transaction.getId()); 
+        map.put("ordernumber", token.getOrderNumber()); 
         map.put("amount", Long.toString(amount));
         map.put("currency", currency);
         map.put("continueurl", okUrl);
@@ -317,7 +317,7 @@ public class QuickPay implements RemoteAuthPaymentGateway {
         for(String value : map.values()) {
             builder.append(value);
         }
-        builder.append(transaction.getMerchant().getGatewaySecret());
+        builder.append(token.getMerchant().getGatewaySecret());
         map.put("md5check", DigestUtils.md5Hex(builder.toString()));
         
         return formData;
