@@ -41,6 +41,7 @@ public class Transaction implements Serializable {
     @NotNull
     private Merchant merchant;
     
+    @NotNull
     private String currency;
     private String description;
     
@@ -65,6 +66,9 @@ public class Transaction implements Serializable {
     
     public Transaction(Token token) {
         this.token = token;
+        this.currency = token.getCurrency();
+        this.description = token.getDescription();
+        this.orderNumber = token.getOrderNumber();
     }
     
 

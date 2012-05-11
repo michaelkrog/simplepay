@@ -71,14 +71,14 @@ public class PayServiceTest {
             fail("Should not be able to update merchant.");
         } catch(Exception ex) { }
         
-        Token token1 = service.getTokens(m).createNew(PaymentGatewayType.QuickPay, "");
-        Token token2 = service.getTokens(m2).createNew(PaymentGatewayType.QuickPay, "");
+        Token token1 = service.getTokens(m).createNew(PaymentGatewayType.Test, "T_123", "");
+        Token token2 = service.getTokens(m2).createNew(PaymentGatewayType.Test, "T_321", "");
         
         //Create transaction for m
-        Transaction t = service.getTransactions(m).createNew(token1, "T_123");
+        Transaction t = service.getTransactions(m).createNew(token1);
         
         //Create transaction for m2
-        Transaction t2 = service.getTransactions(m2).createNew(token2, "T_321");
+        Transaction t2 = service.getTransactions(m2).createNew(token2);
         
         //Make sure the right data has been set
         assertEquals(m.getId(), t.getMerchant().getId());
@@ -99,7 +99,7 @@ public class PayServiceTest {
         Merchant m = new Merchant();
         m = service.getMerchants().createAndRead(m);
         
-        Token token = service.getTokens(m).createNew(PaymentGatewayType.QuickPay, "");
+        Token token = service.getTokens(m).createNew(PaymentGatewayType.Test, "T_13123", "");
         assertFalse(token.isUsed());
         assertFalse(token.isAuthorized());
         
@@ -108,7 +108,7 @@ public class PayServiceTest {
         assertTrue(token.isAuthorized());
         
         //Create transaction for m
-        Transaction t = service.getTransactions(m).createNew(token, "T_13123");
+        Transaction t = service.getTransactions(m).createNew(token);
         assertEquals(t.getToken().getId(), token.getId());
         assertTrue(t.getToken().isAuthorized());
         assertTrue(t.getToken().isUsed());
@@ -127,7 +127,7 @@ public class PayServiceTest {
         Merchant m = new Merchant();
         m = service.getMerchants().createAndRead(m);
         
-        Token token = service.getTokens(m).createNew(PaymentGatewayType.QuickPay, "");
+        Token token = service.getTokens(m).createNew(PaymentGatewayType.Test, "T_1312", "");
         assertFalse(token.isUsed());
         assertFalse(token.isAuthorized());
         
@@ -136,10 +136,10 @@ public class PayServiceTest {
         assertTrue(token.isAuthorized());
         
         //Create transaction for m
-        Transaction t = service.getTransactions(m).createNew(token, "T_1312");
+        Transaction t = service.getTransactions(m).createNew(token);
         
         try {
-            service.getTransactions(m).createNew(token, "T_1234");
+            service.getTransactions(m).createNew(token);
             fail("Should not allow same token twice.");
         } catch(SecurityException ex) { }
         

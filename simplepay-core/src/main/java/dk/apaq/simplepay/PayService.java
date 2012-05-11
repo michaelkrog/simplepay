@@ -55,10 +55,10 @@ public class PayService implements ApplicationContextAware, IPayService {
             throw new IllegalArgumentException("Merchant must have been persisted before used for retrieving transactions.");
         }
         
-        Complete<String, Transaction> crud = (Crud.Complete<String, Transaction>) context.getBean("crud", em, Transaction.class);
+        ITransactionCrud crud =  (ITransactionCrud) context.getBean("transactionCrud", em);
         ((CrudNotifier)crud).addListener(new CrudSecurity.TransactionSecurity(this, merchant));
         
-        return null;//crud;
+        return crud;
     }
     
     @Override
@@ -69,10 +69,10 @@ public class PayService implements ApplicationContextAware, IPayService {
             throw new IllegalArgumentException("Merchant must have been persisted before used for retrieving tokens.");
         }
         
-        Complete<String, Token> crud = (Crud.Complete<String, Token>) context.getBean("crud", em, Token.class);
+        ITokenCrud crud = (ITokenCrud) context.getBean("tokenCrud", em);
         ((CrudNotifier)crud).addListener(new CrudSecurity.TokenSecurity(this, merchant));
         
-        return null;// crud;
+        return crud;
             
     }
 

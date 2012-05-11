@@ -34,20 +34,20 @@ public class PaymentGatewayManager {
     }
     
     
-    public RemoteAuthPaymentGateway createPaymentGateway(Merchant merchant) {
+    public PaymentGateway createPaymentGateway(Merchant merchant) {
         return createPaymentGateway(merchant, merchant.getGatewayType());
     }    
 
-    public RemoteAuthPaymentGateway createPaymentGateway(Merchant merchant, PaymentGatewayType type) {
-        Class clazz = gatewayMap.get(type.name());
+    public PaymentGateway createPaymentGateway(Merchant merchant, PaymentGatewayType type) {
+        Class<PaymentGateway> clazz = gatewayMap.get(type.name());
         if(clazz == null) {
             throw new NullPointerException("No gateway by that type [type="+type+"]");
         }
         
-        RemoteAuthPaymentGateway paymentGateway = null;
+        PaymentGateway paymentGateway = null;
         
         try {
-            paymentGateway = (RemoteAuthPaymentGateway) clazz.newInstance();
+            paymentGateway = clazz.newInstance();
         } catch (Exception ex) {
             LOG.error("Unable to create instance of PaymentGateway.", ex);
             throw new NullPointerException("No gateway by that type because an error occured when trying to create it. [type="+type+"]");

@@ -36,17 +36,21 @@ public class Token {
     private long authorizedAmount;
     private boolean authorized = false;
     private boolean used = false;
+    
+    private String orderNumber;
     private String description;
     
     @NotNull
-    private String currency;
+    private String currency="USD";
     
     @NotNull
+    @JsonIgnore
     private TokenPurpose purpose = TokenPurpose.SinglePayment;
     
     
     @NotNull
     @ManyToOne
+    @JsonIgnore
     private Merchant merchant;
     
     @NotNull
@@ -217,6 +221,16 @@ public class Token {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+    
+    
     
     
     

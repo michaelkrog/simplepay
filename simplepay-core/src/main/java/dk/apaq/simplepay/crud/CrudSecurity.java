@@ -83,7 +83,7 @@ public class CrudSecurity {
         @Override
         public void onBeforeEntityCreate(WithEntity<String, Transaction> event) {
             if(service.getTransactionByOrderNumber(owner, event.getEntity().getOrderNumber()) != null) {
-                throw new IllegalArgumentException("Ordernumber already used. [Merchant="+owner.getId()+";orderNumber="+event.getEntity().getOrderNumber()+"]");
+                throw new SecurityException("Ordernumber already used. [Merchant="+owner.getId()+";orderNumber="+event.getEntity().getOrderNumber()+"]");
             }
             
             checkStatus(event.getEntity());

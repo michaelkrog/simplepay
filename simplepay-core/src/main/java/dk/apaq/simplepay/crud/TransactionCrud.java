@@ -24,9 +24,8 @@ public class TransactionCrud extends EntityManagerCrudForSpring<String, Transact
     }
 
     @Transactional
-    public Transaction createNew(Token token, String orderNumber) {
+    public Transaction createNew(Token token) {
         Transaction transaction = new Transaction(token);
-        transaction.setOrderNumber(orderNumber);
         return createAndRead(transaction);
     }
 

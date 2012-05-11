@@ -11,7 +11,7 @@ import dk.apaq.simplepay.model.Token;
  */
 public interface ITokenCrud extends Crud.Filterable<String, Token> {
     
-    Token createNew(PaymentGatewayType gatewayType, String description);
+    Token createNew(PaymentGatewayType gatewayType, String orderNumber, String description);
     Token authorizedRemote(Token token, String currency, long amount, PaymentMethod paymentMethod, 
                         int expireMonth, int expireYear, String cardNumberTruncated, String remoteTransactionID);
     
