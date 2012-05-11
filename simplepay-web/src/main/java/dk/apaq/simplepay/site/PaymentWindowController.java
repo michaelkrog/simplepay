@@ -48,7 +48,7 @@ public class PaymentWindowController {
     @RequestMapping(value="/paymentwindow/handle", method=RequestMethod.POST)
     @ResponseBody
     @Transactional
-    public String handlePaymentWindow(HttpServletRequest request, @RequestParam String tokenId, @RequestParam String orderNumber, @RequestParam String publicKey, 
+    public String handlePaymentWindow(HttpServletRequest request, @RequestParam(value="token") String tokenId, @RequestParam String publicKey, 
                                         @RequestParam long amount, @RequestParam String currency, String cardNumber, String cvc, int expireMonth, int expireYear) {
         SystemUser user = service.getUser(publicKey);
         Merchant merchant = user.getMerchant();
@@ -58,7 +58,7 @@ public class PaymentWindowController {
         
         Token token = service.getTokens(merchant).read(tokenId);
         token = service.getTokens(merchant).authorize(token, currency, amount, paymentMethod, cardNumber, cvc, expireMonth, expireYear);
-        service.getTransactions(merchant).createNew(token, orderNumber);
+        service.getTransactions(merchant).createNew(token);
             
         return "OK";
     }

@@ -5,6 +5,7 @@ import dk.apaq.filter.sort.SortDirection;
 import dk.apaq.filter.sort.Sorter;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.PayService;
+import dk.apaq.simplepay.crud.ITransactionCrud;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
 import java.util.HashMap;
@@ -30,7 +31,8 @@ public class DashboardController {
         SystemUser user = service.getCurrentUser();
         SystemUser privateUser = service.getOrCreatePrivateUser(user.getMerchant());
         
-        List<Transaction> list =  service.getTransactions(user.getMerchant()).list(null, new Sorter("dateChanged", SortDirection.Descending), new Limit(300));
+        ITransactionCrud crud = service.getTransactions(user.getMerchant());
+        List<Transaction> list =  crud.list(null, new Sorter("dateChanged", SortDirection.Descending), new Limit(300));
         
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("transactions", list);

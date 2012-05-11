@@ -31,11 +31,11 @@
                         <select id="datemode" class="searchfield input-small"><option value="before">Før</option><option selected="true" value="after">Efter</option></select>
                         <input id="datepicker" type="text" class="searchfield input-small datepicker" placeholder="Dato">
                         &nbsp;|&nbsp;
-                        <input id="searchstring" type="text" class="searchfield input-medium datepicker" placeholder="Søgeord">
+                        <input id="searchstring" type="text" class="searchfield input-medium" placeholder="Søgeord">
                         &nbsp;|&nbsp;
                         <select id="status" class="searchfield input-small">
                             <option value="All">Alle</option>
-                            <option>Authorized</option>
+                            <option>Ready</option>
                             <option>Charged</option>
                             <option>Cancelled</option>
                             <option>Failed</option>
@@ -94,8 +94,8 @@
             <td>\${orderNumber}</td>
             <td class="hidden-phone">\${$.format.date(new Date(dateCreated), dateTimeFormat)}</td>
             <td class="visible-phone">\${$.format.date(new Date(dateCreated), dateFormat)}</td>
-            <td style="text-align: right">\${formatMoney(currency, authorizedAmount / 100)} </td>
-            <td class="hidden-phone">\${cardType}</td>
+            <td style="text-align: right">\${formatMoney(currency, token.authorizedAmount / 100)} </td>
+            <td class="hidden-phone">\${token.paymentMethod}</td>
             <td>\${status}</td>
         </tr>
     </script>
@@ -114,7 +114,7 @@
         var selectedTransaction = null;
  
         function advanceTransactionState() {
-            if(selectedTransaction.status == 'Authorized') {
+            if(selectedTransaction.status == 'Ready') {
                 service.transactions.charge(selectedTransaction.id, null, function(transaction){
                     updateDialog(transaction);
                 });
@@ -138,25 +138,32 @@
         }
         
         function updateDialog(transaction) {
-            $('#dialog-amount').text(formatMoney(transaction.currency,transaction.authorizedAmount/100));
+            
+            
+            var newTransaction = transaction.status == "New";
+            var cancelable = newTransaction || transaction.status == "Ready";
+            var changeable = !newTransaction && transaction.status != "Refunded" && transaction.status != "Cancelled";
+            var nextStateText;
+            var amount = 0;
+            
+            switch(transaction.status) {
+                case 'Ready':
+                    nextStateText = 'Charge';
+                    amount = transaction.token.authorizedAmount;
+                    break;
+                case 'Charged':
+                    nextStateText = 'Refund';
+                    amount = transaction.capturedAmount;
+                    break;
+                default: 
+                    amount = transaction.token.authorizedAmount;
+            }
+            
+            $('#dialog-amount').text(formatMoney(transaction.currency,amount / 100));
             $('#dialog-status').text(transaction.status);
             $('#dialog-ordernumber').text(transaction.orderNumber);
             $('#dialog-description').text(transaction.description);
             $('#dialog-timestamp').text($.format.date(new Date(transaction.dateCreated), dateTimeFormat));
-            
-            var newTransaction = transaction.status == "New";
-            var cancelable = newTransaction || transaction.status == "Authorized";
-            var changeable = !newTransaction && transaction.status != "Refunded" && transaction.status != "Cancelled";
-            var nextStateText;
-            
-            switch(transaction.status) {
-                case 'Authorized':
-                    nextStateText = 'Charge';
-                    break;
-                case 'Charged':
-                    nextStateText = 'Refund';
-                    break;
-            }
             
             //Update visibility of cancel button
             $('#btn-cancelpayment').css('display', (cancelable ? '':'none'));

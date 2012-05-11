@@ -35,6 +35,14 @@
         <property name="transactionsHandledByProvider" value="false"/>
     </bean>
 
+    <bean id="tokenCrud" class="dk.apaq.simplepay.crud.TokenCrud" scope="prototype">
+        <property name="transactionsHandledByProvider" value="false"/>
+    </bean>
+    
+    <bean id="transactionCrud" class="dk.apaq.simplepay.crud.TransactionCrud" scope="prototype">
+        <property name="transactionsHandledByProvider" value="false"/>
+    </bean>
+    
     
     <bean id="service" class="dk.apaq.simplepay.PayService"/>
         
@@ -43,7 +51,7 @@
         <property name="gatewayMap">
             <map value-type="java.lang.Class"> 
                 <entry key="QuickPay" value="dk.apaq.simplepay.gateway.quickpay.QuickPay"/>
-                <entry key="Test" value="dk.apaq.simplepay.gateway.test.TestGateway"/>
+                <entry key="Test" value="dk.apaq.simplepay.gateway.test.TestRemoteGateway"/>
             </map>    
         </property>   
     </bean>    

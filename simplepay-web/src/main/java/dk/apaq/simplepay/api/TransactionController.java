@@ -71,18 +71,6 @@ public class TransactionController {
         return t;
     }
   
-    @RequestMapping(value = "/transactions", method=RequestMethod.POST)
-    @Transactional()
-    @Secured({"ROLE_PUBLICAPIACCESSOR","ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
-    @ResponseBody
-    public String createTransactions(HttpServletRequest request, @RequestParam(value="token") String tokenId, @RequestParam String orderNumber) {
-        Merchant m = SecurityHelper.getMerchant(service);
-        LOG.debug("Creating transaction. [merchant={}; token={}; orderNumber={}]", new Object[]{m.getId(), tokenId, orderNumber});
-        Token token = service.getTokens(m).read(tokenId);
-        return service.getTransactions(m).createNew(token, orderNumber).getId();
-    }
-    
-    
     @RequestMapping(value = "/transactions" , method=RequestMethod.GET)
     @Transactional(readOnly=true)
     @Secured({"ROLE_PRIVATEAPIACCESSOR","ROLE_MERCHANT"})     
@@ -125,24 +113,24 @@ public class TransactionController {
         return service.getTransactions(m).list(useFilter ? filter : null, sorter);
     }
     
-    @RequestMapping(value="/transactions/{token}", method=RequestMethod.GET)
+    @RequestMapping(value="/transactions/{id}", method=RequestMethod.GET)
     @Transactional(readOnly=true)
     @Secured({"ROLE_PRIVATEAPIACCESSOR","ROLE_MERCHANT"})     
     @ResponseBody
-    public Transaction getTransaction(@PathVariable String token) {
+    public Transaction getTransaction(@PathVariable String id) {
         Merchant m = SecurityHelper.getMerchant(service);
-        LOG.debug("Retrieving transaction. [merchant={};token={}]", m.getId(), token);
-        return getTransaction(m, token);
+        LOG.debug("Retrieving transaction. [merchant={};transaction={}]", m.getId(), id);
+        return getTransaction(m, id);
     }
     
-    @RequestMapping(value="/transactions/{token}/refund", method=RequestMethod.POST)
+    @RequestMapping(value="/transactions/{id}/refund", method=RequestMethod.POST)
     @Transactional
     @Secured({"ROLE_PRIVATEAPIACCESSOR","ROLE_MERCHANT"})     
     @ResponseBody
-    public Transaction refundTransaction(HttpServletRequest request, @PathVariable String tokenId, @RequestParam(required=false) Long amount) {
+    public Transaction refundTransaction(HttpServletRequest request, @PathVariable String id, @RequestParam(required=false) Long amount) {
         Merchant m = SecurityHelper.getMerchant(service);
-        LOG.debug("Refunding transaction. [merchant={}; token={}; amount={}]", new Object[]{m.getId(), tokenId, amount});
-        Transaction t = getTransaction(m, tokenId);
+        LOG.debug("Refunding transaction. [merchant={}; transaction={}; amount={}]", new Object[]{m.getId(), id, amount});
+        Transaction t = getTransaction(m, id);
         
         if(amount == null) {
             amount = t.getCapturedAmount();
@@ -151,14 +139,14 @@ public class TransactionController {
         return service.getTransactions(m).refund(t, amount);
     }
     
-    @RequestMapping(value="/transactions/{token}/charge", method=RequestMethod.POST)
+    @RequestMapping(value="/transactions/{id}/charge", method=RequestMethod.POST)
     @Transactional
     @Secured({"ROLE_PRIVATEAPIACCESSOR","ROLE_MERCHANT"})     
     @ResponseBody
-    public Transaction chargeTransaction(HttpServletRequest request, @PathVariable String tokenId, @RequestParam(required=false) Long amount) {
+    public Transaction chargeTransaction(HttpServletRequest request, @PathVariable String id, @RequestParam(required=false) Long amount) {
         Merchant m = SecurityHelper.getMerchant(service);
-        LOG.debug("Charging transaction. [merchant={}; token={}; amount={}]", new Object[]{m.getId(), tokenId, amount});
-        Transaction t = getTransaction(m, tokenId);
+        LOG.debug("Charging transaction. [merchant={}; transaction={}; amount={}]", new Object[]{m.getId(), id, amount});
+        Transaction t = getTransaction(m, id);
         
         Token token = t.getToken();
         if(amount == null) {
@@ -172,14 +160,14 @@ public class TransactionController {
         return service.getTransactions(m).charge(t, amount);
     }
     
-    @RequestMapping(value="/transactions/{token}/cancel", method=RequestMethod.POST)
+    @RequestMapping(value="/transactions/{id}/cancel", method=RequestMethod.POST)
     @Transactional
     @Secured({"ROLE_PRIVATEAPIACCESSOR","ROLE_MERCHANT"})     
     @ResponseBody
-    public Transaction cancelTransaction(HttpServletRequest request, @PathVariable String tokenId) {
+    public Transaction cancelTransaction(HttpServletRequest request, @PathVariable String id) {
         Merchant m = SecurityHelper.getMerchant(service);
-        LOG.debug("Cancelling transaction. [merchant={}; token={}]", m.getId(), tokenId);
-        Transaction t = getTransaction(m, tokenId);
+        LOG.debug("Cancelling transaction. [merchant={}; transaction={}]", m.getId(), id);
+        Transaction t = getTransaction(m, id);
         return service.getTransactions(m).cancel(t);
     }
     

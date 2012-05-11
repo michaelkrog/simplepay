@@ -49,16 +49,22 @@
     </div>
     <jsp:include page="inc/scripts.jsp" />
     <script>
-        
+        /*@RequestParam String tokenId, @RequestParam String orderNumber, @RequestParam String publicKey, 
+                                        @RequestParam long amount, @RequestParam String currency, String cardNumber, String cvc, int expireMonth, int expireYear*/
         function handleSubmission() {
             $.ajax({
                 url: '/paymentwindow/handle',
                 type: "POST",
                 data: {
-                    token:'${token}', 
+                    token:'${token}',
+                    orderNumber:'',
                     publicKey: '${publicKey}',
                     amount:${amount}, 
-                    currency:'${currency}'
+                    currency:'${currency}',
+                    cardNumber:'4571000000000000',
+                    cvc:'323',
+                    expireMonth:2,
+                    expireYear:2016
                 }
             }).done(function(data) {
                 document.location='${returnUrl}';

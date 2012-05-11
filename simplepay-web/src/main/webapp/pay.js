@@ -10,8 +10,8 @@ function PayService (){
         this.serviceRoot = url;
     }
 
-    this.createUnauthorizedToken = function(orderNumber, description, callback) {
-        var url = this.serviceRoot + "/api/transactions";
+    this.createToken = function(data, callback) {
+        var url = this.serviceRoot + "/api/tokens";
         var that=this;
         jQuery.support.cors = true;
         $.ajax({
@@ -19,15 +19,15 @@ function PayService (){
             type: "POST",
             beforeSend: function (xhr) { xhr.setRequestHeader ("SimplePayKey", that.publicKey); },
             data: {
-                orderNumber:orderNumber, 
-                description:description
+                orderNumber:data.orderNumber, 
+                description:data.description
             }
         }).done(function(data) {
             callback(data);
         });
     }
     
-    this.authorizeTokenRemote = function(token, amount, currency, returnUrl, cancelUrl) {
+    this.authorizeRemote = function(token, amount, currency, returnUrl, cancelUrl) {
         //request url & fields
         var that=this;
         $.ajax({
