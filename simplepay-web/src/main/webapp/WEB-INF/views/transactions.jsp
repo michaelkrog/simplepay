@@ -115,12 +115,14 @@
  
         function advanceTransactionState() {
             if(selectedTransaction.status == 'Ready') {
+                $('#btn-cancelpayment').attr('disabled','disabled');
+                $('#btn-nextstate').attr('disabled','disabled');
                 service.transactions.charge(selectedTransaction.id, null, function(transaction){
                     updateDialog(transaction);
                 });
             }
             
-            if(selectedTransaction.status == 'Captured') {
+            if(selectedTransaction.status == 'Charged') {
                 service.transactions.refund(selectedTransaction.id, null, function(transaction){
                     updateDialog(transaction);
                 });
@@ -139,6 +141,8 @@
         
         function updateDialog(transaction) {
             
+            $('#btn-cancelpayment').removeAttr('disabled');
+            $('#btn-nextstate').removeAttr('disabled');
             
             var newTransaction = transaction.status == "New";
             var cancelable = newTransaction || transaction.status == "Ready";
