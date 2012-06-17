@@ -32,6 +32,7 @@ public class Token {
     private PaymentMethod paymentMethod = PaymentMethod.Unknown;
     private int cardExpireMonth;
     private int cardExpireYear;
+    private int cardCvd;
     private String cardNumberTruncated;
     private long authorizedAmount;
     private boolean authorized = false;
@@ -212,6 +213,14 @@ public class Token {
 
     public void setCardExpireYear(int cardExpireYear) {
         this.cardExpireYear = cardExpireYear;
+    }
+
+    public int getCardCvd() {
+        return cardCvd;
+    }
+
+    public void setCardCvd(int cardCvd) {
+        this.cardCvd = cardCvd;
     }
 
     public String getDescription() {

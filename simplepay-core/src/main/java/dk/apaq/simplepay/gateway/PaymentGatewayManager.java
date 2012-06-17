@@ -34,11 +34,7 @@ public class PaymentGatewayManager {
     }
     
     
-    public PaymentGateway createPaymentGateway(Merchant merchant) {
-        return createPaymentGateway(merchant, merchant.getGatewayType());
-    }    
-
-    public PaymentGateway createPaymentGateway(Merchant merchant, PaymentGatewayType type) {
+    public PaymentGateway createPaymentGateway(/*Merchant merchant, */PaymentGatewayType type) {
         Class<PaymentGateway> clazz = gatewayMap.get(type.name());
         if(clazz == null) {
             throw new NullPointerException("No gateway by that type [type="+type+"]");
@@ -53,7 +49,6 @@ public class PaymentGatewayManager {
             throw new NullPointerException("No gateway by that type because an error occured when trying to create it. [type="+type+"]");
         }
         
-        paymentGateway.setMerchant(merchant);
         paymentGateway.setService(service);
         
         return paymentGateway;

@@ -42,8 +42,6 @@ public interface PaymentGateway {
      */
     void renew(Token token, long amountInCents);
 
-    void setMerchant(Merchant merchant);
-
     void setService(IPayService service);
     
 }

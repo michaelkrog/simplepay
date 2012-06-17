@@ -4,6 +4,7 @@ import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.PayService;
 import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.common.PaymentMethod;
+import dk.apaq.simplepay.gateway.AbstractPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.gateway.PaymentGatewayTransactionStatus;
 import dk.apaq.simplepay.gateway.RemoteAuthPaymentGateway;
@@ -36,25 +37,15 @@ import org.slf4j.LoggerFactory;
  *
  * @author krog
  */
-public class QuickPay implements RemoteAuthPaymentGateway {
+public class QuickPay extends AbstractPaymentGateway implements RemoteAuthPaymentGateway {
 
     private static final Logger LOG = LoggerFactory.getLogger(QuickPay.class);
 
-    //private Merchant merchant = null;
-    private IPayService service;
     private String apiUrl = "https://secure.quickpay.dk/api";
     private String formUrl = "https://secure.quickpay.dk/form/";
     private boolean testMode;
     private org.apache.http.client.HttpClient httpClient;
     private final static String protocolVersion = "4";
-
-    public void setService(IPayService service) {
-        this.service = service;
-    }
-
-    public void setMerchant(Merchant merchant) {
-        //this.merchant = merchant;
-    }
 
     public void setTestMode(boolean testMode) {
         this.testMode = testMode;

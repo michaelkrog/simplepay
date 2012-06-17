@@ -35,7 +35,7 @@ public class TransactionCrud extends EntityManagerCrudForSpring<String, Transact
         transaction.setCapturedAmount(amount);
         transaction.setStatus(TransactionStatus.Charged);
         
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(transaction.getMerchant(), transaction.getToken().getGatewayType());
+        PaymentGateway gateway = gatewayManager.createPaymentGateway(/*transaction.getMerchant(), */transaction.getToken().getGatewayType());
         gateway.capture(transaction.getToken(), amount);
         
         return update(transaction);
@@ -46,7 +46,7 @@ public class TransactionCrud extends EntityManagerCrudForSpring<String, Transact
         transaction = read(transaction.getId());
         transaction.setStatus(TransactionStatus.Cancelled);
         
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(transaction.getMerchant(), transaction.getToken().getGatewayType());
+        PaymentGateway gateway = gatewayManager.createPaymentGateway(/*transaction.getMerchant(), */transaction.getToken().getGatewayType());
         gateway.cancel(transaction.getToken());
         
         return update(transaction);
@@ -58,7 +58,7 @@ public class TransactionCrud extends EntityManagerCrudForSpring<String, Transact
         transaction.setRefundedAmount(amount);
         transaction.setStatus(TransactionStatus.Refunded);
         
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(transaction.getMerchant(), transaction.getToken().getGatewayType());
+        PaymentGateway gateway = gatewayManager.createPaymentGateway(/*transaction.getMerchant(), */transaction.getToken().getGatewayType());
         gateway.refund(transaction.getToken(), amount);
         
         return update(transaction);
