@@ -34,7 +34,7 @@ public class PaymentGatewayManager {
     }
     
     
-    public PaymentGateway createPaymentGateway(/*Merchant merchant, */PaymentGatewayType type) {
+    public PaymentGateway createPaymentGateway(PaymentGatewayType type) {
         Class<PaymentGateway> clazz = gatewayMap.get(type.name());
         if(clazz == null) {
             throw new NullPointerException("No gateway by that type [type="+type+"]");

@@ -22,7 +22,7 @@ public class TestRemoteGateway extends TestGateway implements RemoteAuthPaymentG
 
 
     public FormData generateFormdata(Token token, long amount, String currency, String returnUrl, String cancelUrl, String callbackUrl, Locale locale) {
-        SystemUser publicUser = service.getOrCreatePublicUser(merchant);
+        SystemUser publicUser = service.getOrCreatePublicUser(token.getMerchant());
         FormData data = new FormData();
         data.setUrl("/paymentwindow");
         data.getFields().put("publicKey", publicUser.getUsername());

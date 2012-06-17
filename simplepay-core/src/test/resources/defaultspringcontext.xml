@@ -48,7 +48,7 @@
         <property name="gatewayMap">
             <map value-type="java.lang.Class"> 
                 <entry key="QuickPay" value="dk.apaq.simplepay.gateway.quickpay.QuickPay"/>
-                <entry key="Test" value="dk.apaq.simplepay.gateway.test.TestGateway"/>
+                <entry key="Test" value="dk.apaq.simplepay.gateway.test.TestDirectGateway"/>
             </map>    
         </property>   
     </bean>    
