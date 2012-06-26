@@ -82,7 +82,7 @@ public class TokenController {
         
         SystemUser publicUser = service.getOrCreatePublicUser(m);
         String callbackUrl = publicUrl + "/api/callback/" + gatewayType.name().toLowerCase() + "/" + publicUser.getUsername() + "/" + t.getId();
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(m, gatewayType);
+        PaymentGateway gateway = gatewayManager.createPaymentGateway(gatewayType);
         
         if(!(gateway instanceof RemoteAuthPaymentGateway)) {
             throw new InvalidRequestException("gateway does not support remote authentication.");

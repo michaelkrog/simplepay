@@ -1,15 +1,18 @@
 package dk.apaq.simplepay.crud;
 
+import dk.apaq.crud.jpa.EntityManagerCrudForSpring;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
 import dk.apaq.simplepay.common.PaymentMethod;
 import dk.apaq.simplepay.gateway.DirectPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import dk.apaq.simplepay.model.Token;
-import java.io.InvalidClassException;
 import javax.persistence.EntityManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
+
+
 
 /**
  *
@@ -49,7 +52,7 @@ public class TokenCrud extends EntityManagerCrudForSpring<String, Token> impleme
     }
 
     @Transactional
-    public Token authorize(Token token, String currency, long amount, PaymentMethod method, String cardNumber, int cvd, int expireMonth, int expireYear) {
+    public Token authorize(Token token, String currency, long amount, PaymentMethod method, String cardNumber, String cvd, int expireMonth, int expireYear) {
         token = read(token.getId());
         token.setCurrency(currency);
         token.setAuthorized(true);

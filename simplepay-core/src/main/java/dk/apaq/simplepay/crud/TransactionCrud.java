@@ -1,5 +1,6 @@
 package dk.apaq.simplepay.crud;
 
+import dk.apaq.crud.jpa.EntityManagerCrudForSpring;
 import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.gateway.PaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;

@@ -1,21 +1,19 @@
 package dk.apaq.simplepay.model;
 
-import dk.apaq.simplepay.common.TransactionStatus;
-import dk.apaq.simplepay.common.PaymentMethod;
-import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
+
+import dk.apaq.simplepay.common.TransactionStatus;
+
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 

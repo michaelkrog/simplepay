@@ -21,7 +21,6 @@ public interface IPayService {
     SystemUser getCurrentUser();
     SystemUser getUser(String username);
     Crud.Complete<String, SystemUser> getUsers();
-
     
     Crud.Complete<String, Merchant> getMerchants();
 

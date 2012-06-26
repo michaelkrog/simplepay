@@ -15,6 +15,6 @@ public interface ITokenCrud extends Crud.Filterable<String, Token> {
     Token authorizedRemote(Token token, String currency, long amount, PaymentMethod paymentMethod, 
                         int expireMonth, int expireYear, String cardNumberTruncated, String remoteTransactionID);
     
-    Token authorize(Token token, String currency, long amount, PaymentMethod method, String cardNumber, int cvd, int expireMonth, int expireYear);
+    Token authorize(Token token, String currency, long amount, PaymentMethod method, String cardNumber, String cvd, int expireMonth, int expireYear);
 
 }
