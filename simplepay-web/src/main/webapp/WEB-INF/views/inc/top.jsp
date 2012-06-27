@@ -1,7 +1,7 @@
 <%@page import="dk.apaq.simplepay.security.SecurityHelper"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<div class="navbar">
+<div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
             <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
