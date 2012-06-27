@@ -16,6 +16,9 @@ import org.hibernate.annotations.GenericGenerator;
  */
 @Entity
 public class Merchant implements Serializable {
+    
+    private static final String DEFAULT_SECRET = "SECRET";
+    
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
@@ -29,7 +32,7 @@ public class Merchant implements Serializable {
     private String country;
     
     private String gatewayUserId;
-    private String gatewaySecret;
+    private String gatewaySecret = DEFAULT_SECRET;
     
     @Enumerated(EnumType.STRING)
     @NotNull
@@ -112,6 +115,7 @@ public class Merchant implements Serializable {
     }
 
     public void setGatewaySecret(String merchantSecret) {
+        if(merchantSecret == null) merchantSecret = DEFAULT_SECRET;
         this.gatewaySecret = merchantSecret;
     }
 

@@ -1,13 +1,19 @@
 package dk.apaq.simplepay.gateway.quickpay;
 
+import dk.apaq.simplepay.common.PaymentMethod;
 import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.gateway.PaymentGatewayTransactionStatus;
+import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import dk.apaq.simplepay.gateway.PaymentInformation;
+import dk.apaq.simplepay.gateway.RemoteAuthPaymentGateway.FormData;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Transaction;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Locale;
+import java.util.Map.Entry;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.client.HttpClient;
@@ -52,7 +58,7 @@ public class QuickPayTest {
 
         quickPay.setHttpClient(mockHttpClient);
 
-        Token token = new Token();
+        Token token = new Token(PaymentGatewayType.Test, "ordernum", "");
         token.setGatewayTransactionId("123");
         token.setMerchant(merchant);
         quickPay.cancel(token);
@@ -113,7 +119,7 @@ public class QuickPayTest {
         Mockito.when(mockHttpClient.execute(Mockito.any(HttpUriRequest.class))).thenReturn(response);
 
         quickPay.setHttpClient(mockHttpClient);
-        Token token = new Token();
+        Token token = new Token(PaymentGatewayType.Test, "ordernum", "");
         token.setGatewayTransactionId("123");
         token.setMerchant(merchant);
         PaymentInformation status = quickPay.getPaymentInformation(token);
@@ -138,7 +144,7 @@ public class QuickPayTest {
 
         quickPay.setHttpClient(mockHttpClient);
 
-        Token token = new Token();
+        Token token = new Token(PaymentGatewayType.Test, "ordernum", "");
         token.setGatewayTransactionId("123");
         token.setMerchant(merchant);
         quickPay.capture(token, 10000);
@@ -182,7 +188,7 @@ public class QuickPayTest {
 
         quickPay.setHttpClient(mockHttpClient);
 
-        Token token = new Token();
+        Token token = new Token(PaymentGatewayType.Test, "ordernum", "");
         token.setGatewayTransactionId("123");
         token.setMerchant(merchant);
         quickPay.renew(token, 10000);
@@ -205,10 +211,79 @@ public class QuickPayTest {
 
         quickPay.setHttpClient(mockHttpClient);
 
-        Token token = new Token();
+        Token token = new Token(PaymentGatewayType.Test, "ordernum", "");
         token.setGatewayTransactionId("123");
         token.setMerchant(merchant);
         quickPay.refund(token, 10000);
+    }
+    
+    @Test
+    public void testGenerateForm() {
+        System.out.println("generateForm");
+        Token token = new Token(PaymentGatewayType.Test, "ordernum", "");
+        token.setGatewayTransactionId("123");
+        token.setMerchant(merchant);
+        
+        String okUrl = "http://ok";
+        String cancelUrl = "http://cancel";
+        String callbackUrl = "http://callback";
+        FormData formData = quickPay.generateFormdata(token, 10000, "DKK", okUrl, cancelUrl, callbackUrl, Locale.GERMANY);
+        
+        StringBuilder builder = new StringBuilder();
+        for(Entry<String, String> entry : formData.getFields().entrySet()) {
+            if(entry.getValue()!=null && !entry.getKey().equals("md5check")) builder.append(entry.getValue());
+        }
+        builder.append(merchant.getGatewaySecret());
+        
+        assertEquals(formData.getFields().get("continueurl"), okUrl);
+        assertEquals(formData.getFields().get("md5check"), DigestUtils.md5Hex(builder.toString()));
+    }
+    
+    @Test
+    public void testStatusFromState() {
+
+        assertEquals(PaymentGatewayTransactionStatus.New, QuickPay.getStatusFromState(0));
+        assertEquals(PaymentGatewayTransactionStatus.Authorized, QuickPay.getStatusFromState(1));
+        assertEquals(null, QuickPay.getStatusFromState(2));
+        assertEquals(PaymentGatewayTransactionStatus.Charged, QuickPay.getStatusFromState(3));
+        assertEquals(null, QuickPay.getStatusFromState(4));
+        assertEquals(PaymentGatewayTransactionStatus.Cancelled, QuickPay.getStatusFromState(5));
+        assertEquals(null, QuickPay.getStatusFromState(6));
+        assertEquals(PaymentGatewayTransactionStatus.Refunded, QuickPay.getStatusFromState(7));
+        assertEquals(null, QuickPay.getStatusFromState(8));
+        
+    }
+    
+    @Test
+    public void testCardTypeFromString() {
+        
+        assertEquals(PaymentMethod.American_Express, QuickPay.getCardTypeFromString("american-express"));
+        assertEquals(PaymentMethod.American_Express, QuickPay.getCardTypeFromString("american-express-dk"));
+        assertEquals(PaymentMethod.Dankort, QuickPay.getCardTypeFromString("dankort"));
+        assertEquals(PaymentMethod.Diners, QuickPay.getCardTypeFromString("diners-express"));
+        assertEquals(PaymentMethod.Diners, QuickPay.getCardTypeFromString("diners-express-dk"));
+        assertEquals(PaymentMethod.Jcb, QuickPay.getCardTypeFromString("jcb"));
+        assertEquals(PaymentMethod.Mastercard, QuickPay.getCardTypeFromString("mastercard"));
+        assertEquals(PaymentMethod.Mastercard, QuickPay.getCardTypeFromString("mastercard-dk"));
+        assertEquals(PaymentMethod.Visa, QuickPay.getCardTypeFromString("visa"));
+        assertEquals(PaymentMethod.Visa, QuickPay.getCardTypeFromString("visa-dk"));
+        assertEquals(PaymentMethod.Visa_Electron, QuickPay.getCardTypeFromString("visa-electron"));
+        assertEquals(PaymentMethod.Visa_Electron, QuickPay.getCardTypeFromString("visa-electron-dk"));
+        assertEquals(PaymentMethod.Unknown, QuickPay.getCardTypeFromString(null));
+    }
+    
+    @Test
+    public void testStringFromCardtype() {
+        assertEquals("american-express", QuickPay.getStringFromCardType(PaymentMethod.American_Express));
+        assertEquals("dankort", QuickPay.getStringFromCardType(PaymentMethod.Dankort));
+        assertEquals("diners", QuickPay.getStringFromCardType(PaymentMethod.Diners));
+        assertEquals("jcb", QuickPay.getStringFromCardType(PaymentMethod.Jcb));
+        assertEquals("mastercard", QuickPay.getStringFromCardType(PaymentMethod.Mastercard));
+        assertEquals("visa", QuickPay.getStringFromCardType(PaymentMethod.Visa));
+        assertEquals("visa-electron", QuickPay.getStringFromCardType(PaymentMethod.Visa_Electron));
+        assertEquals(null, QuickPay.getStringFromCardType(PaymentMethod.Unknown));
+        
+        
     }
 
     private HttpResponse prepareResponse(int expectedResponseStatus, String expectedResponseBody) {

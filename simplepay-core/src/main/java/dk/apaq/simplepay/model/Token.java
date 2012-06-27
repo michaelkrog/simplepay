@@ -30,6 +30,7 @@ public class Token {
     @NotNull
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod = PaymentMethod.Unknown;
+    
     private int cardExpireMonth;
     private int cardExpireYear;
     private String cardCvd;
@@ -76,12 +77,17 @@ public class Token {
     private PaymentGatewayType gatewayType = PaymentGatewayType.Test;
 
     
-    public Token(String currency, PaymentGatewayType gatewayType) {
-        this.currency = currency;
+    public Token(PaymentGatewayType gatewayType, String orderNumber, String description) {
+        if(gatewayType == null) throw new NullPointerException("Gatewaytype was null.");
+        if(orderNumber == null) throw new NullPointerException("orderNumber was null.");
+        if(description == null) description = "";
+        
         this.gatewayType = gatewayType;
+        this.orderNumber = orderNumber;
+        this.description = description;
     }
 
-    public Token() {
+    protected Token() {
     }
     
     public String getCardNumber() {
@@ -134,10 +140,6 @@ public class Token {
 
     public void setGatewayTransactionId(String gatewayTransactionId) {
         this.gatewayTransactionId = gatewayTransactionId;
-    }
-
-    public void setGatewayType(PaymentGatewayType gatewayType) {
-        this.gatewayType = gatewayType;
     }
 
     public void setId(String id) {
@@ -235,9 +237,6 @@ public class Token {
         return orderNumber;
     }
 
-    public void setOrderNumber(String orderNumber) {
-        this.orderNumber = orderNumber;
-    }
     
     
     

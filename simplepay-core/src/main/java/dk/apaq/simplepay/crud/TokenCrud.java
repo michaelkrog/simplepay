@@ -30,11 +30,7 @@ public class TokenCrud extends EntityManagerCrudForSpring<String, Token> impleme
 
     @Transactional
     public Token createNew(PaymentGatewayType gatewayType, String orderNumber, String description) {
-        Token token = new Token();
-        token.setOrderNumber(orderNumber);
-        token.setGatewayType(gatewayType);
-        token.setDescription(description);
-        return createAndRead(token);
+        return createAndRead(new Token(gatewayType, orderNumber, description));
     }
 
     @Transactional
