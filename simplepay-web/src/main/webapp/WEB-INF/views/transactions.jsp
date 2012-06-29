@@ -35,7 +35,7 @@
                         &nbsp;|&nbsp;
                         <select id="status" class="searchfield input-small">
                             <option value="All">Alle</option>
-                            <option>Ready</option>
+                            <option>Authorized</option>
                             <option>Charged</option>
                             <option>Cancelled</option>
                             <option>Failed</option>
@@ -114,7 +114,7 @@
         var selectedTransaction = null;
  
         function advanceTransactionState() {
-            if(selectedTransaction.status == 'Ready') {
+            if(selectedTransaction.status == 'Authorized') {
                 $('#btn-cancelpayment').attr('disabled','disabled');
                 $('#btn-nextstate').attr('disabled','disabled');
                 service.transactions.charge(selectedTransaction.id, null, function(transaction){
@@ -145,7 +145,7 @@
             $('#btn-nextstate').removeAttr('disabled');
             
             var newTransaction = transaction.status == "New";
-            var cancelable = newTransaction || transaction.status == "Ready";
+            var cancelable = newTransaction || transaction.status == "Authorized";
             var changeable = !newTransaction && transaction.status != "Refunded" && transaction.status != "Cancelled";
             var nextStateText;
             var amount = 0;

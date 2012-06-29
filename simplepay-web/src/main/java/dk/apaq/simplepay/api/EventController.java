@@ -8,6 +8,7 @@ import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.model.Event;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
+import dk.apaq.simplepay.model.TokenEvent;
 import dk.apaq.simplepay.model.TransactionEvent;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,14 +35,27 @@ public class EventController {
     @ResponseBody
     public List listEvents(@RequestParam(required = false) String type, @RequestParam(required = false) String entityId) {
         Merchant m = SecurityHelper.getMerchant(service);
+        
+        Class clazz = null;
         if ("transaction".equals(type)) {
-            Filter filter = null;
-            if(entityId != null) {
-                filter = new CompareFilter("transaction.id", entityId, CompareFilter.CompareType.Equals);
-            }
-            return service.getEvents(m, TransactionEvent.class).list(filter, null, new Limit(15));
+            clazz = TransactionEvent.class;
         }
         
-        return null;
+        if ("token".equals(type)) {
+            clazz = TokenEvent.class;
+        }
+        
+        if(clazz == null) {
+            clazz = Event.class;
+        }
+        
+        Filter filter = null;
+        if(entityId != null) {
+            filter = new CompareFilter("transaction.id", entityId, CompareFilter.CompareType.Equals);
+        }
+        
+        List<Event> events = service.getEvents(m, clazz).list(filter, null, new Limit(15));
+        return events;
+
     }
 }
