@@ -7,6 +7,7 @@
     <class>dk.apaq.simplepay.model.SystemUser</class>
     <class>dk.apaq.simplepay.model.TransactionEvent</class>
     <class>dk.apaq.simplepay.model.Token</class>
+    <class>dk.apaq.simplepay.model.TokenEvent</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
   </persistence-unit>
 </persistence>

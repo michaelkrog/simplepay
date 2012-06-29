@@ -1,19 +1,14 @@
 package dk.apaq.simplepay.gateway.quickpay;
 
-import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.PayService;
-import dk.apaq.simplepay.common.TransactionStatus;
+import com.sun.xml.internal.bind.v2.runtime.IllegalAnnotationsException;
 import dk.apaq.simplepay.common.PaymentMethod;
 import dk.apaq.simplepay.gateway.AbstractPaymentGateway;
+import dk.apaq.simplepay.gateway.HasPaymentInformation;
 import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.gateway.PaymentGatewayTransactionStatus;
 import dk.apaq.simplepay.gateway.RemoteAuthPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentInformation;
-import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
-import dk.apaq.simplepay.model.SystemUser;
-import dk.apaq.simplepay.model.Token;
-import dk.apaq.simplepay.model.Transaction;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,7 +32,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author krog
  */
-public class QuickPay extends AbstractPaymentGateway implements RemoteAuthPaymentGateway {
+public class QuickPay extends AbstractPaymentGateway implements RemoteAuthPaymentGateway, HasPaymentInformation {
 
     private static final Logger LOG = LoggerFactory.getLogger(QuickPay.class);
 
@@ -51,11 +46,15 @@ public class QuickPay extends AbstractPaymentGateway implements RemoteAuthPaymen
         this.testMode = testMode;
     }
 
+    public boolean isTestMode() {
+        return testMode;
+    }
+
     public void setHttpClient(HttpClient httpClient) {
         this.httpClient = httpClient;
     }
     
-    private HttpClient getHttpClient() {
+    public HttpClient getHttpClient() {
         if(httpClient == null) {
             httpClient = new DefaultHttpClient();
         }
@@ -64,6 +63,7 @@ public class QuickPay extends AbstractPaymentGateway implements RemoteAuthPaymen
     
     @Override
     public void cancel(Token token) {
+        validateToken(token);
         try {
             LOG.debug("Cancelling transaction [transactionId={}]", token.getGatewayTransactionId());
             QuickPayMd5SumPrinter md5 = new QuickPayMd5SumPrinter();
@@ -99,6 +99,7 @@ public class QuickPay extends AbstractPaymentGateway implements RemoteAuthPaymen
     }
 
     public PaymentInformation getPaymentInformation(Token token) {
+        validateToken(token);
         try {
             LOG.debug("Retrieving information about transaction [transactionId={}]", token.getGatewayTransactionId());
             QuickPayMd5SumPrinter md5 = new QuickPayMd5SumPrinter();
@@ -149,6 +150,7 @@ public class QuickPay extends AbstractPaymentGateway implements RemoteAuthPaymen
 
     @Override
     public void capture(Token token, long amountInCents) {
+        validateToken(token);
         try {
             LOG.debug("Capturing money for transaction [transactionId={}; amountInCents={}]", new Object[]{token.getGatewayTransactionId(), amountInCents});
             QuickPayMd5SumPrinter md5 = new QuickPayMd5SumPrinter();
@@ -218,6 +220,7 @@ public class QuickPay extends AbstractPaymentGateway implements RemoteAuthPaymen
     }*/
 
     public void renew(Token token, long amountInCents) {
+        validateToken(token);
         try {
             LOG.debug("Renewing transaction [transaction={}; amountInCents={}]", new Object[]{token.getGatewayTransactionId(), amountInCents});
             QuickPayMd5SumPrinter md5 = new QuickPayMd5SumPrinter();
@@ -251,6 +254,7 @@ public class QuickPay extends AbstractPaymentGateway implements RemoteAuthPaymen
 
 
     public void refund(Token token, long amountInCents) {
+        validateToken(token);
         try {
             LOG.debug("Refunding transaction [transaction={}; amountInCents={}]", new Object[]{token.getGatewayTransactionId(), amountInCents});
             QuickPayMd5SumPrinter md5 = new QuickPayMd5SumPrinter();
@@ -300,7 +304,7 @@ public class QuickPay extends AbstractPaymentGateway implements RemoteAuthPaymen
         map.put("autocapture", "0");
         map.put("autofee", "0");
         map.put("cardtypelock", "creditcard");
-        map.put("description", "");
+        map.put("description", token.getDescription());
         map.put("splitpayment", "1");
         
         //md5
@@ -414,6 +418,16 @@ public class QuickPay extends AbstractPaymentGateway implements RemoteAuthPaymen
             throw new PaymentException("Unknown status. [status=" + qpstat + "]");
         }
 
+    }
+    
+    private void validateToken(Token token) {
+        if(token == null) {
+            throw new NullPointerException("token was null.");
+        }
+        
+        if(token.getMerchant() == null) {
+            throw new IllegalArgumentException("token does not have merchant specified which is required.");
+        }
     }
 
 }

@@ -2,6 +2,7 @@ package dk.apaq.simplepay.gateway.quickpay;
 
 import dk.apaq.simplepay.common.PaymentMethod;
 import dk.apaq.simplepay.common.TransactionStatus;
+import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.gateway.PaymentGatewayTransactionStatus;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import dk.apaq.simplepay.gateway.PaymentInformation;
@@ -282,9 +283,111 @@ public class QuickPayTest {
         assertEquals("visa", QuickPay.getStringFromCardType(PaymentMethod.Visa));
         assertEquals("visa-electron", QuickPay.getStringFromCardType(PaymentMethod.Visa_Electron));
         assertEquals(null, QuickPay.getStringFromCardType(PaymentMethod.Unknown));
+    }
+    
+    @Test
+    public void testCheckQuickpayResult() {
+        try {
+            QuickPay.checkQuickpayResult("001", "error");
+            fail("Should fail");
+        } catch(PaymentException ex) {}
+        
+        try {
+            QuickPay.checkQuickpayResult("002", "error");
+            fail("Should fail");
+        } catch(PaymentException ex) {}
+        
+        try {
+            QuickPay.checkQuickpayResult("003", "error");
+            fail("Should fail");
+        } catch(PaymentException ex) {}
+        
+        try {
+            QuickPay.checkQuickpayResult("004", "error");
+            fail("Should fail");
+        } catch(PaymentException ex) {}
+        
+        try {
+            QuickPay.checkQuickpayResult("005", "error");
+            fail("Should fail");
+        } catch(PaymentException ex) {}
+        
+        try {
+            QuickPay.checkQuickpayResult("006", "error");
+            fail("Should fail");
+        } catch(PaymentException ex) {}
+        
+        try {
+            QuickPay.checkQuickpayResult("007", "error");
+            fail("Should fail");
+        } catch(PaymentException ex) {}
+        
+        try {
+            QuickPay.checkQuickpayResult("008", "error");
+            fail("Should fail");
+        } catch(PaymentException ex) {}
+        
+        try {
+            QuickPay.checkQuickpayResult("009", "error");
+            fail("Should fail");
+        } catch(PaymentException ex) {}
+        
+        try {
+            QuickPay.checkQuickpayResult("dad", "error");
+            fail("Should fail");
+        } catch(PaymentException ex) {}
         
         
     }
+    
+    @Test
+    public void testBeanPattern() {
+        HttpClient mockHttpClient = Mockito.mock(HttpClient.class);
+        QuickPay q = new QuickPay();
+        q.setHttpClient(mockHttpClient);
+        q.setService(null);
+        q.setTestMode(true);
+        
+        assertEquals(mockHttpClient, q.getHttpClient());
+        assertEquals(true, q.isTestMode());
+    }
+    
+    @Test
+    public void testErrorHandling() throws IOException {
+        HttpClient mockHttpClient = Mockito.mock(HttpClient.class);
+        Mockito.when(mockHttpClient.execute(Mockito.any(HttpUriRequest.class))).thenThrow(new IOException("No internet connection"));
+        
+        Token token = new Token(PaymentGatewayType.QuickPay, "12", null);
+        token.setMerchant(merchant);
+        QuickPay q = new QuickPay();
+        q.setHttpClient(mockHttpClient);
+        
+        try{
+            q.capture(token, 100);
+            fail("Should have thrown exception");
+        } catch(PaymentException ex) { }
+        
+        try{
+            q.cancel(token);
+            fail("Should have thrown exception");
+        } catch(PaymentException ex) { }
+        
+        try{
+            q.refund(token, 100);
+            fail("Should have thrown exception");
+        } catch(PaymentException ex) { }
+        
+        try{
+            q.renew(token, 200);
+            fail("Should have thrown exception");
+        } catch(PaymentException ex) { }
+        
+        try{
+            q.getPaymentInformation(token);
+            fail("Should have thrown exception");
+        } catch(PaymentException ex) { }
+    }
+
 
     private HttpResponse prepareResponse(int expectedResponseStatus, String expectedResponseBody) {
         HttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), expectedResponseStatus, ""));

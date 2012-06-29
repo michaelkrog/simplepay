@@ -16,20 +16,20 @@ import org.hibernate.annotations.GenericGenerator;
  * @author michael
  */
 @Entity
-public class TransactionEvent implements Event {
+public class TokenEvent implements Event {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
     private String id;
     
     private String username;
+    private String message;
     
     @Temporal(javax.persistence.TemporalType.DATE)
     @NotNull
     private Date eventDate = new Date();
     
-    @NotNull
-    private TransactionStatus newStatus;
+    
     @NotNull
     private String remoteAddress;
     
@@ -39,15 +39,15 @@ public class TransactionEvent implements Event {
     
     private String entityId;
 
-    protected TransactionEvent() {
+    protected TokenEvent() {
     }
 
     
-    public TransactionEvent(Transaction transaction, String username, TransactionStatus newStatus, String remoteAddress) {
-        if(transaction == null) throw new NullPointerException("transaction was null.");
-        this.entityId = transaction.getId();
+    public TokenEvent(Token token, String message, String username, String remoteAddress) {
+        if(token == null) throw new NullPointerException("token was null.");
+        this.entityId = token.getId();
+        this.message = message;
         this.username = username;
-        this.newStatus = newStatus;
         this.remoteAddress = remoteAddress;
     }
 
@@ -56,10 +56,11 @@ public class TransactionEvent implements Event {
         return id;
     }
 
-    public TransactionStatus getNewStatus() {
-        return newStatus;
+    public String getMessage() {
+        return message;
     }
 
+    
     public String getRemoteAddress() {
         return remoteAddress;
     }

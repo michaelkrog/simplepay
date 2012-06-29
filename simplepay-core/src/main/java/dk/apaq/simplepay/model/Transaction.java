@@ -49,7 +49,7 @@ public class Transaction implements Serializable {
     
     @Enumerated(EnumType.STRING)
     @NotNull
-    private TransactionStatus status = TransactionStatus.Ready;
+    private TransactionStatus status = TransactionStatus.Authorized;
     
     @NotNull
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)

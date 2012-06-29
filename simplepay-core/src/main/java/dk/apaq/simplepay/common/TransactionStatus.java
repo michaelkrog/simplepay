@@ -8,7 +8,7 @@ public enum TransactionStatus {
     /**
      * Transaction started, hasn an authorized token, but not completed.
      */
-    Ready, 
+    Authorized, 
     
     /**
      * You have charged the money. You have asked the acquirer to transfer the money from the customers bank account to yours.

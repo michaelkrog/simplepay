@@ -1,5 +1,8 @@
 package dk.apaq.simplepay;
 
+import dk.apaq.crud.Crud;
+import dk.apaq.crud.Crud.Complete;
+import dk.apaq.filter.core.CompareFilter;
 import dk.apaq.simplepay.common.PaymentMethod;
 import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
@@ -8,6 +11,7 @@ import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Role;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
+import dk.apaq.simplepay.model.TransactionEvent;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
@@ -82,7 +86,7 @@ public class PayServiceTest {
         
         //Make sure the right data has been set
         assertEquals(m.getId(), t.getMerchant().getId());
-        assertEquals(TransactionStatus.Ready, t.getStatus());
+        assertEquals(TransactionStatus.Authorized, t.getStatus());
         
         //Make sure that transactions are only available throught he right merchants
         List<Transaction> tlist = service.getTransactions(m).list();
@@ -112,7 +116,7 @@ public class PayServiceTest {
         assertEquals(t.getToken().getId(), token.getId());
         assertTrue(t.getToken().isAuthorized());
         assertTrue(t.getToken().isUsed());
-        assertEquals(TransactionStatus.Ready, t.getStatus());
+        assertEquals(TransactionStatus.Authorized, t.getStatus());
         
         t = service.getTransactions(m).charge(t, 300);
         assertEquals(TransactionStatus.Charged, t.getStatus());
@@ -150,5 +154,38 @@ public class PayServiceTest {
         } catch(SecurityException ex) { }
     }
     
+    @Test
+    public void testGetEvents() {
+        Transaction t = new Transaction();
+        Merchant merchant = service.getMerchants().createAndRead(new Merchant());
+        Crud.Complete<String, TransactionEvent> events = service.getEvents(merchant, TransactionEvent.class);
+        TransactionEvent event = events.createAndRead(new TransactionEvent(t, "user", TransactionStatus.Authorized, "129.129.129.912"));
+        assertNotNull(event);
+    }
     
+    @Test
+    public void testGetOrCreatePublicUser() {
+        Merchant merchant = service.getMerchants().createAndRead(new Merchant());
+        List<SystemUser> users = service.getUsers().list(new CompareFilter("merchant", merchant, CompareFilter.CompareType.Equals), null);
+        assertTrue(users.isEmpty());
+        
+        SystemUser user = service.getOrCreatePublicUser(merchant);
+        assertNotNull(user);
+        
+        users = service.getUsers().list(new CompareFilter("merchant", merchant, CompareFilter.CompareType.Equals), null);
+        assertFalse(users.isEmpty());
+    }
+    
+    @Test
+    public void testGetOrCreatePrivateUser() {
+        Merchant merchant = service.getMerchants().createAndRead(new Merchant());
+        List<SystemUser> users = service.getUsers().list(new CompareFilter("merchant", merchant, CompareFilter.CompareType.Equals), null);
+        assertTrue(users.isEmpty());
+        
+        SystemUser user = service.getOrCreatePrivateUser(merchant);
+        assertNotNull(user);
+        
+        users = service.getUsers().list(new CompareFilter("merchant", merchant, CompareFilter.CompareType.Equals), null);
+        assertFalse(users.isEmpty());
+    }
 }

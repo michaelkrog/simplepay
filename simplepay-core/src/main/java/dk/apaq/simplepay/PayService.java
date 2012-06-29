@@ -141,6 +141,12 @@ public class PayService implements ApplicationContextAware, IPayService {
     public SystemUser getUser(String username) {
         return getUser("username", username);
     }
+
+    public String getCurrentUsername() {
+        SystemUser user = getCurrentUser();
+        return user == null ? "Anonymous" : user.getUsername();
+    }
+    
     
     @Override
     public SystemUser getCurrentUser() {

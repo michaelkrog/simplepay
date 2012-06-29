@@ -25,10 +25,6 @@ public abstract class TestGateway extends AbstractPaymentGateway {
         service.getTransactions(merchant).update(transaction);*/
     }
 
-    public PaymentInformation getPaymentInformation(Token token) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     public void refund(Token token, long amountInCents) {
         /*transaction.setRefundedAmount(amountInCents);
         transaction.setStatus(TransactionStatus.Refunded);

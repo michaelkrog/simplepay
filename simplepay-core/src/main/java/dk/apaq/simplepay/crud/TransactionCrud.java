@@ -1,11 +1,14 @@
 package dk.apaq.simplepay.crud;
 
 import dk.apaq.crud.jpa.EntityManagerCrudForSpring;
+import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.gateway.PaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Transaction;
+import dk.apaq.simplepay.model.TransactionEvent;
+import dk.apaq.simplepay.util.RequestInformationHelper;
 import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +22,9 @@ public class TransactionCrud extends EntityManagerCrudForSpring<String, Transact
     @Autowired
     private PaymentGatewayManager gatewayManager;
     
+    @Autowired
+    private IPayService service;
+    
     public TransactionCrud(EntityManager em) {
         super(em, Transaction.class);
         
@@ -27,7 +33,12 @@ public class TransactionCrud extends EntityManagerCrudForSpring<String, Transact
     @Transactional
     public Transaction createNew(Token token) {
         Transaction transaction = new Transaction(token);
-        return createAndRead(transaction);
+        transaction = createAndRead(transaction);
+        
+        TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), TransactionStatus.Authorized, RequestInformationHelper.getRemoteAddress());
+        service.getEvents(token.getMerchant(), TransactionEvent.class).createAndRead(evt);
+        
+        return transaction;
     }
 
     @Transactional
@@ -36,10 +47,15 @@ public class TransactionCrud extends EntityManagerCrudForSpring<String, Transact
         transaction.setCapturedAmount(amount);
         transaction.setStatus(TransactionStatus.Charged);
         
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(/*transaction.getMerchant(), */transaction.getToken().getGatewayType());
+        PaymentGateway gateway = gatewayManager.createPaymentGateway(transaction.getToken().getGatewayType());
         gateway.capture(transaction.getToken(), amount);
         
-        return update(transaction);
+        transaction = update(transaction);
+        
+        TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), TransactionStatus.Charged, RequestInformationHelper.getRemoteAddress());
+        service.getEvents(transaction.getMerchant(), TransactionEvent.class).createAndRead(evt);
+        
+        return transaction;
     }
 
     @Transactional
@@ -47,10 +63,15 @@ public class TransactionCrud extends EntityManagerCrudForSpring<String, Transact
         transaction = read(transaction.getId());
         transaction.setStatus(TransactionStatus.Cancelled);
         
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(/*transaction.getMerchant(), */transaction.getToken().getGatewayType());
+        PaymentGateway gateway = gatewayManager.createPaymentGateway(transaction.getToken().getGatewayType());
         gateway.cancel(transaction.getToken());
         
-        return update(transaction);
+        transaction = update(transaction);
+        
+        TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), TransactionStatus.Cancelled, RequestInformationHelper.getRemoteAddress());
+        service.getEvents(transaction.getMerchant(), TransactionEvent.class).createAndRead(evt);
+        
+        return transaction;
     }
 
     @Transactional
@@ -59,10 +80,15 @@ public class TransactionCrud extends EntityManagerCrudForSpring<String, Transact
         transaction.setRefundedAmount(amount);
         transaction.setStatus(TransactionStatus.Refunded);
         
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(/*transaction.getMerchant(), */transaction.getToken().getGatewayType());
+        PaymentGateway gateway = gatewayManager.createPaymentGateway(transaction.getToken().getGatewayType());
         gateway.refund(transaction.getToken(), amount);
         
-        return update(transaction);
+        transaction = update(transaction);
+        
+        TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), TransactionStatus.Charged, RequestInformationHelper.getRemoteAddress());
+        service.getEvents(transaction.getMerchant(), TransactionEvent.class).createAndRead(evt);
+        
+        return transaction;
     }
     
     

@@ -26,11 +26,6 @@ public interface PaymentGateway {
     void capture(Token token, long amountInCents);
 
     /**
-     * Retrieves all information about the transaction.
-     */
-    PaymentInformation getPaymentInformation(Token token);
-
-    /**
      * Refund a transaction
      * @param amountInCents The amount in cents(smallest denominator in the currency.)
      */

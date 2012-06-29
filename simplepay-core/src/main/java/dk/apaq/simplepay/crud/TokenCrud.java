@@ -1,6 +1,7 @@
 package dk.apaq.simplepay.crud;
 
 import dk.apaq.crud.jpa.EntityManagerCrudForSpring;
+import dk.apaq.simplepay.IPayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,6 +11,8 @@ import dk.apaq.simplepay.gateway.PaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import dk.apaq.simplepay.model.Token;
+import dk.apaq.simplepay.model.TokenEvent;
+import dk.apaq.simplepay.util.RequestInformationHelper;
 import javax.persistence.EntityManager;
 
 
@@ -23,6 +26,9 @@ public class TokenCrud extends EntityManagerCrudForSpring<String, Token> impleme
     @Autowired
     private PaymentGatewayManager gatewayManager;
     
+    @Autowired
+    private IPayService service;
+    
     public TokenCrud(EntityManager em) {
         super(em, Token.class);
         
@@ -30,7 +36,12 @@ public class TokenCrud extends EntityManagerCrudForSpring<String, Token> impleme
 
     @Transactional
     public Token createNew(PaymentGatewayType gatewayType, String orderNumber, String description) {
-        return createAndRead(new Token(gatewayType, orderNumber, description));
+        Token token = createAndRead(new Token(gatewayType, orderNumber, description));
+        
+        TokenEvent evt = new TokenEvent(token, "Token created.", service.getCurrentUsername(), RequestInformationHelper.getRemoteAddress());
+        service.getEvents(token.getMerchant(), TokenEvent.class).create(evt);
+        
+        return token;
     }
 
     @Transactional
@@ -44,7 +55,13 @@ public class TokenCrud extends EntityManagerCrudForSpring<String, Token> impleme
         token.setCardExpireYear(expireYear);
         token.setCardNumberTruncated(cardNumberTruncated);
         token.setGatewayTransactionId(remoteTransactionID);
-        return update(token);
+        token = update(token);
+        
+        TokenEvent evt = new TokenEvent(token, "Authorized remotely..", service.getCurrentUsername(), RequestInformationHelper.getRemoteAddress());
+        service.getEvents(token.getMerchant(), TokenEvent.class).create(evt);
+        
+        
+        return token;
     }
 
     @Transactional
@@ -66,9 +83,14 @@ public class TokenCrud extends EntityManagerCrudForSpring<String, Token> impleme
         
         ((DirectPaymentGateway)gateway).authorize(token, amount, currency, currency, currency);
         
-        return update(token);
+        token = update(token);
+        
+        TokenEvent evt = new TokenEvent(token, "Authorized directly.", service.getCurrentUsername(), RequestInformationHelper.getRemoteAddress());
+        service.getEvents(token.getMerchant(), TokenEvent.class).create(evt);
+        
+        
+        return token;
     }
-    
     
     
     

@@ -129,7 +129,7 @@ public class CrudSecurity {
         
         private void checkStatus(Transaction t) {
             if(t.getId() == null) { //New transaction
-                if(t.getStatus() != TransactionStatus.Ready) {
+                if(t.getStatus() != TransactionStatus.Authorized) {
                     throw new SecurityException("A new transaction status can only be persisted with status Ready.");
                 }
             } else {

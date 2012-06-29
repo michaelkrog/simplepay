@@ -19,6 +19,12 @@ public interface IPayService {
     SystemUser getOrCreatePrivateUser(Merchant merchant);
     SystemUser getOrCreatePublicUser(Merchant merchant);
     SystemUser getCurrentUser();
+    /**
+     * Retrieves the name of the current user. If not user is currenctly logged in 'Anonymous' is returned;
+     * @return 
+     */
+    String getCurrentUsername();
+    
     SystemUser getUser(String username);
     Crud.Complete<String, SystemUser> getUsers();
     

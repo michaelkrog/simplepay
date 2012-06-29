@@ -25,10 +25,6 @@ public class Nets extends AbstractPaymentGateway implements DirectPaymentGateway
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public PaymentInformation getPaymentInformation(Token token) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     public void refund(Token token, long amountInCents) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
