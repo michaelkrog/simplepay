@@ -85,7 +85,7 @@ public class TransactionCrud extends EntityManagerCrudForSpring<String, Transact
         
         transaction = update(transaction);
         
-        TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), TransactionStatus.Charged, RequestInformationHelper.getRemoteAddress());
+        TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), TransactionStatus.Refunded, RequestInformationHelper.getRemoteAddress());
         service.getEvents(transaction.getMerchant(), TransactionEvent.class).createAndRead(evt);
         
         return transaction;

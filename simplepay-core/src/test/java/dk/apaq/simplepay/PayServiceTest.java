@@ -10,6 +10,7 @@ import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Role;
 import dk.apaq.simplepay.model.SystemUser;
+import dk.apaq.simplepay.model.TokenEvent;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.model.TransactionEvent;
 import java.util.ArrayList;
@@ -187,5 +188,18 @@ public class PayServiceTest {
         
         users = service.getUsers().list(new CompareFilter("merchant", merchant, CompareFilter.CompareType.Equals), null);
         assertFalse(users.isEmpty());
+    }
+    
+    @Test
+    public void testEvents() {
+        Merchant merchant = service.getMerchants().createAndRead(new Merchant());
+        List<TokenEvent> evts = service.getEvents(merchant, TokenEvent.class).list();
+        assertTrue(evts.isEmpty());
+        
+        Token token = service.getTokens(merchant).createNew(PaymentGatewayType.Test, "ordernum", null);
+        
+        evts = service.getEvents(merchant, TokenEvent.class).list();
+        assertFalse(evts.isEmpty());
+        
     }
 }
