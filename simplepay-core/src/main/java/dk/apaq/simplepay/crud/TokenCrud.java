@@ -53,7 +53,7 @@ public class TokenCrud extends EntityManagerCrudForSpring<String, Token> impleme
         token.setPaymentMethod(paymentMethod);
         token.setCardExpireMonth(expireMonth);
         token.setCardExpireYear(expireYear);
-        token.setCardNumberTruncated(cardNumberTruncated);
+        token.setCardNumberLast4(cardNumberTruncated);
         token.setGatewayTransactionId(remoteTransactionID);
         token = update(token);
         

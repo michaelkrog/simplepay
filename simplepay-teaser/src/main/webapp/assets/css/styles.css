@@ -1,0 +1,43 @@
+body {
+    background:url(../img/background.png);
+    font-family: 'Open Sans',arial,sans-serif;
+    padding-top:40px;
+    
+}
+
+
+.brand {
+    color: #262626;
+    text-shadow: 0px 1px rgba(255, 255, 255, 0.5);
+    font-size: 20px;
+    font-weight: 200;
+}
+
+.box {
+    padding: 40px;
+    border-radius: 4px;
+    box-shadow:0px 1px 5px #8f8f8f;
+    background:white;
+    margin-top:10px;
+}
+.brand .blue {
+    color:#1C5AC4;
+}
+
+.footnote {
+    font-size:11px;
+    color:#4f4f4f;
+}
+
+.logo-cloud {
+    background:white url(../img/cardcloud.png) no-repeat;
+    height:180px;
+}
+
+.padding-left {
+    padding-left:10px;
+}
+
+.padding-right {
+    padding-right:10px;
+}

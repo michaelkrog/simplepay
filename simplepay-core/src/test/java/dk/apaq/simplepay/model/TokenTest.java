@@ -28,7 +28,7 @@ public class TokenTest {
         instance.setCardExpireYear(2012);
         
         instance.setCardNumber("cardNumber");
-        instance.setCardNumberTruncated("cardNumberTruncated");
+        instance.setCardNumberLast4("cardNumberTruncated");
         instance.setPaymentMethod(PaymentMethod.Dankort);
         instance.setCurrency("currency");
         instance.setDateChanged(now);
@@ -44,7 +44,7 @@ public class TokenTest {
         assertEquals(8, instance.getCardExpireMonth());
         assertEquals(2012, instance.getCardExpireYear());
         assertEquals("cardNumber", instance.getCardNumber());
-        assertEquals("cardNumberTruncated", instance.getCardNumberTruncated());
+        assertEquals("cardNumberTruncated", instance.getCardNumberLast4());
         assertEquals(PaymentMethod.Dankort, instance.getPaymentMethod());
         assertEquals("currency", instance.getCurrency());
         assertEquals(now, instance.getDateChanged());

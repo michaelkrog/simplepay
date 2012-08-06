@@ -31,10 +31,7 @@ public class Token {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod = PaymentMethod.Unknown;
     
-    private int cardExpireMonth;
-    private int cardExpireYear;
-    private String cardCvd;
-    private String cardNumberTruncated;
+    private String last4;
     private long authorizedAmount;
     private boolean authorized = false;
     private boolean used = false;
@@ -45,15 +42,6 @@ public class Token {
     @NotNull
     private String currency="USD";
     
-    @NotNull
-    @JsonIgnore
-    private TokenPurpose purpose = TokenPurpose.SinglePayment;
-    
-    
-    @NotNull
-    @ManyToOne
-    @JsonIgnore
-    private Merchant merchant;
     
     @NotNull
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -63,13 +51,33 @@ public class Token {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date dateChanged = new Date();
     
+    
     //Variables we dont want in a JSON output is here.
     //TODO Move the ignore descision to the JSON mapper instead
+    @NotNull
+    @ManyToOne
+    @JsonIgnore
+    private Merchant merchant;
+    
+    @NotNull
+    @JsonIgnore
+    private TokenPurpose purpose = TokenPurpose.SinglePayment;
+    
     @JsonIgnore
     private String gatewayTransactionId;
     
     @JsonIgnore
     private String cardNumber;
+    
+    @JsonIgnore
+    private int cardExpireMonth;
+    
+    @JsonIgnore
+    private int cardExpireYear;
+    
+    @JsonIgnore
+    private String cardCvd;
+    
     
     @JsonIgnore
     @Enumerated(EnumType.STRING)
@@ -193,12 +201,12 @@ public class Token {
         this.used = used;
     }
 
-    public String getCardNumberTruncated() {
-        return cardNumberTruncated;
+    public String getCardNumberLast4() {
+        return last4;
     }
 
-    public void setCardNumberTruncated(String cardNumberTruncated) {
-        this.cardNumberTruncated = cardNumberTruncated;
+    public void setCardNumberLast4(String cardNumberTruncated) {
+        this.last4 = cardNumberTruncated;
     }
 
     public int getCardExpireMonth() {

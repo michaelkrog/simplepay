@@ -9,6 +9,7 @@
   <modules>
     <module>simplepay-web</module>
     <module>simplepay-core</module>
+    <module>simplepay-teaser</module>
   </modules>
   
   <reporting>
@@ -26,7 +27,7 @@
                         <format>html</format>
                         <format>xml</format>
                     </formats>
-                    <excludes></excludes>
+                    <excludes/>
                 </configuration>
             </plugin>
         </plugins>
