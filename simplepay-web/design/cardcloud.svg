@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1008px"
+   height="516px"
+   version="1.1"
+   id="svg2"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="cardcloud.svg">
+  <metadata
+     id="metadata33">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Card Cloud</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1670"
+     inkscape:window-height="961"
+     id="namedview31"
+     showgrid="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:zoom="1.3232369"
+     inkscape:cx="466.6083"
+     inkscape:cy="258"
+     inkscape:window-x="151"
+     inkscape:window-y="72"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="Main Page">
+    <sodipodi:guide
+       orientation="0,1"
+       position="432.27333,297.75471"
+       id="guide3786" />
+  </sodipodi:namedview>
+  <title
+     id="title4">Card Cloud</title>
+  <description
+     id="description6">Created with Sketch (http://www.bohemiancoding.com/sketch)</description>
+  <defs
+     id="defs8" />
+  <g
+     fill="none"
+     id="Main Page">
+    <path
+       id="Rectangle decoration"
+       d=""
+       stroke="rgb(0,0,0)"
+       stroke-width="1"
+       fill="none" />
+    <path
+       id="Oval decoration"
+       d=""
+       stroke="rgb(0,0,0)"
+       stroke-width="1"
+       fill="none" />
+    <path
+       id="path17"
+       d=""
+       stroke="rgb(0,0,0)"
+       stroke-width="1"
+       fill="none" />
+    <path
+       id="path21"
+       d=""
+       stroke="rgb(0,0,0)"
+       stroke-width="1"
+       fill="none" />
+    <path
+       id="path25"
+       d=""
+       stroke="rgb(0,0,0)"
+       stroke-width="1"
+       fill="none" />
+    <path
+       id="path27"
+       d="m 221.73385,220.53972 c -1.5,-7.5 -1.5,-13.5 -1.5,-19.5 0,-42 33,-75 75,-75 24,0 46.5,12 60,30 24,-70.500001 91.5,-121.500001 171,-121.500001 99,0 180,79.500001 180,180.000001 0,6 -1.5,12 -1.5,19.5 1.5,0 4.5,0 7.5,0 61.5,0 112.5,49.5 112.5,112.5 0,61.5 -51,112.5 -112.5,112.5 -1.5,0 -469.5,0 -469.5,0 -67.5,-1.5 -120,-55.5 -120,-120 0,-60 42,-109.5 99,-118.5 l 0,0"
+       inkscape:connector-curvature="0"
+       style="fill:none;stroke:#000000;stroke-width:1.5" />
+    <path
+       id="path29"
+       d=""
+       stroke="rgb(0,0,0)"
+       stroke-width="1"
+       fill="none" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="264.5029"
+       y="219.00102"
+       id="text3010"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3012"
+         x="264.5029"
+         y="219.00102"
+         style="font-size:56px">simple</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="428.71609"
+       y="218.24529"
+       id="text3014"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3016"
+         x="428.71609"
+         y="218.24529"
+         style="font-size:56px;fill:#1c5acf;fill-opacity:0.94117647">pay</tspan></text>
+    <image
+       y="386.31979"
+       x="213.95543"
+       id="image3807"
+       xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_1.png"
+       height="44.735138"
+       width="70.866142" />
+    <image
+       y="387.04041"
+       x="302.37497"
+       id="image3818"
+       xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_2.png"
+       height="44.805382"
+       width="70.866142" />
+    <image
+       y="386.34082"
+       x="560.07635"
+       id="image3829"
+       xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_3.png"
+       height="44.693115"
+       width="70.866142" />
+    <image
+       y="389.3826"
+       x="479.21405"
+       id="image3840"
+       xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_4.png"
+       height="44.655376"
+       width="70.866142" />
+    <image
+       y="387.15903"
+       x="387.77161"
+       id="image3851"
+       xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_5.png"
+       height="44.568157"
+       width="70.866142" />
+    <image
+       y="326.70123"
+       x="389.28305"
+       id="image3862"
+       xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_6.png"
+       height="44.568157"
+       width="70.866142" />
+    <image
+       y="385.66882"
+       x="636.40436"
+       id="image3873"
+       xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_7.png"
+       height="46.037128"
+       width="70.866142" />
+    <image
+       y="327.81577"
+       x="303.4581"
+       id="image3884"
+       xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_8.png"
+       height="44.764812"
+       width="70.866142" />
+    <image
+       y="329.70996"
+       x="224.86296"
+       id="image3895"
+       xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_9.png"
+       height="43.999306"
+       width="70.866142" />
+    <image
+       y="326.50735"
+       x="479.54144"
+       id="image3917"
+       xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_10.png"
+       height="44.35873"
+       width="70.866142" />
+    <image
+       y="327.34653"
+       x="558.56494"
+       id="image3928"
+       xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_11.png"
+       height="44.788994"
+       width="70.866142" />
+    <image
+       y="323.00589"
+       x="637.91577"
+       id="image3939"
+       xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_12.png"
+       height="44.401608"
+       width="70.866142" />
+    <image
+       y="271.31894"
+       x="223.02406"
+       id="image3950"
+       xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_13.png"
+       height="44.997265"
+       width="70.866142" />
+    <image
+       y="263.78394"
+       x="303.4581"
+       id="image3972"
+       xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_14.png"
+       height="45.867023"
+       width="70.866142" />
+    <image
+       y="264.91214"
+       x="387.34332"
+       id="image3983"
+       xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_15.png"
+       height="45.122074"
+       width="70.866142" />
+    <image
+       y="265.48526"
+       x="481.4812"
+       id="image3994"
+       xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_16.png"
+       height="44.573048"
+       width="70.866142" />
+    <image
+       y="265.56219"
+       x="566.12219"
+       id="image4005"
+       xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_18.png"
+       height="44.419189"
+       width="70.866142" />
+    <image
+       y="265.20969"
+       x="648.49591"
+       id="image4016"
+       xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_20.png"
+       height="45.124165"
+       width="70.866142" />
+    <image
+       y="210.04196"
+       x="636.4043"
+       id="image4027"
+       xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_21.png"
+       height="45.124165"
+       width="70.866142" />
+    <image
+       y="208.77065"
+       x="724.82385"
+       id="image4038"
+       xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_22.png"
+       height="44.643867"
+       width="70.866142" />
+  </g>
+</svg>
