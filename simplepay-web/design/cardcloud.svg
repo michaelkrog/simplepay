@@ -52,6 +52,14 @@
        orientation="0,1"
        position="432.27333,297.75471"
        id="guide3786" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="213.11377,79.350873"
+       id="guide4041" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="300.02187,79.350873"
+       id="guide4043" />
   </sodipodi:namedview>
   <title
      id="title4">Card Cloud</title>
@@ -96,7 +104,10 @@
        id="path27"
        d="m 221.73385,220.53972 c -1.5,-7.5 -1.5,-13.5 -1.5,-19.5 0,-42 33,-75 75,-75 24,0 46.5,12 60,30 24,-70.500001 91.5,-121.500001 171,-121.500001 99,0 180,79.500001 180,180.000001 0,6 -1.5,12 -1.5,19.5 1.5,0 4.5,0 7.5,0 61.5,0 112.5,49.5 112.5,112.5 0,61.5 -51,112.5 -112.5,112.5 -1.5,0 -469.5,0 -469.5,0 -67.5,-1.5 -120,-55.5 -120,-120 0,-60 42,-109.5 99,-118.5 l 0,0"
        inkscape:connector-curvature="0"
-       style="fill:none;stroke:#000000;stroke-width:1.5" />
+       style="fill:none;stroke:#000000;stroke-width:1.5"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <path
        id="path29"
        d=""
@@ -109,7 +120,10 @@
        x="264.5029"
        y="219.00102"
        id="text3010"
-       sodipodi:linespacing="125%"><tspan
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"><tspan
          sodipodi:role="line"
          id="tspan3012"
          x="264.5029"
@@ -121,151 +135,214 @@
        x="428.71609"
        y="218.24529"
        id="text3014"
-       sodipodi:linespacing="125%"><tspan
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"><tspan
          sodipodi:role="line"
          id="tspan3016"
          x="428.71609"
          y="218.24529"
          style="font-size:56px;fill:#1c5acf;fill-opacity:0.94117647">pay</tspan></text>
     <image
-       y="386.31979"
-       x="213.95543"
+       y="391.914"
+       x="213.11377"
        id="image3807"
        xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_1.png"
        height="44.735138"
-       width="70.866142" />
+       width="70.866142"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
        y="387.04041"
        x="302.37497"
        id="image3818"
        xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_2.png"
        height="44.805382"
-       width="70.866142" />
+       width="70.866142"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
        y="386.34082"
        x="560.07635"
        id="image3829"
        xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_3.png"
        height="44.693115"
-       width="70.866142" />
+       width="70.866142"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
        y="389.3826"
        x="479.21405"
        id="image3840"
        xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_4.png"
        height="44.655376"
-       width="70.866142" />
+       width="70.866142"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
        y="387.15903"
        x="387.77161"
        id="image3851"
        xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_5.png"
        height="44.568157"
-       width="70.866142" />
+       width="70.866142"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
        y="326.70123"
        x="389.28305"
        id="image3862"
        xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_6.png"
        height="44.568157"
-       width="70.866142" />
+       width="70.866142"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
        y="385.66882"
        x="636.40436"
        id="image3873"
        xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_7.png"
        height="46.037128"
-       width="70.866142" />
+       width="70.866142"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
        y="327.81577"
        x="303.4581"
        id="image3884"
        xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_8.png"
        height="44.764812"
-       width="70.866142" />
+       width="70.866142"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
-       y="329.70996"
-       x="224.86296"
+       y="332.73285"
+       x="213.11377"
        id="image3895"
        xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_9.png"
        height="43.999306"
-       width="70.866142" />
+       width="70.866142"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
        y="326.50735"
        x="479.54144"
        id="image3917"
        xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_10.png"
        height="44.35873"
-       width="70.866142" />
+       width="70.866142"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
        y="327.34653"
        x="558.56494"
        id="image3928"
        xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_11.png"
        height="44.788994"
-       width="70.866142" />
+       width="70.866142"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
        y="323.00589"
        x="637.91577"
        id="image3939"
        xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_12.png"
        height="44.401608"
-       width="70.866142" />
+       width="70.866142"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
-       y="271.31894"
-       x="223.02406"
+       y="272.83038"
+       x="213.11377"
        id="image3950"
        xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_13.png"
        height="44.997265"
-       width="70.866142" />
+       width="70.866142"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
        y="263.78394"
        x="303.4581"
        id="image3972"
        xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_14.png"
        height="45.867023"
-       width="70.866142" />
+       width="70.866142"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
        y="264.91214"
        x="387.34332"
        id="image3983"
        xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_15.png"
        height="45.122074"
-       width="70.866142" />
+       width="70.866142"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
        y="265.48526"
        x="481.4812"
        id="image3994"
        xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_16.png"
        height="44.573048"
-       width="70.866142" />
+       width="70.866142"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
        y="265.56219"
        x="566.12219"
        id="image4005"
        xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_18.png"
        height="44.419189"
-       width="70.866142" />
+       width="70.866142"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
        y="265.20969"
        x="648.49591"
        id="image4016"
        xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_20.png"
        height="45.124165"
-       width="70.866142" />
+       width="70.866142"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
        y="210.04196"
        x="636.4043"
        id="image4027"
        xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_21.png"
        height="45.124165"
-       width="70.866142" />
+       width="70.866142"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
     <image
        y="208.77065"
        x="724.82385"
        id="image4038"
        xlink:href="file:///C:/projects/simplepay/simplepay-web/design/cardcloud_components/png/card_22.png"
        height="44.643867"
-       width="70.866142" />
+       width="70.866142"
+       inkscape:export-filename="C:\projects\simplepay\simplepay-web\design\cardcloud_preview.png"
+       inkscape:export-xdpi="300.37704"
+       inkscape:export-ydpi="300.37704" />
   </g>
 </svg>
