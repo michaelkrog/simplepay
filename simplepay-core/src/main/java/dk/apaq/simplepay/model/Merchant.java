@@ -17,7 +17,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 public class Merchant implements Serializable {
     
-    private static final String DEFAULT_SECRET = "SECRET";
+    //private static final String DEFAULT_SECRET = "SECRET";
     
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -30,14 +30,14 @@ public class Merchant implements Serializable {
     private String zipcode;
     private String city;
     private String country;
-    
+    /*
     private String gatewayUserId;
     private String gatewaySecret = DEFAULT_SECRET;
     
     @Enumerated(EnumType.STRING)
     @NotNull
     private PaymentGatewayType gatewayType = PaymentGatewayType.Test;
-
+*/
     public String getCity() {
         return city;
     }
@@ -102,7 +102,7 @@ public class Merchant implements Serializable {
         this.phone = phone;
     }
 
-    public String getGatewayUserId() {
+  /*  public String getGatewayUserId() {
         return gatewayUserId;
     }
 
@@ -126,6 +126,6 @@ public class Merchant implements Serializable {
     public void setGatewayType(PaymentGatewayType gatewayType) {
         this.gatewayType = gatewayType;
     }
-
+*/
     
 }
