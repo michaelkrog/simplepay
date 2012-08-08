@@ -82,8 +82,8 @@ public class CrudSecurity {
 
         @Override
         public void onBeforeEntityCreate(WithEntity<String, Transaction> event) {
-            if(service.getTransactionByOrderNumber(owner, event.getEntity().getOrderNumber()) != null) {
-                throw new SecurityException("Ordernumber already used. [Merchant="+owner.getId()+";orderNumber="+event.getEntity().getOrderNumber()+"]");
+            if(service.getTransactionByOrderNumber(owner, event.getEntity().getRefId()) != null) {
+                throw new SecurityException("Ordernumber already used. [Merchant="+owner.getId()+";orderNumber="+event.getEntity().getRefId()+"]");
             }
             
             checkStatus(event.getEntity());
@@ -104,25 +104,25 @@ public class CrudSecurity {
         }
         
         private void checkToken(Transaction t) {
-            Token token = t.getToken();
+            String token = t.getToken();
             
-            if(token == null || token.getId() == null) {
+            if(token == null || token == null) {
                 throw new IllegalArgumentException("A transactation must have a persisted token.");
             }
             
-            Token existingToken = service.getTokens(owner).read(token.getId());
+            Token existingToken = service.getTokens(owner).read(token);
             
             if(t.getId() == null) { //new transaction
-                if(existingToken.isUsed()) {
+                if(existingToken.isExpired()) {
                     throw new SecurityException("Cannot use a token that has already been used.");
                 }
                 
-                token.setUsed(true);
+                //token.set(true);
             } else {
                Transaction existingTransaction = service.getTransactions(owner).read(t.getId());
-               if(!existingTransaction.getToken().getId().equals(token.getId())) {
+               /*if(!existingTransaction.getToken().getId().equals(token.getId())) {
                    throw new SecurityException("Cannot change token on transaction.");
-               } 
+               } */
             }
             
         }
@@ -220,9 +220,9 @@ public class CrudSecurity {
                 throw new IllegalArgumentException("No token for merchant with specified entityid[id="+event.getEntityId()+"]");
             }
             
-            if(existingToken.isUsed()) {
+            /*if(existingToken.isUsed()) {
                 throw new SecurityException("Cannot change token that has been used.");
-            }
+            }*/
         }
 
         @Override

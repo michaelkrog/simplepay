@@ -32,7 +32,7 @@ public class TransactionCrud extends EntityManagerCrudForSpring<String, Transact
 
     @Transactional
     public Transaction createNew(Token token) {
-        Transaction transaction = new Transaction(token);
+        Transaction transaction = new Transaction(/*token.getId()*/);
         transaction = createAndRead(transaction);
         
         TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), TransactionStatus.Authorized, RequestInformationHelper.getRemoteAddress());
@@ -44,11 +44,11 @@ public class TransactionCrud extends EntityManagerCrudForSpring<String, Transact
     @Transactional
     public Transaction charge(Transaction transaction, long amount) {
         transaction = read(transaction.getId());
-        transaction.setCapturedAmount(amount);
+        transaction.setAmountCharged(amount);
         transaction.setStatus(TransactionStatus.Charged);
         
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(transaction.getToken().getGatewayType());
-        gateway.capture(transaction.getToken(), amount);
+        PaymentGateway gateway = null;//gatewayManager.createPaymentGateway(transaction.getToken().getGatewayType());
+        //gateway.capture(transaction.getToken(), amount);
         
         transaction = update(transaction);
         
@@ -63,8 +63,8 @@ public class TransactionCrud extends EntityManagerCrudForSpring<String, Transact
         transaction = read(transaction.getId());
         transaction.setStatus(TransactionStatus.Cancelled);
         
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(transaction.getToken().getGatewayType());
-        gateway.cancel(transaction.getToken());
+        PaymentGateway gateway = null;//gatewayManager.createPaymentGateway(transaction.getToken().getGatewayType());
+        //gateway.cancel(transaction.getToken());
         
         transaction = update(transaction);
         
@@ -77,11 +77,11 @@ public class TransactionCrud extends EntityManagerCrudForSpring<String, Transact
     @Transactional
     public Transaction refund(Transaction transaction, long amount) {
         transaction = read(transaction.getId());
-        transaction.setRefundedAmount(amount);
+        transaction.setAmountRefunded(amount);
         transaction.setStatus(TransactionStatus.Refunded);
         
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(transaction.getToken().getGatewayType());
-        gateway.refund(transaction.getToken(), amount);
+        PaymentGateway gateway = null;//gatewayManager.createPaymentGateway(transaction.getToken().getGatewayType());
+        //gateway.refund(transaction.getToken(), amount);
         
         transaction = update(transaction);
         

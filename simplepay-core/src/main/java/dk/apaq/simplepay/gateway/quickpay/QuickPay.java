@@ -65,20 +65,20 @@ public class QuickPay extends AbstractPaymentGateway implements RemoteAuthPaymen
     public void cancel(Token token) {
         validateToken(token);
         try {
-            LOG.debug("Cancelling transaction [transactionId={}]", token.getGatewayTransactionId());
+            //LOG.debug("Cancelling transaction [transactionId={}]", token.getGatewayTransactionId());
             QuickPayMd5SumPrinter md5 = new QuickPayMd5SumPrinter();
             HttpPost post = new HttpPost(apiUrl);
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
             nvps.add(md5.getBasicNameValuePair("protocol", protocolVersion));
             nvps.add(md5.getBasicNameValuePair("msgtype", "cancel"));
-            nvps.add(md5.getBasicNameValuePair("merchant", token.getMerchant().getGatewayUserId()));
-            nvps.add(md5.getBasicNameValuePair("transaction", token.getGatewayTransactionId()));
+            //nvps.add(md5.getBasicNameValuePair("merchant", token.getMerchant().getGatewayUserId()));
+            //nvps.add(md5.getBasicNameValuePair("transaction", token.getGatewayTransactionId()));
             
             if(testMode) {
                 nvps.add(md5.getBasicNameValuePair("testmode", "1"));
             }
             
-            md5.add(token.getMerchant().getGatewaySecret());
+            //md5.add(token.getMerchant().getGatewaySecret());
             nvps.add(new BasicNameValuePair("md5check", md5.getMD5Result()));
             post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 
@@ -101,20 +101,20 @@ public class QuickPay extends AbstractPaymentGateway implements RemoteAuthPaymen
     public PaymentInformation getPaymentInformation(Token token) {
         validateToken(token);
         try {
-            LOG.debug("Retrieving information about transaction [transactionId={}]", token.getGatewayTransactionId());
+            //LOG.debug("Retrieving information about transaction [transactionId={}]", token.getGatewayTransactionId());
             QuickPayMd5SumPrinter md5 = new QuickPayMd5SumPrinter();
             HttpPost post = new HttpPost(apiUrl);
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
             nvps.add(md5.getBasicNameValuePair("protocol", protocolVersion));
             nvps.add(md5.getBasicNameValuePair("msgtype", "status"));
-            nvps.add(md5.getBasicNameValuePair("merchant", token.getMerchant().getGatewayUserId()));
-            nvps.add(md5.getBasicNameValuePair("transaction", token.getGatewayTransactionId()));
+            //nvps.add(md5.getBasicNameValuePair("merchant", token.getMerchant().getGatewayUserId()));
+            //nvps.add(md5.getBasicNameValuePair("transaction", token.getGatewayTransactionId()));
             
             if(testMode) {
                 nvps.add(md5.getBasicNameValuePair("testmode", "1"));
             }
             
-            md5.add(token.getMerchant().getGatewaySecret());
+            //md5.add(token.getMerchant().getGatewaySecret());
             nvps.add(new BasicNameValuePair("md5check", md5.getMD5Result()));
             post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 
@@ -152,21 +152,21 @@ public class QuickPay extends AbstractPaymentGateway implements RemoteAuthPaymen
     public void capture(Token token, long amountInCents) {
         validateToken(token);
         try {
-            LOG.debug("Capturing money for transaction [transactionId={}; amountInCents={}]", new Object[]{token.getGatewayTransactionId(), amountInCents});
+            //LOG.debug("Capturing money for transaction [transactionId={}; amountInCents={}]", new Object[]{token.getGatewayTransactionId(), amountInCents});
             QuickPayMd5SumPrinter md5 = new QuickPayMd5SumPrinter();
             HttpPost post = new HttpPost(apiUrl);
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
             nvps.add(md5.getBasicNameValuePair("protocol", protocolVersion));
             nvps.add(md5.getBasicNameValuePair("msgtype", "capture"));
-            nvps.add(md5.getBasicNameValuePair("merchant", token.getMerchant().getGatewayUserId()));
+            //nvps.add(md5.getBasicNameValuePair("merchant", token.getMerchant().getGatewayUserId()));
             nvps.add(md5.getBasicNameValuePair("amount", "" + amountInCents));
             nvps.add(md5.getBasicNameValuePair("finalize", "1"));
-            nvps.add(md5.getBasicNameValuePair("transaction", token.getGatewayTransactionId()));
+            //nvps.add(md5.getBasicNameValuePair("transaction", token.getGatewayTransactionId()));
             if(testMode) {
                 nvps.add(md5.getBasicNameValuePair("testmode", "1"));
             }
             
-            md5.add(token.getMerchant().getGatewaySecret());
+            //md5.add(token.getMerchant().getGatewaySecret());
             nvps.add(new BasicNameValuePair("md5check", md5.getMD5Result()));
             post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 
@@ -222,20 +222,20 @@ public class QuickPay extends AbstractPaymentGateway implements RemoteAuthPaymen
     public void renew(Token token, long amountInCents) {
         validateToken(token);
         try {
-            LOG.debug("Renewing transaction [transaction={}; amountInCents={}]", new Object[]{token.getGatewayTransactionId(), amountInCents});
+            //LOG.debug("Renewing transaction [transaction={}; amountInCents={}]", new Object[]{token.getGatewayTransactionId(), amountInCents});
             QuickPayMd5SumPrinter md5 = new QuickPayMd5SumPrinter();
             HttpPost post = new HttpPost(apiUrl);
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
             nvps.add(md5.getBasicNameValuePair("protocol", protocolVersion));
             nvps.add(md5.getBasicNameValuePair("msgtype", "renew"));
-            nvps.add(md5.getBasicNameValuePair("merchant", token.getMerchant().getGatewayUserId()));
-            nvps.add(md5.getBasicNameValuePair("transaction", token.getGatewayTransactionId()));
+            //nvps.add(md5.getBasicNameValuePair("merchant", token.getMerchant().getGatewayUserId()));
+            //nvps.add(md5.getBasicNameValuePair("transaction", token.getGatewayTransactionId()));
             
             if(testMode) {
                 nvps.add(md5.getBasicNameValuePair("testmode", "1"));
             }
             
-            md5.add(token.getMerchant().getGatewaySecret());
+            //md5.add(token.getMerchant().getGatewaySecret());
             nvps.add(new BasicNameValuePair("md5check", md5.getMD5Result()));
             post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 
@@ -256,21 +256,21 @@ public class QuickPay extends AbstractPaymentGateway implements RemoteAuthPaymen
     public void refund(Token token, long amountInCents) {
         validateToken(token);
         try {
-            LOG.debug("Refunding transaction [transaction={}; amountInCents={}]", new Object[]{token.getGatewayTransactionId(), amountInCents});
+            //LOG.debug("Refunding transaction [transaction={}; amountInCents={}]", new Object[]{token.getGatewayTransactionId(), amountInCents});
             QuickPayMd5SumPrinter md5 = new QuickPayMd5SumPrinter();
             HttpPost post = new HttpPost(apiUrl);
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
             nvps.add(md5.getBasicNameValuePair("protocol", protocolVersion));
             nvps.add(md5.getBasicNameValuePair("msgtype", "refund"));
-            nvps.add(md5.getBasicNameValuePair("merchant", token.getMerchant().getGatewayUserId()));
+            //nvps.add(md5.getBasicNameValuePair("merchant", token.getMerchant().getGatewayUserId()));
             nvps.add(md5.getBasicNameValuePair("amount", "" + amountInCents));
-            nvps.add(md5.getBasicNameValuePair("transaction", token.getGatewayTransactionId()));
+            //nvps.add(md5.getBasicNameValuePair("transaction", token.getGatewayTransactionId()));
             
             if(testMode) {
                 nvps.add(md5.getBasicNameValuePair("testmode", "1"));
             }
             
-            md5.add(token.getMerchant().getGatewaySecret());
+            //md5.add(token.getMerchant().getGatewaySecret());
             nvps.add(new BasicNameValuePair("md5check", md5.getMD5Result()));
             post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 
@@ -293,9 +293,9 @@ public class QuickPay extends AbstractPaymentGateway implements RemoteAuthPaymen
         Map<String, String> map = formData.getFields();
         map.put("protocol", "4");
         map.put("msgtype", "authorize");
-        map.put("merchant", token.getMerchant().getGatewayUserId());
+        //map.put("merchant", token.getMerchant().getGatewayUserId());
         map.put("language", locale.getLanguage());
-        map.put("ordernumber", token.getOrderNumber()); 
+        //map.put("ordernumber", token.getOrderNumber()); 
         map.put("amount", Long.toString(amount));
         map.put("currency", currency);
         map.put("continueurl", okUrl);
@@ -304,7 +304,7 @@ public class QuickPay extends AbstractPaymentGateway implements RemoteAuthPaymen
         map.put("autocapture", "0");
         map.put("autofee", "0");
         map.put("cardtypelock", "creditcard");
-        map.put("description", token.getDescription());
+        //map.put("description", token.getDescription());
         map.put("splitpayment", "1");
         
         //md5
@@ -312,7 +312,7 @@ public class QuickPay extends AbstractPaymentGateway implements RemoteAuthPaymen
         for(String value : map.values()) {
             builder.append(value);
         }
-        builder.append(token.getMerchant().getGatewaySecret());
+        //builder.append(token.getMerchant().getGatewaySecret());
         map.put("md5check", DigestUtils.md5Hex(builder.toString()));
         
         return formData;

@@ -36,25 +36,19 @@ public class TokenCrud extends EntityManagerCrudForSpring<String, Token> impleme
 
     @Transactional
     public Token createNew(PaymentGatewayType gatewayType, String orderNumber, String description) {
-        Token token = createAndRead(new Token(gatewayType, orderNumber, description));
+        return null;
+    
+        /*Token token = createAndRead(new Token(gatewayType, orderNumber, description));
         
         TokenEvent evt = new TokenEvent(token, "Token created.", service.getCurrentUsername(), RequestInformationHelper.getRemoteAddress());
         service.getEvents(token.getMerchant(), TokenEvent.class).create(evt);
         
-        return token;
+        return token;*/
     }
 
     @Transactional
     public Token authorizedRemote(Token token, String currency, long amount, PaymentMethod paymentMethod, int expireMonth, int expireYear, String cardNumberTruncated, String remoteTransactionID) {
         token = read(token.getId());
-        token.setCurrency(currency);
-        token.setAuthorized(true);
-        token.setAuthorizedAmount(amount);
-        token.setPaymentMethod(paymentMethod);
-        token.setCardExpireMonth(expireMonth);
-        token.setCardExpireYear(expireYear);
-        token.setCardNumberLast4(cardNumberTruncated);
-        token.setGatewayTransactionId(remoteTransactionID);
         token = update(token);
         
         TokenEvent evt = new TokenEvent(token, "Authorized remotely..", service.getCurrentUsername(), RequestInformationHelper.getRemoteAddress());
@@ -67,16 +61,8 @@ public class TokenCrud extends EntityManagerCrudForSpring<String, Token> impleme
     @Transactional
     public Token authorize(Token token, String currency, long amount, PaymentMethod method, String cardNumber, String cvd, int expireMonth, int expireYear) {
         token = read(token.getId());
-        token.setCurrency(currency);
-        token.setAuthorized(true);
-        token.setAuthorizedAmount(amount);
-        token.setPaymentMethod(method);
-        token.setCardExpireMonth(expireMonth);
-        token.setCardExpireYear(expireYear);
-        token.setCardNumber(cardNumber);
-        token.setCardCvd(cvd);
         
-        PaymentGateway gateway = gatewayManager.createPaymentGateway(token.getGatewayType());
+        PaymentGateway gateway = null;//gatewayManager.createPaymentGateway(token.getGatewayType());
         if(!(gateway instanceof DirectPaymentGateway)) {
             throw new ClassCastException("The gatewaytype specified by the token is not a DirectPaymentGateway and therefore authorize must be done remotely.");
         }
