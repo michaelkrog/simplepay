@@ -2,16 +2,17 @@ package dk.apaq.simplepay.teaser.model;
 
 import java.util.Date;
 
-/**
- *
- * @author krog
- */
 public class NotificationReceiver {
     
     private String id;
     private String mail;
     private Date timestamp = new Date();
 
+    public NotificationReceiver(String mail) {
+        this.mail = mail;
+    }
+
+    
     public String getId() {
         return id;
     }
@@ -30,6 +31,5 @@ public class NotificationReceiver {
 
     public Date getTimestamp() {
         return timestamp;
-    }
-Message    
+    }   
 }
