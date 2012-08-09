@@ -31,5 +31,5 @@ public class NotificationReceiver {
     public Date getTimestamp() {
         return timestamp;
     }
-    
+Message    
 }
