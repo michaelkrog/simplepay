@@ -1,5 +1,6 @@
 package dk.apaq.simplepay.teaser;
 
+import dk.apaq.simplepay.teaser.i18n.Utf8Control;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Locale;
@@ -12,13 +13,11 @@ import java.util.ResourceBundle;
  */
 public class MessageBundle {
     private static final Map<String, MessageBundle> LOADED_BUNDLES = new HashMap<String, MessageBundle>();
-    private Locale locale;
     private ResourceBundle bundle;
     
 
     private MessageBundle(Locale locale, String bundlePath) {
-        this.locale = locale;
-        this.bundle = ResourceBundle.getBundle(bundlePath, locale);
+        this.bundle = ResourceBundle.getBundle(bundlePath, locale, new Utf8Control());
     }
 
     public String get(String key, Object ... arguments) {

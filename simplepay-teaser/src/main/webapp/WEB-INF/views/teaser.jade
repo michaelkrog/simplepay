@@ -1,9 +1,14 @@
 !!! 5
 html
   head
-    title SimplePay - Betaling er simpelt!
+    title SimplePay - #{title}
     meta(http-equiv="content-type",charset='utf-8',content='text/html')
-        
+
+    meta(property='og:title', content='SimplePay - ' + title)
+    meta(property='og:type', content='website')
+    meta(property='og:image', content='http://simplepay.dkassets/img/cardcloud.png')
+    meta(property='og:url', content='http://simplepay.dk')
+
     link(href="https://fonts.googleapis.com/css?family=Open+Sans",rel="stylesheet", type="text/css")
     link(type="text/css", rel="stylesheet", href="assets/css/bootstrap.css", media="all")
     link(type="text/css", rel="stylesheet", href="assets/css/styles.css", media="all")
@@ -21,23 +26,23 @@ html
           .row
             .span4.logo-cloud &nbsp
             .span6.title
-              h1 #{title}
+              h1= title
               br
-              | Vi udvikler <strong>et simpelt betalingssystem</strong> som skal hjælpe udviklere, som os selv, til let at kunne tage imod <abbr title="F.eks. Dankort, VISA-kort, Mastercard m.m.">betalingskort</abbr> i de kreative løsninger vi laver.
+              | !{text1}
               br
               br
-              | <strong>SimplePay</strong> starter op i <abbr title="Vi planl&aelig;gger at d&aelig;kke Danmark, F&aelig;r&oslash;erne, Gr&oslash;nland, Island, Norge, Sverige">Skandinavien</abbr>. Indtast din mailadresse for at få besked når det sker.
+              | !{text2}
               br
               br
               .input-append
-                input(type="text", id="email-address", name="email", placeholder="john@example.net")
-                button.btn(type="button", id="email-address-button") Giv besked!
+                input(type="text", id="email-address", name="email", placeholder=example)
+                button.btn(type="button", id="email-address-button") #{button}
                             
 
       .row 
         .span11.offset1
           span.footnote.padding-left
-            a(href="mailto:contact@simplepay.dk") Kontakt os
+            a(href="mailto:contact@simplepay.dk") #{contact}
             | &nbsp;|&nbsp;
           g:plusone(size="small", annotation="none")
 

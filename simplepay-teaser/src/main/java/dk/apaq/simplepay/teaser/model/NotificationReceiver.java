@@ -6,13 +6,16 @@ public class NotificationReceiver {
     
     private String id;
     private String mail;
+    private String locale;
+    private String ip;
     private Date timestamp = new Date();
 
-    public NotificationReceiver(String mail) {
+    public NotificationReceiver(String mail, String locale, String ip) {
         this.mail = mail;
+        this.locale = locale;
+        this.ip = ip;
     }
 
-    
     public String getId() {
         return id;
     }
@@ -31,5 +34,22 @@ public class NotificationReceiver {
 
     public Date getTimestamp() {
         return timestamp;
-    }   
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+    
 }
