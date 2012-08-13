@@ -23,19 +23,19 @@ public class NotifyRetrieverController {
     
     @RequestMapping(value="/notificationreceiver", method= RequestMethod.POST)
     @ResponseBody
-    public String addNotificationReceiver(HttpServletRequest request, @RequestParam String mail) {
-        if(mail==null || "".equals(mail)) {
+    public String addNotificationReceiver(HttpServletRequest request, @RequestParam String email) {
+        if(email==null || "".equals(email)) {
             return "INVALID_MAIL";
         }
         
-        Filter filter = new LikeFilter("mail", mail, false);
+        Filter filter = new LikeFilter("mail", email, false);
         List<String> ids = service.getNotificationRecievers().listIds(filter, null);
         
         if(!ids.isEmpty()) {
             return "ALREADY_IN_LIST";
         }
         
-        service.getNotificationRecievers().create(new NotificationReceiver(mail, request.getLocale().toString(), request.getRemoteAddr()));
+        service.getNotificationRecievers().create(new NotificationReceiver(email, request.getLocale().toString(), request.getRemoteAddr()));
         return "SUCCESS";
     }
 }

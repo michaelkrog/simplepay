@@ -1,14 +1,27 @@
 package dk.apaq.simplepay.teaser.model;
 
 import java.util.Date;
+import javax.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
 
+@Entity
 public class NotificationReceiver {
     
+    @Id
+    @GeneratedValue(generator="system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
+    @Column(name="COPY_SCRIPT_ID",length=40, nullable=false)
     private String id;
+    
     private String mail;
     private String locale;
     private String ip;
+    
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date timestamp = new Date();
+
+    public NotificationReceiver() {
+    }
 
     public NotificationReceiver(String mail, String locale, String ip) {
         this.mail = mail;
