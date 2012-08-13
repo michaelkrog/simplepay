@@ -42,4 +42,13 @@ public class Utf8Control extends Control {
         }
         return bundle;
     }
+
+    @Override
+    public Locale getFallbackLocale(String string, Locale locale) {
+        return null;
+    }
+    
+    
+    
+    
 }

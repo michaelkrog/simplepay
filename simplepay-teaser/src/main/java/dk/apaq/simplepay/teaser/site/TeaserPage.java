@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,7 +14,10 @@ import org.springframework.web.servlet.ModelAndView;
 public class TeaserPage {
     
     @RequestMapping(value="/index.htm")
-    public ModelAndView handleRequest(HttpServletRequest request) {
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) {
+        //This shouldnt be needed, but there seems to be a bug in spring-jade4j
+        response.setCharacterEncoding("utf-8");
+        
         MessageBundle message = MessageBundle.get(request.getLocale(), "dk.apaq.simplepay.teaser.i18n.Messages");
         
         String tooltip1 = message.get("tooltip1");
