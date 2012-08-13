@@ -45,6 +45,7 @@ public class Utf8Control extends Control {
 
     @Override
     public Locale getFallbackLocale(String string, Locale locale) {
+        //Returns null to replicate orignial locale fallback when not using a controller
         return null;
     }
     

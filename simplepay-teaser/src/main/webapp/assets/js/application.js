@@ -1,10 +1,5 @@
 
 
-
-
-
-
-
 function main() {
     $('#email-address-button').click(function() {
         var data = {
@@ -14,9 +9,9 @@ function main() {
           type: 'POST',
           url: "/notificationreceiver",
           data: data,
-          dataType: "text"
+          dataType: 'json'
         }).done(function(data) {
-            alert(data);
+            alert(data.message);
         });
         
     });
