@@ -12,19 +12,19 @@ html
     link(href="https://fonts.googleapis.com/css?family=Open+Sans",rel="stylesheet", type="text/css")
     link(type="text/css", rel="stylesheet", href="assets/css/bootstrap.css", media="all")
     link(type="text/css", rel="stylesheet", href="assets/css/styles.css", media="all")
-
+    
     script(type="text/javascript", src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js")
     script(type="text/javascript", src="assets/js/application.js")
   body
-    .container.simplepay(style="padding-top:800x")
+    .container.simplepay(style="padding-top:80px")
       .row
-        .brand.span10.offset1 simple
+        .brand.span12 simple
           span.blue pay
             
       .row
-        .span10.offset1.box
+        .span12.box
           .row
-            .span4.logo-cloud &nbsp
+            .span5.logo-cloud &nbsp
             .span6.title
               h1= title
               br
@@ -34,20 +34,21 @@ html
               | !{text2}
               br
               br
-              .input-append
-                input(type="text", id="email-address", name="email", placeholder=example)
-                button.btn(type="button", id="email-address-button") #{button}
-                            
+              form#email-form
+                .input-append
+                  input(type="text", id="email-address", name="email", placeholder=example)
+                  button.btn(id="email-address-button") #{button}
+             
 
       .row 
-        .span11.offset1
+        .span12
           span.footnote.padding-left
             a(href="mailto:contact@simplepay.dk") #{contact}
             | &nbsp;|&nbsp;
           g:plusone(size="small", annotation="none")
 
           span.footnote.padding-right.pull-right © SimplePay
-
+             
        
         script(type="text/javascript")
           (function() {

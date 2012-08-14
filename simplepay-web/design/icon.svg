@@ -12,8 +12,8 @@
    height="730"
    version="1.1"
    id="svg2"
-   inkscape:version="0.48.3.1 r9886"
-   sodipodi:docname="icon.svg.2012_08_13_14_59_10.0.svg"
+   inkscape:version="0.48.2 r9819"
+   sodipodi:docname="icon.svg"
    inkscape:export-filename="/Users/michael/NetBeansProjects/simplepay/simplepay-teaser/src/main/webapp/assets/img/cardcloud.png"
    inkscape:export-xdpi="34.52"
    inkscape:export-ydpi="34.52">
@@ -32,11 +32,11 @@
      showgrid="false"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:zoom="0.40012193"
-     inkscape:cx="322.58135"
+     inkscape:zoom="0.48083261"
+     inkscape:cx="461.48692"
      inkscape:cy="304.68533"
-     inkscape:window-x="582"
-     inkscape:window-y="283"
+     inkscape:window-x="351"
+     inkscape:window-y="79"
      inkscape:window-maximized="0"
      inkscape:current-layer="Main Page">
     <sodipodi:guide
@@ -1343,13 +1343,13 @@
        inkscape:export-filename="/Users/michael/NetBeansProjects/simplepay/simplepay-teaser/src/main/webapp/assets/img/cardcloud.png"
        sodipodi:linespacing="125%"
        id="text3010"
-       y="299.38431"
-       x="67.165604"
-       style="font-size:130px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;"
+       y="317.38431"
+       x="59.165604"
+       style="font-size:120px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        xml:space="preserve"><tspan
-         style="font-size:130px;"
-         y="299.38431"
-         x="67.165604"
+         style="font-size:120px"
+         y="317.38431"
+         x="59.165604"
          id="tspan3012"
          sodipodi:role="line">simple</tspan></text>
     <text
@@ -1358,13 +1358,13 @@
        inkscape:export-filename="/Users/michael/NetBeansProjects/simplepay/simplepay-web/design/cardcloud_2_preview.png"
        sodipodi:linespacing="125%"
        id="text3014"
-       y="299.53333"
-       x="446.51263"
-       style="font-size:130px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;"
+       y="317.53333"
+       x="456.51263"
+       style="font-size:120px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        xml:space="preserve"><tspan
-         style="font-size:130px;fill:#1c5acf;fill-opacity:0.94117647000000004;"
-         y="299.53333"
-         x="446.51263"
+         style="font-size:120px;fill:#1c5acf;fill-opacity:0.94117647"
+         y="317.53333"
+         x="456.51263"
          id="tspan3016"
          sodipodi:role="line">pay</tspan></text>
     <path
@@ -1387,5 +1387,63 @@
        sodipodi:ry="86.157585"
        d="m 682.08084,782.05353 c 0,47.58352 -100.05147,86.15758 -223.47122,86.15758 -123.41975,0 -223.47122,-38.57406 -223.47122,-86.15758 0,-47.58352 100.05147,-86.15759 223.47122,-86.15759 123.41975,0 223.47122,38.57407 223.47122,86.15759 z"
        transform="translate(0,-214)" />
+    <rect
+       style="opacity:0.56928837;fill:#e9eac1;fill-opacity:1;stroke:none"
+       id="rect3215"
+       width="329.89944"
+       height="49.984764"
+       x="250.60365"
+       y="143.61353" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;opacity:0.55805239;fill:#00007b;fill-opacity:1;stroke:none;font-family:SchoolHouse Cursive B;-inkscape-font-specification:SchoolHouse Cursive B"
+       x="269.09985"
+       y="178.60284"
+       id="text3985"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3987"
+         x="269.09985"
+         y="178.60284">John Doe</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Osaka;-inkscape-font-specification:Osaka"
+       x="335.59802"
+       y="39.958557"
+       id="text3989"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3991"
+         x="335.59802"
+         y="39.958557">Issued by Oldschool banking Corp.</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;opacity:0.67790264;fill:#000000;fill-opacity:1;stroke:none;font-family:Osaka;-inkscape-font-specification:Osaka"
+       x="495.88397"
+       y="160.66879"
+       id="text3993"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3995"
+         x="495.88397"
+         y="160.66879"
+         style="font-size:16px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#3d3c3d;fill-opacity:1;font-family:Cursor;-inkscape-font-specification:Cursor Italic">1234 334</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Osaka;-inkscape-font-specification:Osaka"
+       x="166.59087"
+       y="154.85893"
+       id="text3997"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3999"
+         x="166.59087"
+         y="154.85893"
+         style="font-size:12px">AUTHORIZED</tspan><tspan
+         sodipodi:role="line"
+         x="166.59087"
+         y="169.85893"
+         id="tspan4001"
+         style="font-size:12px">SIGNATURE</tspan></text>
   </g>
 </svg>

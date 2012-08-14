@@ -1,7 +1,10 @@
 
 
 function main() {
-    $('#email-address-button').click(function() {
+    
+    $('#email-form').submit(function(e) {
+       e.preventDefault();
+       
         var data = {
             email:$('#email-address').val()
         };

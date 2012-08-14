@@ -14,13 +14,17 @@ body {
 }
 
 .box {
-    padding: 40px;
     border-radius: 4px;
     box-shadow:0px 1px 3px #6f6f6f;
     background:white;
     margin-top:10px;
     margin-bottom: 10px;
 }
+
+.box .row {
+    padding:40px 0px;
+}
+
 .brand .blue {
     color:#1C5AC4;
 }
@@ -37,6 +41,7 @@ body {
 .logo-cloud {
     background:white url(../img/cardcloud.png) no-repeat;
     height:180px;
+    background-position:center; 
 }
 
 .padding-left {
