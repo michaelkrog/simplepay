@@ -4,7 +4,7 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>/WEB-INF/spring*.xml</param-value>
     </context-param>
-    <!--filter>
+    <filter>
         <filter-name>LocaleFilter</filter-name>
         <filter-class>dk.apaq.common.web.filter.LocaleFilter</filter-class>
         <init-param>
@@ -15,7 +15,7 @@
     <filter-mapping>
         <filter-name>LocaleFilter</filter-name>
         <url-pattern>/*</url-pattern>
-    </filter-mapping-->
+    </filter-mapping>
     <!-- API DISPATCHER -->
     <servlet>
         <servlet-name>api</servlet-name>
