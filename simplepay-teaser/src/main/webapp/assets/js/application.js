@@ -10,7 +10,7 @@ function main() {
         };
         $.ajax({
           type: 'POST',
-          url: "/notificationreceiver",
+          url: "notificationreceiver",
           data: data,
           dataType: 'json'
         }).done(function(data) {

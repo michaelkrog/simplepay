@@ -6,7 +6,7 @@ html
 
     meta(property='og:title', content='SimplePay - ' + title)
     meta(property='og:type', content='website')
-    meta(property='og:image', content='http://simplepay.dkassets/img/cardcloud.png')
+    meta(property='og:image', content='http://simplepay.dk/assets/img/cardcloud.png')
     meta(property='og:url', content='http://simplepay.dk')
 
     link(href="https://fonts.googleapis.com/css?family=Open+Sans",rel="stylesheet", type="text/css")
@@ -15,6 +15,18 @@ html
     
     script(type="text/javascript", src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js")
     script(type="text/javascript", src="assets/js/application.js")
+
+    script(type="text/javascript")
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-34087976-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
   body
     .container.simplepay(style="padding-top:80px")
       .row
