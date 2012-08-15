@@ -25,6 +25,7 @@ public class TeaserPage {
         
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("title", message.get("title"));
+        model.put("description", message.get("description"));
         model.put("text1", message.get("text1", tooltip1));
         model.put("text2", message.get("text2", tooltip2));
         model.put("button", message.get("button"));
