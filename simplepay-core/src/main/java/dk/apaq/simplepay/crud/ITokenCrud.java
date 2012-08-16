@@ -3,6 +3,7 @@ package dk.apaq.simplepay.crud;
 import dk.apaq.crud.Crud;
 import dk.apaq.simplepay.common.PaymentMethod;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
+import dk.apaq.simplepay.model.Card;
 import dk.apaq.simplepay.model.Token;
 
 /**
@@ -11,10 +12,6 @@ import dk.apaq.simplepay.model.Token;
  */
 public interface ITokenCrud extends Crud.Filterable<String, Token> {
     
-    Token createNew(PaymentGatewayType gatewayType, String orderNumber, String description);
-    Token authorizedRemote(Token token, String currency, long amount, PaymentMethod paymentMethod, 
-                        int expireMonth, int expireYear, String cardNumberTruncated, String remoteTransactionID);
-    
-    Token authorize(Token token, String currency, long amount, PaymentMethod method, String cardNumber, String cvd, int expireMonth, int expireYear);
-
+    Token createNew(String certificate, PaymentGatewayType issuer);
+    Token createNew(Card card);
 }

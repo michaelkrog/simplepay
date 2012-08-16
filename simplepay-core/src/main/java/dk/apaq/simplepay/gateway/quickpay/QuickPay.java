@@ -1,11 +1,10 @@
 package dk.apaq.simplepay.gateway.quickpay;
 
-import com.sun.xml.internal.bind.v2.runtime.IllegalAnnotationsException;
 import dk.apaq.simplepay.common.PaymentMethod;
+import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.gateway.AbstractPaymentGateway;
 import dk.apaq.simplepay.gateway.HasPaymentInformation;
 import dk.apaq.simplepay.gateway.PaymentException;
-import dk.apaq.simplepay.gateway.PaymentGatewayTransactionStatus;
 import dk.apaq.simplepay.gateway.RemoteAuthPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentInformation;
 import dk.apaq.simplepay.model.Token;
@@ -318,18 +317,18 @@ public class QuickPay extends AbstractPaymentGateway implements RemoteAuthPaymen
         return formData;
     }
     
-    public static PaymentGatewayTransactionStatus getStatusFromState(int state) {
+    public static TransactionStatus getStatusFromState(int state) {
         switch(state) {
             case 0:
-                return PaymentGatewayTransactionStatus.New;
+                return TransactionStatus.Cancelled;
             case 1:
-                return PaymentGatewayTransactionStatus.Authorized;
+                return TransactionStatus.Authorized;
             case 3:
-                return PaymentGatewayTransactionStatus.Charged;
+                return TransactionStatus.Charged;
             case 5:
-                return PaymentGatewayTransactionStatus.Cancelled;
+                return TransactionStatus.Cancelled;
             case 7:
-                return PaymentGatewayTransactionStatus.Refunded;
+                return TransactionStatus.Refunded;
             default:
                 return null;
         }

@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class PaymentInformation {
     
-    private final PaymentGatewayTransactionStatus transationStatus;
+    private final TransactionStatus transationStatus;
     private final List<HistoryEntry> history;
     private final String orderNumber;
     private final int amount;
@@ -59,7 +59,7 @@ public class PaymentInformation {
         }
     }
 
-    public PaymentInformation(PaymentGatewayTransactionStatus transactionStatus, List<HistoryEntry> history, String orderNumber, int amount, String currency, 
+    public PaymentInformation(TransactionStatus transactionStatus, List<HistoryEntry> history, String orderNumber, int amount, String currency, 
             String gatewayStatus, String merchantId, String merchantEmail, String transactionId, PaymentMethod cardType) {
         this.transationStatus = transactionStatus;
         this.history = history;
@@ -102,7 +102,7 @@ public class PaymentInformation {
         return orderNumber;
     }
 
-    public PaymentGatewayTransactionStatus getTransationStatus() {
+    public TransactionStatus getTransationStatus() {
         return transationStatus;
     }
 
