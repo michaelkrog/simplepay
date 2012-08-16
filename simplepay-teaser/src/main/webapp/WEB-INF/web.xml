@@ -5,6 +5,18 @@
         <param-value>/WEB-INF/spring*.xml</param-value>
     </context-param>
     <filter>
+        <filter-name>AliasFilter</filter-name>
+        <filter-class>dk.apaq.common.web.filter.AliasFilter</filter-class>
+        <init-param>
+            <param-name>hosts</param-name>
+            <param-value>simplepay.dk,www.simplepay.dk</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>AliasFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter>
         <filter-name>LocaleFilter</filter-name>
         <filter-class>dk.apaq.common.web.filter.LocaleFilter</filter-class>
         <init-param>
