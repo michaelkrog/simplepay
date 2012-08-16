@@ -6,7 +6,7 @@ package dk.apaq.simplepay.common;
  */
 public enum TransactionStatus {
     /**
-     * Transaction started, hasn an authorized token, but not completed.
+     * Transaction authorized but not completed.
      */
     Authorized, 
     

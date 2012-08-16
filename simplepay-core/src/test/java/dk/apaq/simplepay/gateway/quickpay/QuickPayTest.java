@@ -3,18 +3,9 @@ package dk.apaq.simplepay.gateway.quickpay;
 import dk.apaq.simplepay.common.PaymentMethod;
 import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.gateway.PaymentException;
-import dk.apaq.simplepay.gateway.PaymentGatewayTransactionStatus;
-import dk.apaq.simplepay.gateway.PaymentGatewayType;
-import dk.apaq.simplepay.gateway.PaymentInformation;
-import dk.apaq.simplepay.gateway.RemoteAuthPaymentGateway.FormData;
 import dk.apaq.simplepay.model.Merchant;
-import dk.apaq.simplepay.model.Token;
-import dk.apaq.simplepay.model.Transaction;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Locale;
-import java.util.Map.Entry;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.client.HttpClient;
@@ -243,14 +234,14 @@ public class QuickPayTest {
     @Test
     public void testStatusFromState() {
 
-        assertEquals(PaymentGatewayTransactionStatus.New, QuickPay.getStatusFromState(0));
-        assertEquals(PaymentGatewayTransactionStatus.Authorized, QuickPay.getStatusFromState(1));
+        assertEquals(TransactionStatus.Cancelled, QuickPay.getStatusFromState(0));
+        assertEquals(TransactionStatus.Authorized, QuickPay.getStatusFromState(1));
         assertEquals(null, QuickPay.getStatusFromState(2));
-        assertEquals(PaymentGatewayTransactionStatus.Charged, QuickPay.getStatusFromState(3));
+        assertEquals(TransactionStatus.Charged, QuickPay.getStatusFromState(3));
         assertEquals(null, QuickPay.getStatusFromState(4));
-        assertEquals(PaymentGatewayTransactionStatus.Cancelled, QuickPay.getStatusFromState(5));
+        assertEquals(TransactionStatus.Cancelled, QuickPay.getStatusFromState(5));
         assertEquals(null, QuickPay.getStatusFromState(6));
-        assertEquals(PaymentGatewayTransactionStatus.Refunded, QuickPay.getStatusFromState(7));
+        assertEquals(TransactionStatus.Refunded, QuickPay.getStatusFromState(7));
         assertEquals(null, QuickPay.getStatusFromState(8));
         
     }
