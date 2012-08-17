@@ -5,8 +5,7 @@ import java.util.List;
 import javax.persistence.Entity;
 
 /**
- *
- * @author krog
+ * Specifies a user's access to a merchant. 
  */
 @Entity
 public class MerchantAccess extends BaseEntity {

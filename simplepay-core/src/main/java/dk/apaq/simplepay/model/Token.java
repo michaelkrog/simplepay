@@ -15,10 +15,11 @@ public class Token extends BaseEntity {
     
     @NotNull
     private TokenPurpose purpose = TokenPurpose.SinglePayment;
-    private String dataType;
     
     private boolean expired = false;
     private boolean test = false;
+    
+    private PaymentInstrument data;
     
     //Variables we dont want in a JSON output is here.
     //TODO Move the ignore descision to the JSON mapper instead
@@ -27,18 +28,14 @@ public class Token extends BaseEntity {
     @JsonIgnore
     private Merchant merchant;
     
-    public Token() {
+    protected Token() {
 
     }
 
-    public String getDataType() {
-        return dataType;
+    public Token(PaymentInstrument data) {
+        this.data = data;
     }
-
-    public void setDataType(String dataType) {
-        this.dataType = dataType;
-    }
-
+    
     public boolean isExpired() {
         return expired;
     }

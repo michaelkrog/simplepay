@@ -2,6 +2,7 @@ package dk.apaq.simplepay.crud;
 
 import dk.apaq.crud.jpa.EntityManagerCrudForSpring;
 import dk.apaq.simplepay.IPayService;
+import dk.apaq.simplepay.model.Certificate;
 import org.springframework.beans.factory.annotation.Autowired;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
@@ -27,7 +28,7 @@ public class TokenCrud extends EntityManagerCrudForSpring<String, Token> impleme
         super(em, Token.class);
     }
 
-    public Token createNew(String certificate, PaymentGatewayType issuer) {
+    public Token createNew(Certificate certificate) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
