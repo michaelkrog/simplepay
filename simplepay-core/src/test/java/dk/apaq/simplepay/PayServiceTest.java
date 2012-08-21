@@ -1,11 +1,10 @@
 package dk.apaq.simplepay;
 
 import dk.apaq.crud.Crud;
-import dk.apaq.crud.Crud.Complete;
 import dk.apaq.filter.core.CompareFilter;
 import dk.apaq.simplepay.common.PaymentMethod;
 import dk.apaq.simplepay.common.TransactionStatus;
-import dk.apaq.simplepay.gateway.PaymentGatewayType;
+import dk.apaq.simplepay.model.Card;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Role;
@@ -37,6 +36,8 @@ public class PayServiceTest {
     
     @Autowired
     private IPayService service;
+    
+    private Card card = new Card("4571123412341234",12, 2012, "123");
     
     private void login(SystemUser user) {
         List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
@@ -76,8 +77,8 @@ public class PayServiceTest {
             fail("Should not be able to update merchant.");
         } catch(Exception ex) { }
         
-        Token token1 = service.getTokens(m).createNew(PaymentGatewayType.Test, "T_123", "");
-        Token token2 = service.getTokens(m2).createNew(PaymentGatewayType.Test, "T_321", "");
+        Token token1 = service.getTokens(m).createNew(card);
+        Token token2 = service.getTokens(m2).createNew(card);
         
         //Create transaction for m
         Transaction t = service.getTransactions(m).createNew(token1);
@@ -104,11 +105,10 @@ public class PayServiceTest {
         Merchant m = new Merchant();
         m = service.getMerchants().createAndRead(m);
         
-        Token token = service.getTokens(m).createNew(PaymentGatewayType.Test, "T_13123", "");
+        Token token = service.getTokens(m).createNew(card);
         assertFalse(token.isExpired());
         //assertFalse(token.isAuthorized());
         
-        token = service.getTokens(m).authorizedRemote(token, "DKK", 300, PaymentMethod.Visa, 8, 12, "XXXX XXXX XXXX 1234", null);
         assertFalse(token.isExpired());
         //assertTrue(token.isAuthorized());
         
@@ -132,11 +132,10 @@ public class PayServiceTest {
         Merchant m = new Merchant();
         m = service.getMerchants().createAndRead(m);
         
-        Token token = service.getTokens(m).createNew(PaymentGatewayType.Test, "T_1312", "");
+        Token token = service.getTokens(m).createNew(card);
         //assertFalse(token.isUsed());
         //assertFalse(token.isAuthorized());
         
-        token = service.getTokens(m).authorizedRemote(token, "DKK", 300, PaymentMethod.Visa, 8, 12, "XXXX XXXX XXXX 1234", null);
         //assertFalse(token.isUsed());
         //assertTrue(token.isAuthorized());
         
@@ -148,11 +147,7 @@ public class PayServiceTest {
             fail("Should not allow same token twice.");
         } catch(SecurityException ex) { }
         
-        //The orginal token is not uptodate and persisting it will change it to not used which is not allowed
-        try {
-            token = service.getTokens(m).authorizedRemote(token, "DKK", 300, PaymentMethod.Visa, 8, 12, "XXXX XXXX XXXX 1234", null);
-            fail("Should not allow persisting token as not used");
-        } catch(SecurityException ex) { }
+
     }
     
     @Test
@@ -196,7 +191,7 @@ public class PayServiceTest {
         List<TokenEvent> evts = service.getEvents(merchant, TokenEvent.class).list();
         assertTrue(evts.isEmpty());
         
-        Token token = service.getTokens(merchant).createNew(PaymentGatewayType.Test, "ordernum", null);
+        Token token = service.getTokens(merchant).createNew(card);
         
         evts = service.getEvents(merchant, TokenEvent.class).list();
         assertFalse(evts.isEmpty());

@@ -2,12 +2,12 @@ package dk.apaq.simplepay.crud;
 
 import dk.apaq.crud.jpa.EntityManagerCrudForSpring;
 import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.model.Certificate;
 import org.springframework.beans.factory.annotation.Autowired;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
-import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import dk.apaq.simplepay.model.Card;
 import dk.apaq.simplepay.model.Token;
+import dk.apaq.simplepay.model.TokenEvent;
+import dk.apaq.simplepay.util.RequestInformationHelper;
 import javax.persistence.EntityManager;
 
 
@@ -28,12 +28,13 @@ public class TokenCrud extends EntityManagerCrudForSpring<String, Token> impleme
         super(em, Token.class);
     }
 
-    public Token createNew(Certificate certificate) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     public Token createNew(Card card) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Token token = createAndRead(new Token(card));
+        
+        TokenEvent evt = new TokenEvent(token, "Token created.", service.getCurrentUsername(), RequestInformationHelper.getRemoteAddress());
+        service.getEvents(token.getMerchant(), TokenEvent.class).create(evt);
+        
+        return token;
     }
 
     

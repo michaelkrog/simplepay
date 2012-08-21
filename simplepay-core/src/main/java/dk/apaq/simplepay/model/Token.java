@@ -19,7 +19,7 @@ public class Token extends BaseEntity {
     private boolean expired = false;
     private boolean test = false;
     
-    private PaymentInstrument data;
+    private Card data;
     
     //Variables we dont want in a JSON output is here.
     //TODO Move the ignore descision to the JSON mapper instead
@@ -32,7 +32,7 @@ public class Token extends BaseEntity {
 
     }
 
-    public Token(PaymentInstrument data) {
+    public Token(Card data) {
         this.data = data;
     }
     

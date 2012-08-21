@@ -9,9 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 import dk.apaq.simplepay.common.PaymentMethod;
 import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.gateway.PaymentGatewayType;
+import dk.apaq.simplepay.model.Card;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.TokenPurpose;
+import org.hibernate.validator.constraints.impl.LuhnValidator;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -32,6 +34,8 @@ public class TokenCrudTest {
     private IPayService service;
     
 
+    private Card card = new Card("4571123412341234",12, 2012, "123");
+    
     /**
      * Test of createNew method, of class TokenCrud.
      */
@@ -47,7 +51,7 @@ public class TokenCrudTest {
         String description = "description";
         
         ITokenCrud crud = service.getTokens(m);
-        Token token = crud.createNew(gatewayType, orderNumber, description);
+        Token token = crud.createNew(card);
         assertNotNull(token);
         //assertEquals(0, token.getAuthorizedAmount());
         //assertEquals(false, token.isAuthorized());
@@ -67,7 +71,7 @@ public class TokenCrudTest {
         Merchant m = new Merchant();
         m = service.getMerchants().createAndRead(m);
         ITokenCrud crud = service.getTokens(m);
-        Token token = crud.createNew(PaymentGatewayType.Test, "ordernum", "description");
+        Token token = crud.createNew(card);
         
         String currency = "DKK";
         long amount = 1000L;
@@ -76,7 +80,6 @@ public class TokenCrudTest {
         int expireYear = 12;
         String cardNumberTruncated = "xxxxxxxxxx";
         String remoteTransactionID = "123";
-        Token result = crud.authorizedRemote(token, currency, amount, paymentMethod, expireMonth, expireYear, cardNumberTruncated, remoteTransactionID);
         //assertTrue(result.isAuthorized());
         
     }
@@ -90,7 +93,7 @@ public class TokenCrudTest {
         Merchant m = new Merchant();
         m = service.getMerchants().createAndRead(m);
         ITokenCrud crud = service.getTokens(m);
-        Token token = crud.createNew(PaymentGatewayType.Test, "ordernum", "description");
+        Token token = crud.createNew(card);
         String currency = "DKK";
         long amount = 1000L;
         PaymentMethod method = PaymentMethod.Dankort;
@@ -98,7 +101,6 @@ public class TokenCrudTest {
         String cvd = "123";
         int expireMonth = 12;
         int expireYear = 12;
-        Token result = crud.authorize(token, currency, amount, method, cardNumber, cvd, expireMonth, expireYear);
         //assertTrue(result.isAuthorized());
     }
     
@@ -108,7 +110,7 @@ public class TokenCrudTest {
         Merchant m = new Merchant();
         m = service.getMerchants().createAndRead(m);
         final ITokenCrud crud = service.getTokens(m);
-        final Token token = crud.createNew(PaymentGatewayType.Test, "ordernum", "description");
+        final Token token = crud.createNew(card);
         String currency = "DKK";
         long amount = 10000000L;
         PaymentMethod method = PaymentMethod.Dankort;
@@ -118,7 +120,6 @@ public class TokenCrudTest {
         int expireYear = 12;
         
         try {
-            crud.authorize(token, currency, amount, method, cardNumber, cvd, expireMonth, expireYear);
             fail("Should have failed because of too large amount.");
         } catch(PaymentException ex) {
             //Test gateway fails on large amounts

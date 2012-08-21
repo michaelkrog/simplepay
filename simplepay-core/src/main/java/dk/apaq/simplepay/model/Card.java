@@ -4,7 +4,7 @@ package dk.apaq.simplepay.model;
  *
  * @author krog
  */
-public class Card implements PaymentInstrument {
+public class Card {
     
     private String number;
     private int expMonth;
@@ -15,7 +15,21 @@ public class Card implements PaymentInstrument {
     
     //private String type; f.x Visa
 
-    
+    public Card(String number, int expMonth, int expYear, String cvd) {
+        this.number = number;
+        this.expMonth = expMonth;
+        this.expYear = expYear;
+        this.cvd = cvd;
+    }
+
+    public Card(String name, String number, int expMonth, int expYear, String cvd) {
+        this.number = number;
+        this.expMonth = expMonth;
+        this.expYear = expYear;
+        this.name = name;
+        this.cvd = cvd;
+    }
+
     public String getCountry() {
         return country;
     }
@@ -66,8 +80,22 @@ public class Card implements PaymentInstrument {
     }
     
     public boolean isValid() {
-        //TODO Wether it is valid or not.
-        return false;
+        if(number == null) return false;
+        
+        int sum = 0;
+        boolean alternate = false;
+        for (int i = number.length() - 1; i >= 0; i--) {
+            int n = Integer.parseInt(number.substring(i, i + 1));
+            if (alternate) {
+                n *= 2;
+                if (n > 9) {
+                    n = (n % 10) + 1;
+                }
+            }
+            sum += n;
+            alternate = !alternate;
+        }
+        return (sum % 10 == 0);
     }
 
     public String getName() {
