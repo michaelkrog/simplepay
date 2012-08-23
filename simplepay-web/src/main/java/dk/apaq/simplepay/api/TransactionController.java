@@ -1,7 +1,6 @@
 package dk.apaq.simplepay.api;
 
 import dk.apaq.simplepay.security.SecurityHelper;
-import dk.apaq.filter.Filter;
 import dk.apaq.filter.core.AndFilter;
 import dk.apaq.filter.core.CompareFilter;
 import dk.apaq.filter.core.LikeFilter;
@@ -9,16 +8,11 @@ import dk.apaq.filter.core.OrFilter;
 import dk.apaq.filter.sort.SortDirection;
 import dk.apaq.filter.sort.Sorter;
 import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.common.TransactionStatus;
-import dk.apaq.simplepay.gateway.RemoteAuthPaymentGateway;
+import dk.apaq.simplepay.common.ETransactionStatus;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
-import dk.apaq.simplepay.gateway.PaymentGatewayType;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
-import dk.apaq.simplepay.model.SystemUser;
-import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Transaction;
-import dk.apaq.simplepay.model.TransactionEvent;
 import java.text.NumberFormat;
 import java.util.Date;
 import java.util.List;
@@ -27,9 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -75,7 +67,7 @@ public class TransactionController {
     @Transactional(readOnly=true)
     @Secured({"ROLE_PRIVATEAPIACCESSOR","ROLE_MERCHANT"})     
     @ResponseBody
-    public List<Transaction> listTransactions(@RequestParam(required=false) TransactionStatus status, @RequestParam(required=false) String searchString,
+    public List<Transaction> listTransactions(@RequestParam(required=false) ETransactionStatus status, @RequestParam(required=false) String searchString,
                                                 @RequestParam(required=false) Long beforeTimestamp, @RequestParam(required=false) Long afterTimestamp) {
         Merchant m = SecurityHelper.getMerchant(service);
         LOG.debug("Listing transactions. [merchant={}]", m.getId());
@@ -133,7 +125,7 @@ public class TransactionController {
         Transaction t = getTransaction(m, id);
         
         if(amount == null) {
-            amount = t.getCapturedAmount();
+            amount = t.getAmountCharged();
         }
         
         return service.getTransactions(m).refund(t, amount);
@@ -148,10 +140,9 @@ public class TransactionController {
         LOG.debug("Charging transaction. [merchant={}; transaction={}; amount={}]", new Object[]{m.getId(), id, amount});
         Transaction t = getTransaction(m, id);
         
-        Token token = t.getToken();
         if(amount == null) {
-            if(token.getAuthorizedAmount()>0) {
-                amount = ((Token)token).getAuthorizedAmount();
+            if(t.getAmount()>0) {
+                amount = t.getAmount();
             } else {
                 throw new IllegalArgumentException("No amount specified");
             }

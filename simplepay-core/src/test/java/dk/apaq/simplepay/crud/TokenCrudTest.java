@@ -6,11 +6,11 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-import dk.apaq.simplepay.gateway.PaymentGatewayType;
+import dk.apaq.simplepay.gateway.EPaymentGateway;
 import dk.apaq.simplepay.model.Card;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
-import dk.apaq.simplepay.model.TokenPurpose;
+import dk.apaq.simplepay.model.ETokenPurpose;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -39,7 +39,7 @@ public class TokenCrudTest {
         Merchant m = new Merchant();
         m = service.getMerchants().createAndRead(m);
         
-        PaymentGatewayType gatewayType = PaymentGatewayType.Test;
+        EPaymentGateway gatewayType = EPaymentGateway.Test;
         String orderNumber = "ordernum";
         String description = "description";
         
@@ -48,7 +48,7 @@ public class TokenCrudTest {
         assertNotNull(token);
         //assertEquals(0, token.getAuthorizedAmount());
         //assertEquals(false, token.isAuthorized());
-        assertEquals(TokenPurpose.SinglePayment, token.getPurpose());
+        assertEquals(ETokenPurpose.SinglePayment, token.getPurpose());
         
         assertFalse(crud.list().isEmpty());
         

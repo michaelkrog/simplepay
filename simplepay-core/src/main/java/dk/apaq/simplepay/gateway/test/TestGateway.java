@@ -2,8 +2,8 @@ package dk.apaq.simplepay.gateway.test;
 
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.gateway.AbstractPaymentGateway;
-import dk.apaq.simplepay.gateway.DirectPaymentGateway;
-import dk.apaq.simplepay.gateway.PaymentGateway;
+import dk.apaq.simplepay.gateway.IDirectPaymentGateway;
+import dk.apaq.simplepay.gateway.IPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentInformation;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;

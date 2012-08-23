@@ -2,8 +2,8 @@ package dk.apaq.simplepay.site;
 
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.security.SecurityHelper;
-import dk.apaq.simplepay.common.PaymentMethod;
-import dk.apaq.simplepay.common.TransactionStatus;
+import dk.apaq.simplepay.common.EPaymentMethod;
+import dk.apaq.simplepay.common.ETransactionStatus;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Token;
@@ -54,12 +54,12 @@ public class PaymentWindowController {
         Merchant merchant = user.getMerchant();
         
         //TODO Detect payment method
-        PaymentMethod paymentMethod = PaymentMethod.Unknown;
+        EPaymentMethod paymentMethod = EPaymentMethod.Unknown;
         
-        Token token = service.getTokens(merchant).read(tokenId);
+        /*Token token = service.getTokens(merchant).read(tokenId);
         token = service.getTokens(merchant).authorize(token, currency, amount, paymentMethod, cardNumber, cvc, expireMonth, expireYear);
         service.getTransactions(merchant).createNew(token);
-            
+            */
         return "OK";
     }
 }

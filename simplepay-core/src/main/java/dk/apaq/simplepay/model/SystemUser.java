@@ -1,5 +1,6 @@
 package dk.apaq.simplepay.model;
 
+import dk.apaq.simplepay.security.ERole;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,12 +42,12 @@ public class SystemUser implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @ElementCollection
-    private List<Role> roles = new ArrayList<Role>();
+    private List<ERole> roles = new ArrayList<ERole>();
 
     public SystemUser() {
     }
 
-    public SystemUser(Merchant merchant, String username, String password, Role ... roles) {
+    public SystemUser(Merchant merchant, String username, String password, ERole ... roles) {
         this.username = username;
         this.password = password;
         this.merchant = merchant;
@@ -111,7 +112,7 @@ public class SystemUser implements Serializable {
         this.username = username;
     }
 
-    public List<Role> getRoles() {
+    public List<ERole> getRoles() {
         return roles;
     }
 

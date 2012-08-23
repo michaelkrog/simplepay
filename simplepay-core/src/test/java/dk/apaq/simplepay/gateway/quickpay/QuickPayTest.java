@@ -1,7 +1,7 @@
 package dk.apaq.simplepay.gateway.quickpay;
 
-import dk.apaq.simplepay.common.PaymentMethod;
-import dk.apaq.simplepay.common.TransactionStatus;
+import dk.apaq.simplepay.common.EPaymentMethod;
+import dk.apaq.simplepay.common.ETransactionStatus;
 import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.model.Merchant;
 import java.io.IOException;
@@ -234,14 +234,14 @@ public class QuickPayTest {
     @Test
     public void testStatusFromState() {
 
-        assertEquals(TransactionStatus.Cancelled, QuickPay.getStatusFromState(0));
-        assertEquals(TransactionStatus.Authorized, QuickPay.getStatusFromState(1));
+        assertEquals(ETransactionStatus.Cancelled, QuickPay.getStatusFromState(0));
+        assertEquals(ETransactionStatus.Authorized, QuickPay.getStatusFromState(1));
         assertEquals(null, QuickPay.getStatusFromState(2));
-        assertEquals(TransactionStatus.Charged, QuickPay.getStatusFromState(3));
+        assertEquals(ETransactionStatus.Charged, QuickPay.getStatusFromState(3));
         assertEquals(null, QuickPay.getStatusFromState(4));
-        assertEquals(TransactionStatus.Cancelled, QuickPay.getStatusFromState(5));
+        assertEquals(ETransactionStatus.Cancelled, QuickPay.getStatusFromState(5));
         assertEquals(null, QuickPay.getStatusFromState(6));
-        assertEquals(TransactionStatus.Refunded, QuickPay.getStatusFromState(7));
+        assertEquals(ETransactionStatus.Refunded, QuickPay.getStatusFromState(7));
         assertEquals(null, QuickPay.getStatusFromState(8));
         
     }
@@ -249,31 +249,31 @@ public class QuickPayTest {
     @Test
     public void testCardTypeFromString() {
         
-        assertEquals(PaymentMethod.American_Express, QuickPay.getCardTypeFromString("american-express"));
-        assertEquals(PaymentMethod.American_Express, QuickPay.getCardTypeFromString("american-express-dk"));
-        assertEquals(PaymentMethod.Dankort, QuickPay.getCardTypeFromString("dankort"));
-        assertEquals(PaymentMethod.Diners, QuickPay.getCardTypeFromString("diners-express"));
-        assertEquals(PaymentMethod.Diners, QuickPay.getCardTypeFromString("diners-express-dk"));
-        assertEquals(PaymentMethod.Jcb, QuickPay.getCardTypeFromString("jcb"));
-        assertEquals(PaymentMethod.Mastercard, QuickPay.getCardTypeFromString("mastercard"));
-        assertEquals(PaymentMethod.Mastercard, QuickPay.getCardTypeFromString("mastercard-dk"));
-        assertEquals(PaymentMethod.Visa, QuickPay.getCardTypeFromString("visa"));
-        assertEquals(PaymentMethod.Visa, QuickPay.getCardTypeFromString("visa-dk"));
-        assertEquals(PaymentMethod.Visa_Electron, QuickPay.getCardTypeFromString("visa-electron"));
-        assertEquals(PaymentMethod.Visa_Electron, QuickPay.getCardTypeFromString("visa-electron-dk"));
-        assertEquals(PaymentMethod.Unknown, QuickPay.getCardTypeFromString(null));
+        assertEquals(EPaymentMethod.American_Express, QuickPay.getCardTypeFromString("american-express"));
+        assertEquals(EPaymentMethod.American_Express, QuickPay.getCardTypeFromString("american-express-dk"));
+        assertEquals(EPaymentMethod.Dankort, QuickPay.getCardTypeFromString("dankort"));
+        assertEquals(EPaymentMethod.Diners, QuickPay.getCardTypeFromString("diners-express"));
+        assertEquals(EPaymentMethod.Diners, QuickPay.getCardTypeFromString("diners-express-dk"));
+        assertEquals(EPaymentMethod.Jcb, QuickPay.getCardTypeFromString("jcb"));
+        assertEquals(EPaymentMethod.Mastercard, QuickPay.getCardTypeFromString("mastercard"));
+        assertEquals(EPaymentMethod.Mastercard, QuickPay.getCardTypeFromString("mastercard-dk"));
+        assertEquals(EPaymentMethod.Visa, QuickPay.getCardTypeFromString("visa"));
+        assertEquals(EPaymentMethod.Visa, QuickPay.getCardTypeFromString("visa-dk"));
+        assertEquals(EPaymentMethod.Visa_Electron, QuickPay.getCardTypeFromString("visa-electron"));
+        assertEquals(EPaymentMethod.Visa_Electron, QuickPay.getCardTypeFromString("visa-electron-dk"));
+        assertEquals(null, QuickPay.getCardTypeFromString(null));
     }
     
     @Test
     public void testStringFromCardtype() {
-        assertEquals("american-express", QuickPay.getStringFromCardType(PaymentMethod.American_Express));
-        assertEquals("dankort", QuickPay.getStringFromCardType(PaymentMethod.Dankort));
-        assertEquals("diners", QuickPay.getStringFromCardType(PaymentMethod.Diners));
-        assertEquals("jcb", QuickPay.getStringFromCardType(PaymentMethod.Jcb));
-        assertEquals("mastercard", QuickPay.getStringFromCardType(PaymentMethod.Mastercard));
-        assertEquals("visa", QuickPay.getStringFromCardType(PaymentMethod.Visa));
-        assertEquals("visa-electron", QuickPay.getStringFromCardType(PaymentMethod.Visa_Electron));
-        assertEquals(null, QuickPay.getStringFromCardType(PaymentMethod.Unknown));
+        assertEquals("american-express", QuickPay.getStringFromCardType(EPaymentMethod.American_Express));
+        assertEquals("dankort", QuickPay.getStringFromCardType(EPaymentMethod.Dankort));
+        assertEquals("diners", QuickPay.getStringFromCardType(EPaymentMethod.Diners));
+        assertEquals("jcb", QuickPay.getStringFromCardType(EPaymentMethod.Jcb));
+        assertEquals("mastercard", QuickPay.getStringFromCardType(EPaymentMethod.Mastercard));
+        assertEquals("visa", QuickPay.getStringFromCardType(EPaymentMethod.Visa));
+        assertEquals("visa-electron", QuickPay.getStringFromCardType(EPaymentMethod.Visa_Electron));
+        assertEquals(null, QuickPay.getStringFromCardType(null));
     }
     
     @Test

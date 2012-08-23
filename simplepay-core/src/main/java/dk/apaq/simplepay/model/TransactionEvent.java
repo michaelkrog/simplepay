@@ -1,6 +1,6 @@
 package dk.apaq.simplepay.model;
 
-import dk.apaq.simplepay.common.TransactionStatus;
+import dk.apaq.simplepay.common.ETransactionStatus;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,7 +29,7 @@ public class TransactionEvent implements Event {
     private Date eventDate = new Date();
     
     @NotNull
-    private TransactionStatus newStatus;
+    private ETransactionStatus newStatus;
     @NotNull
     private String remoteAddress;
     
@@ -43,7 +43,7 @@ public class TransactionEvent implements Event {
     }
 
     
-    public TransactionEvent(Transaction transaction, String username, TransactionStatus newStatus, String remoteAddress) {
+    public TransactionEvent(Transaction transaction, String username, ETransactionStatus newStatus, String remoteAddress) {
         if(transaction == null) throw new NullPointerException("transaction was null.");
         this.entityId = transaction.getId();
         this.username = username;
@@ -56,7 +56,7 @@ public class TransactionEvent implements Event {
         return id;
     }
 
-    public TransactionStatus getNewStatus() {
+    public ETransactionStatus getNewStatus() {
         return newStatus;
     }
 

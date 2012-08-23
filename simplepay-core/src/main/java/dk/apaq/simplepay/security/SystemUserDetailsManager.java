@@ -3,7 +3,6 @@ package dk.apaq.simplepay.security;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.PayService;
 import dk.apaq.simplepay.model.Merchant;
-import dk.apaq.simplepay.model.Role;
 import dk.apaq.simplepay.model.SystemUser;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +35,7 @@ public class SystemUserDetailsManager implements UserDetailsService {
         }
         
         List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
-        for(Role role : user.getRoles()) {
+        for(ERole role : user.getRoles()) {
             authList.add(new SimpleGrantedAuthority("ROLE_" + role.name().toUpperCase()));
         }
         return new User(user.getUsername(), user.getPassword(), !user.isDisabled(), !user.isExpired(), !user.isCredentialsExpired(), !user.isLocked(), authList);

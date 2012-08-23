@@ -14,7 +14,7 @@ public class Token extends BaseEntity {
     
     
     @NotNull
-    private TokenPurpose purpose = TokenPurpose.SinglePayment;
+    private ETokenPurpose purpose = ETokenPurpose.SinglePayment;
     
     private boolean expired = false;
     private boolean test = false;
@@ -52,11 +52,11 @@ public class Token extends BaseEntity {
         this.merchant = merchant;
     }
 
-    public TokenPurpose getPurpose() {
+    public ETokenPurpose getPurpose() {
         return purpose;
     }
 
-    public void setPurpose(TokenPurpose purpose) {
+    public void setPurpose(ETokenPurpose purpose) {
         this.purpose = purpose;
     }
 

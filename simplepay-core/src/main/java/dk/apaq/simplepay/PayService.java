@@ -11,7 +11,7 @@ import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.crud.CrudSecurity;
 import dk.apaq.simplepay.crud.ITokenCrud;
 import dk.apaq.simplepay.crud.ITransactionCrud;
-import dk.apaq.simplepay.model.Role;
+import dk.apaq.simplepay.security.ERole;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.util.IdGenerator;
@@ -106,12 +106,12 @@ public class PayService implements ApplicationContextAware, IPayService {
         List<SystemUser> list = getUserlist("merchant", merchant);
         
         for(SystemUser user : list) {
-            if(user.getRoles().contains(Role.PublicApiAccessor)) {
+            if(user.getRoles().contains(ERole.PublicApiAccessor)) {
                 return user;
             }
         }
         
-        return getUsers().createAndRead(new SystemUser(merchant, IdGenerator.generateUniqueId(), "", Role.PublicApiAccessor));
+        return getUsers().createAndRead(new SystemUser(merchant, IdGenerator.generateUniqueId(), "", ERole.PublicApiAccessor));
     }
     
     @Transactional
@@ -120,12 +120,12 @@ public class PayService implements ApplicationContextAware, IPayService {
         List<SystemUser> list = getUserlist("merchant", merchant);
         
         for(SystemUser user : list) {
-            if(user.getRoles().contains(Role.PrivateApiAccessor)) {
+            if(user.getRoles().contains(ERole.PrivateApiAccessor)) {
                 return user;
             }
         }
         
-        return getUsers().createAndRead(new SystemUser(merchant, IdGenerator.generateUniqueId(), "", Role.PrivateApiAccessor));
+        return getUsers().createAndRead(new SystemUser(merchant, IdGenerator.generateUniqueId(), "", ERole.PrivateApiAccessor));
     }
     
     @Override

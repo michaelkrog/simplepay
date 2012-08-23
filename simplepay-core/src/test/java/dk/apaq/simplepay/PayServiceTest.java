@@ -2,12 +2,12 @@ package dk.apaq.simplepay;
 
 import dk.apaq.crud.Crud;
 import dk.apaq.filter.core.CompareFilter;
-import dk.apaq.simplepay.common.PaymentMethod;
-import dk.apaq.simplepay.common.TransactionStatus;
+import dk.apaq.simplepay.common.EPaymentMethod;
+import dk.apaq.simplepay.common.ETransactionStatus;
 import dk.apaq.simplepay.model.Card;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
-import dk.apaq.simplepay.model.Role;
+import dk.apaq.simplepay.security.ERole;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.TokenEvent;
 import dk.apaq.simplepay.model.Transaction;
@@ -41,7 +41,7 @@ public class PayServiceTest {
     
     private void login(SystemUser user) {
         List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
-        authList.add(new SimpleGrantedAuthority("ROLE_" + Role.Merchant.name().toUpperCase()));
+        authList.add(new SimpleGrantedAuthority("ROLE_" + ERole.Merchant.name().toUpperCase()));
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), authList));
     }
     
@@ -88,7 +88,7 @@ public class PayServiceTest {
         
         //Make sure the right data has been set
         assertEquals(m.getId(), t.getMerchant().getId());
-        assertEquals(TransactionStatus.Authorized, t.getStatus());
+        assertEquals(ETransactionStatus.Authorized, t.getStatus());
         
         //Make sure that transactions are only available throught he right merchants
         List<Transaction> tlist = service.getTransactions(m).list();
@@ -111,13 +111,13 @@ public class PayServiceTest {
         //Create transaction for m
         Transaction t = service.getTransactions(m).createNew(token, "T_123", "DKK");
         assertEquals(t.getToken(), token.getId());
-        assertEquals(TransactionStatus.Authorized, t.getStatus());
+        assertEquals(ETransactionStatus.Authorized, t.getStatus());
         
         t = service.getTransactions(m).charge(t, 300);
-        assertEquals(TransactionStatus.Charged, t.getStatus());
+        assertEquals(ETransactionStatus.Charged, t.getStatus());
         
         t = service.getTransactions(m).refund(t, 300);
-        assertEquals(TransactionStatus.Refunded, t.getStatus());
+        assertEquals(ETransactionStatus.Refunded, t.getStatus());
         
     }
     
@@ -145,7 +145,7 @@ public class PayServiceTest {
         Transaction t = new Transaction("123", "T_123", "DKK");
         Merchant merchant = service.getMerchants().createAndRead(new Merchant());
         Crud.Complete<String, TransactionEvent> events = service.getEvents(merchant, TransactionEvent.class);
-        TransactionEvent event = events.createAndRead(new TransactionEvent(t, "user", TransactionStatus.Authorized, "129.129.129.912"));
+        TransactionEvent event = events.createAndRead(new TransactionEvent(t, "user", ETransactionStatus.Authorized, "129.129.129.912"));
         assertNotNull(event);
     }
     

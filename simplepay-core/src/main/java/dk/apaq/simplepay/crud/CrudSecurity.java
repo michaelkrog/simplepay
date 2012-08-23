@@ -9,7 +9,7 @@ import dk.apaq.filter.core.AndFilter;
 import dk.apaq.filter.core.CompareFilter;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.PayService;
-import dk.apaq.simplepay.common.TransactionStatus;
+import dk.apaq.simplepay.common.ETransactionStatus;
 import dk.apaq.simplepay.model.Event;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
@@ -129,7 +129,7 @@ public class CrudSecurity {
         
         private void checkStatus(Transaction t) {
             if(t.getId() == null) { //New transaction
-                if(t.getStatus() != TransactionStatus.Authorized) {
+                if(t.getStatus() != ETransactionStatus.Authorized) {
                     throw new SecurityException("A new transaction status can only be persisted with status Ready.");
                 }
             } else {

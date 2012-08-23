@@ -6,3 +6,4 @@
 *.ear
 /simplepay-teaser/target/
 /simplepay-core/target/
+/simplepay-web/target/

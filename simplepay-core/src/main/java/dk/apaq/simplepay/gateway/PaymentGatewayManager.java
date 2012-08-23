@@ -34,13 +34,13 @@ public class PaymentGatewayManager {
     }
     
     
-    public PaymentGateway createPaymentGateway(PaymentGatewayType type) {
-        Class<PaymentGateway> clazz = gatewayMap.get(type.name());
+    public IPaymentGateway createPaymentGateway(EPaymentGateway type) {
+        Class<IPaymentGateway> clazz = gatewayMap.get(type.name());
         if(clazz == null) {
             throw new NullPointerException("No gateway by that type [type="+type+"]");
         }
         
-        PaymentGateway paymentGateway = null;
+        IPaymentGateway paymentGateway = null;
         
         try {
             paymentGateway = clazz.newInstance();

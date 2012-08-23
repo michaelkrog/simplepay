@@ -1,7 +1,7 @@
 package dk.apaq.simplepay.model;
 
-import dk.apaq.simplepay.common.TransactionStatus;
-import dk.apaq.simplepay.gateway.PaymentGatewayType;
+import dk.apaq.simplepay.common.ETransactionStatus;
+import dk.apaq.simplepay.gateway.EPaymentGateway;
 import java.util.Date;
 import org.junit.Test;
 import static org.junit.Assert.*;

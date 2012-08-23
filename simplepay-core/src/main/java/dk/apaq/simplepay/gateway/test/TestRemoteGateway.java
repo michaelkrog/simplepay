@@ -1,8 +1,8 @@
 package dk.apaq.simplepay.gateway.test;
 
 import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.common.TransactionStatus;
-import dk.apaq.simplepay.gateway.RemoteAuthPaymentGateway;
+import dk.apaq.simplepay.common.ETransactionStatus;
+import dk.apaq.simplepay.gateway.IRemoteAuthPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentInformation;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
@@ -16,7 +16,7 @@ import org.springframework.security.authentication.rcp.RemoteAuthenticationProvi
  *
  * @author krog
  */
-public class TestRemoteGateway extends TestGateway implements RemoteAuthPaymentGateway {
+public class TestRemoteGateway extends TestGateway implements IRemoteAuthPaymentGateway {
 
     
 

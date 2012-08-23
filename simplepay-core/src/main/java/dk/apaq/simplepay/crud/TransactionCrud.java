@@ -2,11 +2,11 @@ package dk.apaq.simplepay.crud;
 
 import dk.apaq.crud.jpa.EntityManagerCrudForSpring;
 import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.common.TransactionStatus;
-import dk.apaq.simplepay.gateway.PaymentGateway;
+import dk.apaq.simplepay.common.ETransactionStatus;
+import dk.apaq.simplepay.gateway.IPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.model.Token;
-import dk.apaq.simplepay.model.TokenPurpose;
+import dk.apaq.simplepay.model.ETokenPurpose;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.model.TransactionEvent;
 import dk.apaq.simplepay.util.RequestInformationHelper;
@@ -36,11 +36,11 @@ public class TransactionCrud extends EntityManagerCrudForSpring<String, Transact
         Transaction transaction = new Transaction(token.getId(), refId, currency);
         transaction = createAndRead(transaction);
         
-        if(token.getPurpose() == TokenPurpose.SinglePayment) {
+        if(token.getPurpose() == ETokenPurpose.SinglePayment) {
             service.getTokens(token.getMerchant()).markExpired(token);
         }
                 
-        TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), TransactionStatus.Authorized, RequestInformationHelper.getRemoteAddress());
+        TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), ETransactionStatus.Authorized, RequestInformationHelper.getRemoteAddress());
         service.getEvents(token.getMerchant(), TransactionEvent.class).createAndRead(evt);
         
         return transaction;
@@ -50,14 +50,14 @@ public class TransactionCrud extends EntityManagerCrudForSpring<String, Transact
     public Transaction charge(Transaction transaction, long amount) {
         transaction = read(transaction.getId());
         transaction.setAmountCharged(amount);
-        transaction.setStatus(TransactionStatus.Charged);
+        transaction.setStatus(ETransactionStatus.Charged);
         
-        PaymentGateway gateway = null;//gatewayManager.createPaymentGateway(transaction.getToken().getGatewayType());
+        IPaymentGateway gateway = null;//gatewayManager.createPaymentGateway(transaction.getToken().getGatewayType());
         //gateway.capture(transaction.getToken(), amount);
         
         transaction = update(transaction);
         
-        TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), TransactionStatus.Charged, RequestInformationHelper.getRemoteAddress());
+        TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), ETransactionStatus.Charged, RequestInformationHelper.getRemoteAddress());
         service.getEvents(transaction.getMerchant(), TransactionEvent.class).createAndRead(evt);
         
         return transaction;
@@ -66,14 +66,14 @@ public class TransactionCrud extends EntityManagerCrudForSpring<String, Transact
     @Transactional
     public Transaction cancel(Transaction transaction) {
         transaction = read(transaction.getId());
-        transaction.setStatus(TransactionStatus.Cancelled);
+        transaction.setStatus(ETransactionStatus.Cancelled);
         
-        PaymentGateway gateway = null;//gatewayManager.createPaymentGateway(transaction.getToken().getGatewayType());
+        IPaymentGateway gateway = null;//gatewayManager.createPaymentGateway(transaction.getToken().getGatewayType());
         //gateway.cancel(transaction.getToken());
         
         transaction = update(transaction);
         
-        TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), TransactionStatus.Cancelled, RequestInformationHelper.getRemoteAddress());
+        TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), ETransactionStatus.Cancelled, RequestInformationHelper.getRemoteAddress());
         service.getEvents(transaction.getMerchant(), TransactionEvent.class).createAndRead(evt);
         
         return transaction;
@@ -83,14 +83,14 @@ public class TransactionCrud extends EntityManagerCrudForSpring<String, Transact
     public Transaction refund(Transaction transaction, long amount) {
         transaction = read(transaction.getId());
         transaction.setAmountRefunded(amount);
-        transaction.setStatus(TransactionStatus.Refunded);
+        transaction.setStatus(ETransactionStatus.Refunded);
         
-        PaymentGateway gateway = null;//gatewayManager.createPaymentGateway(transaction.getToken().getGatewayType());
+        IPaymentGateway gateway = null;//gatewayManager.createPaymentGateway(transaction.getToken().getGatewayType());
         //gateway.refund(transaction.getToken(), amount);
         
         transaction = update(transaction);
         
-        TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), TransactionStatus.Refunded, RequestInformationHelper.getRemoteAddress());
+        TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), ETransactionStatus.Refunded, RequestInformationHelper.getRemoteAddress());
         service.getEvents(transaction.getMerchant(), TransactionEvent.class).createAndRead(evt);
         
         return transaction;

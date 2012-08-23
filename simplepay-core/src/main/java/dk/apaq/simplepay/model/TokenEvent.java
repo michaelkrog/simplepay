@@ -1,6 +1,6 @@
 package dk.apaq.simplepay.model;
 
-import dk.apaq.simplepay.common.TransactionStatus;
+import dk.apaq.simplepay.common.ETransactionStatus;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

@@ -7,7 +7,7 @@ import dk.apaq.simplepay.model.Merchant;
  *
  * @author michael
  */
-public abstract class AbstractPaymentGateway implements PaymentGateway {
+public abstract class AbstractPaymentGateway implements IPaymentGateway {
 
     protected IPayService service;
     

@@ -7,7 +7,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-import dk.apaq.simplepay.common.TransactionStatus;
+import dk.apaq.simplepay.common.ETransactionStatus;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
@@ -42,7 +42,7 @@ public class Transaction extends BaseEntity {
     
     @Enumerated(EnumType.STRING)
     @NotNull
-    private TransactionStatus status = TransactionStatus.Authorized;
+    private ETransactionStatus status = ETransactionStatus.Authorized;
 
     protected Transaction() { /* EMPTY */ }
     
@@ -77,11 +77,11 @@ public class Transaction extends BaseEntity {
         this.merchant = merchant;
     }
 
-    public TransactionStatus getStatus() {
+    public ETransactionStatus getStatus() {
         return status;
     }
 
-    public void setStatus(TransactionStatus status) {
+    public void setStatus(ETransactionStatus status) {
         this.status = status;
     }
 

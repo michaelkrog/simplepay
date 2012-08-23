@@ -1,6 +1,11 @@
 package dk.apaq.simplepay.model;
 
+import dk.apaq.simplepay.gateway.EPaymentGateway;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import org.joda.money.Money;
 
 /**
  *
@@ -17,6 +22,13 @@ public class Merchant extends BaseEntity {
     private String city;
     private String country;
     
+    @OneToMany
+    private List<PaymentGatewayAccess> paymentGatewayAccesses = new ArrayList<PaymentGatewayAccess>();
+
+    public List<PaymentGatewayAccess> getPaymentGatewayAccesses() {
+        return paymentGatewayAccesses;
+    }
+
     public String getCity() {
         return city;
     }
@@ -73,30 +85,13 @@ public class Merchant extends BaseEntity {
         this.phone = phone;
     }
 
-  /*  public String getGatewayUserId() {
-        return gatewayUserId;
+    public EPaymentGateway getPreferredPaymentGateway(Card card, Money money) {
+        for(PaymentGatewayAccess pga : paymentGatewayAccesses) {
+            if(pga.isDefaultGateway()) {
+                return pga.getPaymentGatewayType();
+            }
+        }
+        return null;
     }
-
-    public void setGatewayUserId(String merchantId) {
-        this.gatewayUserId = merchantId;
-    }
-
-    public String getGatewaySecret() {
-        return gatewaySecret;
-    }
-
-    public void setGatewaySecret(String merchantSecret) {
-        if(merchantSecret == null) merchantSecret = DEFAULT_SECRET;
-        this.gatewaySecret = merchantSecret;
-    }
-
-    public PaymentGatewayType getGatewayType() {
-        return gatewayType;
-    }
-
-    public void setGatewayType(PaymentGatewayType gatewayType) {
-        this.gatewayType = gatewayType;
-    }
-*/
     
 }

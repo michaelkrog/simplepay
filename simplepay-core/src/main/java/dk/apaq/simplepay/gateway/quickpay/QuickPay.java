@@ -1,11 +1,11 @@
 package dk.apaq.simplepay.gateway.quickpay;
 
-import dk.apaq.simplepay.common.PaymentMethod;
-import dk.apaq.simplepay.common.TransactionStatus;
+import dk.apaq.simplepay.common.EPaymentMethod;
+import dk.apaq.simplepay.common.ETransactionStatus;
 import dk.apaq.simplepay.gateway.AbstractPaymentGateway;
-import dk.apaq.simplepay.gateway.HasPaymentInformation;
+import dk.apaq.simplepay.gateway.IHasPaymentInformation;
 import dk.apaq.simplepay.gateway.PaymentException;
-import dk.apaq.simplepay.gateway.RemoteAuthPaymentGateway;
+import dk.apaq.simplepay.gateway.IRemoteAuthPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentInformation;
 import dk.apaq.simplepay.model.Token;
 import java.io.ByteArrayOutputStream;
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author krog
  */
-public class QuickPay extends AbstractPaymentGateway implements RemoteAuthPaymentGateway, HasPaymentInformation {
+public class QuickPay extends AbstractPaymentGateway implements IRemoteAuthPaymentGateway, IHasPaymentInformation {
 
     private static final Logger LOG = LoggerFactory.getLogger(QuickPay.class);
 
@@ -317,55 +317,57 @@ public class QuickPay extends AbstractPaymentGateway implements RemoteAuthPaymen
         return formData;
     }
     
-    public static TransactionStatus getStatusFromState(int state) {
+    public static ETransactionStatus getStatusFromState(int state) {
         switch(state) {
             case 0:
-                return TransactionStatus.Cancelled;
+                return ETransactionStatus.Cancelled;
             case 1:
-                return TransactionStatus.Authorized;
+                return ETransactionStatus.Authorized;
             case 3:
-                return TransactionStatus.Charged;
+                return ETransactionStatus.Charged;
             case 5:
-                return TransactionStatus.Cancelled;
+                return ETransactionStatus.Cancelled;
             case 7:
-                return TransactionStatus.Refunded;
+                return ETransactionStatus.Refunded;
             default:
                 return null;
         }
     }
 
-    public static PaymentMethod getCardTypeFromString(String type) {
+    public static EPaymentMethod getCardTypeFromString(String type) {
         if("american-express".equals(type) || "american-express-dk".equals(type)) {
-            return PaymentMethod.American_Express;
+            return EPaymentMethod.American_Express;
         }
         
         if("dankort".equals(type)) {
-            return PaymentMethod.Dankort;
+            return EPaymentMethod.Dankort;
         }
         
         if("diners-express".equals(type) || "diners-express-dk".equals(type)) {
-            return PaymentMethod.Diners;
+            return EPaymentMethod.Diners;
         }
         
         if("jcb".equals(type)) {
-            return PaymentMethod.Jcb;
+            return EPaymentMethod.Jcb;
         }
         
         if("mastercard".equals(type) || "mastercard-dk".equals(type)) {
-            return PaymentMethod.Mastercard;
+            return EPaymentMethod.Mastercard;
         }
         
         if("visa".equals(type) || "visa-dk".equals(type)) {
-            return PaymentMethod.Visa;
+            return EPaymentMethod.Visa;
         }
         
         if("visa-electron".equals(type) || "visa-electron-dk".equals(type)) {
-            return PaymentMethod.Visa_Electron;
+            return EPaymentMethod.Visa_Electron;
         }
-        return PaymentMethod.Unknown;
+        return null;
     }
     
-    public static String getStringFromCardType(PaymentMethod type) {
+    public static String getStringFromCardType(EPaymentMethod type) {
+        if(type == null) return null;
+        
         switch(type) {
             case American_Express:
                 return "american-express";
