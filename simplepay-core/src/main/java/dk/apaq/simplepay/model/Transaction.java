@@ -43,8 +43,13 @@ public class Transaction extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @NotNull
     private TransactionStatus status = TransactionStatus.Authorized;
+
+    protected Transaction() { /* EMPTY */ }
     
-    public Transaction() {
+    public Transaction(String token, String refId, String currency) {
+        this.token = token;
+        this.refId = refId;
+        this.currency = currency;
     }
     
     

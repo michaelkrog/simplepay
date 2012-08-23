@@ -10,7 +10,7 @@ import dk.apaq.simplepay.model.Transaction;
  */
 public interface ITransactionCrud extends Crud.Filterable<String, Transaction> {
     
-    Transaction createNew(Token token);
+    Transaction createNew(Token token, String refId, String currency);
     
     Transaction charge(Transaction transaction, long amount);
     

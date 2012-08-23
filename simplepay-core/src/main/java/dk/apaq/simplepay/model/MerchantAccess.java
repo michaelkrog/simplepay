@@ -2,6 +2,7 @@ package dk.apaq.simplepay.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 
 /**
@@ -10,6 +11,8 @@ import javax.persistence.Entity;
 @Entity
 public class MerchantAccess extends BaseEntity {
     private String username;
+    
+    @ElementCollection
     private List<String> roles = new ArrayList<String>();
 
     public List<String> getRoles() {

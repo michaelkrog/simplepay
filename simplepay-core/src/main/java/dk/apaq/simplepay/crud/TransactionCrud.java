@@ -6,6 +6,7 @@ import dk.apaq.simplepay.common.TransactionStatus;
 import dk.apaq.simplepay.gateway.PaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.model.Token;
+import dk.apaq.simplepay.model.TokenPurpose;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.model.TransactionEvent;
 import dk.apaq.simplepay.util.RequestInformationHelper;
@@ -31,10 +32,14 @@ public class TransactionCrud extends EntityManagerCrudForSpring<String, Transact
     }
 
     @Transactional
-    public Transaction createNew(Token token) {
-        Transaction transaction = new Transaction(/*token.getId()*/);
+    public Transaction createNew(Token token, String refId, String currency) {
+        Transaction transaction = new Transaction(token.getId(), refId, currency);
         transaction = createAndRead(transaction);
         
+        if(token.getPurpose() == TokenPurpose.SinglePayment) {
+            service.getTokens(token.getMerchant()).markExpired(token);
+        }
+                
         TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), TransactionStatus.Authorized, RequestInformationHelper.getRemoteAddress());
         service.getEvents(token.getMerchant(), TransactionEvent.class).createAndRead(evt);
         

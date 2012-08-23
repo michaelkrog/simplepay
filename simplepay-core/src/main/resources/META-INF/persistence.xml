@@ -8,6 +8,9 @@
     <class>dk.apaq.simplepay.model.TransactionEvent</class>
     <class>dk.apaq.simplepay.model.Token</class>
     <class>dk.apaq.simplepay.model.TokenEvent</class>
+    <class>dk.apaq.simplepay.model.AcquirerAccess</class>
+    <class>dk.apaq.simplepay.model.Card</class>
+    <class>dk.apaq.simplepay.model.MerchantAccess</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
   </persistence-unit>
 </persistence>

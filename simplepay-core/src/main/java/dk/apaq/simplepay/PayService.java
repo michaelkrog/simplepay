@@ -169,8 +169,8 @@ public class PayService implements ApplicationContextAware, IPayService {
     }
     
     @Override
-    public Transaction getTransactionByOrderNumber(Merchant m, String orderNumber) {
-        Filter filter = new CompareFilter("orderNumber", orderNumber, CompareFilter.CompareType.Equals);
+    public Transaction getTransactionByRefId(Merchant m, String orderNumber) {
+        Filter filter = new CompareFilter("refId", orderNumber, CompareFilter.CompareType.Equals);
         List<Transaction> list = getTransactions(m).list(filter, null);
         return list.isEmpty() ? null : list.get(0);
     }

@@ -1,10 +1,16 @@
 package dk.apaq.simplepay.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import org.hibernate.annotations.GenericGenerator;
+
 /**
  *
  * @author krog
  */
-public class Card {
+@Entity
+public class Card extends BaseEntity {
     
     private String number;
     private int expMonth;
@@ -30,6 +36,7 @@ public class Card {
         this.cvd = cvd;
     }
 
+    
     public String getCountry() {
         return country;
     }

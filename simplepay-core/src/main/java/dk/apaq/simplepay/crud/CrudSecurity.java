@@ -82,7 +82,7 @@ public class CrudSecurity {
 
         @Override
         public void onBeforeEntityCreate(WithEntity<String, Transaction> event) {
-            if(service.getTransactionByOrderNumber(owner, event.getEntity().getRefId()) != null) {
+            if(service.getTransactionByRefId(owner, event.getEntity().getRefId()) != null) {
                 throw new SecurityException("Ordernumber already used. [Merchant="+owner.getId()+";orderNumber="+event.getEntity().getRefId()+"]");
             }
             
@@ -106,8 +106,8 @@ public class CrudSecurity {
         private void checkToken(Transaction t) {
             String token = t.getToken();
             
-            if(token == null || token == null) {
-                throw new IllegalArgumentException("A transactation must have a persisted token.");
+            if(token == null) {
+                throw new IllegalArgumentException("A transactation must have token specified.");
             }
             
             Token existingToken = service.getTokens(owner).read(token);
@@ -120,9 +120,9 @@ public class CrudSecurity {
                 //token.set(true);
             } else {
                Transaction existingTransaction = service.getTransactions(owner).read(t.getId());
-               /*if(!existingTransaction.getToken().getId().equals(token.getId())) {
+               if(!existingTransaction.getToken().equals(token)) {
                    throw new SecurityException("Cannot change token on transaction.");
-               } */
+               } 
             }
             
         }

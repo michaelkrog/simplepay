@@ -10,7 +10,7 @@ import org.hibernate.annotations.GenericGenerator;
  * @author krog
  */
 @Entity
-@Inheritance
+@Inheritance(strategy= InheritanceType.TABLE_PER_CLASS)
 public abstract class BaseEntity implements Serializable {
     @Id
     @GeneratedValue(generator = "system-uuid")

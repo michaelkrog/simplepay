@@ -30,7 +30,7 @@ public interface IPayService {
     
     Crud.Complete<String, Merchant> getMerchants();
 
-    Transaction getTransactionByOrderNumber(Merchant m, String orderNumber);
+    Transaction getTransactionByRefId(Merchant m, String orderNumber);
     
     ITransactionCrud getTransactions(Merchant merchant);
     ITokenCrud getTokens(Merchant merchant);

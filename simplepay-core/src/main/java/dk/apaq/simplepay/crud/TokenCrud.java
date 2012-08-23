@@ -37,6 +37,12 @@ public class TokenCrud extends EntityManagerCrudForSpring<String, Token> impleme
         return token;
     }
 
+    public void markExpired(Token token) {
+        token.setExpired(true);
+        update(token);
+    }
+
+    
     
     
 }

@@ -81,10 +81,10 @@ public class PayServiceTest {
         Token token2 = service.getTokens(m2).createNew(card);
         
         //Create transaction for m
-        Transaction t = service.getTransactions(m).createNew(token1);
+        Transaction t = service.getTransactions(m).createNew(token1, "T_123", "DKK");
         
         //Create transaction for m2
-        Transaction t2 = service.getTransactions(m2).createNew(token2);
+        Transaction t2 = service.getTransactions(m2).createNew(token2, "T_321", "DKK");
         
         //Make sure the right data has been set
         assertEquals(m.getId(), t.getMerchant().getId());
@@ -95,8 +95,8 @@ public class PayServiceTest {
         List<Transaction> tlist2 = service.getTransactions(m2).list();
         assertEquals(1, tlist.size());
         assertEquals(1, tlist2.size());
-        //assertEquals("T_123", tlist.get(0).getOrderNumber());
-        //assertEquals("T_321", tlist2.get(0).getOrderNumber());
+        assertEquals("T_123", tlist.get(0).getRefId());
+        assertEquals("T_321", tlist2.get(0).getRefId());
         
     }
     
@@ -107,16 +107,10 @@ public class PayServiceTest {
         
         Token token = service.getTokens(m).createNew(card);
         assertFalse(token.isExpired());
-        //assertFalse(token.isAuthorized());
-        
-        assertFalse(token.isExpired());
-        //assertTrue(token.isAuthorized());
         
         //Create transaction for m
-        Transaction t = service.getTransactions(m).createNew(token);
-        //assertEquals(t.getToken().getId(), token.getId());
-        //assertTrue(t.getToken().isAuthorized());
-        //assertTrue(t.getToken().isUsed());
+        Transaction t = service.getTransactions(m).createNew(token, "T_123", "DKK");
+        assertEquals(t.getToken(), token.getId());
         assertEquals(TransactionStatus.Authorized, t.getStatus());
         
         t = service.getTransactions(m).charge(t, 300);
@@ -133,17 +127,13 @@ public class PayServiceTest {
         m = service.getMerchants().createAndRead(m);
         
         Token token = service.getTokens(m).createNew(card);
-        //assertFalse(token.isUsed());
-        //assertFalse(token.isAuthorized());
-        
-        //assertFalse(token.isUsed());
-        //assertTrue(token.isAuthorized());
+        assertFalse(token.isExpired());
         
         //Create transaction for m
-        Transaction t = service.getTransactions(m).createNew(token);
+        Transaction t = service.getTransactions(m).createNew(token, "T_123", "DKK");
         
         try {
-            service.getTransactions(m).createNew(token);
+            service.getTransactions(m).createNew(token, "T_321", "DKK");
             fail("Should not allow same token twice.");
         } catch(SecurityException ex) { }
         
@@ -152,7 +142,7 @@ public class PayServiceTest {
     
     @Test
     public void testGetEvents() {
-        Transaction t = new Transaction();
+        Transaction t = new Transaction("123", "T_123", "DKK");
         Merchant merchant = service.getMerchants().createAndRead(new Merchant());
         Crud.Complete<String, TransactionEvent> events = service.getEvents(merchant, TransactionEvent.class);
         TransactionEvent event = events.createAndRead(new TransactionEvent(t, "user", TransactionStatus.Authorized, "129.129.129.912"));
