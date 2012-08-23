@@ -54,7 +54,7 @@ public class PaymentWindowController {
         Merchant merchant = user.getMerchant();
         
         //TODO Detect payment method
-        EPaymentMethod paymentMethod = EPaymentMethod.Unknown;
+        EPaymentMethod paymentMethod = null;
         
         /*Token token = service.getTokens(merchant).read(tokenId);
         token = service.getTokens(merchant).authorize(token, currency, amount, paymentMethod, cardNumber, cvc, expireMonth, expireYear);
