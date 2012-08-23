@@ -3,14 +3,14 @@ package dk.apaq.simplepay.crud;
 import dk.apaq.crud.jpa.EntityManagerCrudForSpring;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.common.ETransactionStatus;
-import dk.apaq.simplepay.gateway.IPaymentGateway;
-import dk.apaq.simplepay.gateway.PaymentGatewayManager;
+import dk.apaq.simplepay.gateway.*;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.ETokenPurpose;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.model.TransactionEvent;
 import dk.apaq.simplepay.util.RequestInformationHelper;
 import javax.persistence.EntityManager;
+import org.joda.money.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,14 +32,29 @@ public class TransactionCrud extends EntityManagerCrudForSpring<String, Transact
     }
 
     @Transactional
-    public Transaction createNew(Token token, String refId, String currency) {
-        Transaction transaction = new Transaction(token.getId(), refId, currency);
+    public Transaction createNew(Token token, String refId, Money money) {
+        Transaction transaction = new Transaction(token.getId(), refId, money);
+        
+        //Get preferred gateway
+        EPaymentGateway type = token.getMerchant().getPreferredPaymentGateway(token.getData(), money);
+        if(type==null) {
+            throw new PaymentException("Unable to retrieve preferred payment type for merchant. [Merchant="+token.getMerchant().getId()+"]");
+        }
+        
+        //Create gateway
+        IPaymentGateway gateway = gatewayManager.createPaymentGateway(type);
+        
+        //authorize payment
+        ((IDirectPaymentGateway)gateway).authorize(token, money, refId, "");
+        
+        //Store authorized transaction
         transaction = createAndRead(transaction);
         
+        //if token only for single usage then mark it expired
         if(token.getPurpose() == ETokenPurpose.SinglePayment) {
             service.getTokens(token.getMerchant()).markExpired(token);
         }
-                
+        
         TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), ETransactionStatus.Authorized, RequestInformationHelper.getRemoteAddress());
         service.getEvents(token.getMerchant(), TransactionEvent.class).createAndRead(evt);
         

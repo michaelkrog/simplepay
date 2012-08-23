@@ -68,4 +68,8 @@ public class Token extends BaseEntity {
         this.test = test;
     }
 
+    public Card getData() {
+        return data;
+    }
+    
 }

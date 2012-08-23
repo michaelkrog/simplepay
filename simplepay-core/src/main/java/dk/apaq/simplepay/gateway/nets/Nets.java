@@ -6,6 +6,7 @@ import dk.apaq.simplepay.gateway.IDirectPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentInformation;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
+import org.joda.money.Money;
 
 /**
  *
@@ -13,7 +14,7 @@ import dk.apaq.simplepay.model.Token;
  */
 public class Nets extends AbstractPaymentGateway implements IDirectPaymentGateway {
 
-    public void authorize(Token token, long amount, String currency, String orderId, String terminalId) {
+    public void authorize(Token token, Money money, String orderId, String terminalId) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

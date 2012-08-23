@@ -13,7 +13,6 @@ public class PaymentGatewayAccess extends BaseEntity {
     private EPaymentGateway paymentGatewayType;
     private String acquirerRefId;
     private String acquirerApiKey;
-    private boolean defaultGateway;
 
     protected PaymentGatewayAccess() {
     }
@@ -22,14 +21,6 @@ public class PaymentGatewayAccess extends BaseEntity {
         this.paymentGatewayType = paymentGatewayType;
         this.acquirerRefId = acquirerRefId;
         this.acquirerApiKey = acquirerApiKey;
-    }
-
-    public boolean isDefaultGateway() {
-        return defaultGateway;
-    }
-
-    public void setDefaultGateway(boolean defaultGateway) {
-        this.defaultGateway = defaultGateway;
     }
     
     public EPaymentGateway getPaymentGatewayType() {

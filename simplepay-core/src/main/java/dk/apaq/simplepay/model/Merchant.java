@@ -3,6 +3,7 @@ package dk.apaq.simplepay.model;
 import dk.apaq.simplepay.gateway.EPaymentGateway;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import org.joda.money.Money;
@@ -22,7 +23,7 @@ public class Merchant extends BaseEntity {
     private String city;
     private String country;
     
-    @OneToMany
+    @OneToMany(cascade= CascadeType.ALL)
     private List<PaymentGatewayAccess> paymentGatewayAccesses = new ArrayList<PaymentGatewayAccess>();
 
     public List<PaymentGatewayAccess> getPaymentGatewayAccesses() {
@@ -87,9 +88,8 @@ public class Merchant extends BaseEntity {
 
     public EPaymentGateway getPreferredPaymentGateway(Card card, Money money) {
         for(PaymentGatewayAccess pga : paymentGatewayAccesses) {
-            if(pga.isDefaultGateway()) {
-                return pga.getPaymentGatewayType();
-            }
+            //TODO Create som clever rule handling
+            return pga.getPaymentGatewayType();
         }
         return null;
     }

@@ -1,6 +1,7 @@
 package dk.apaq.simplepay.gateway;
 
 import dk.apaq.simplepay.model.Token;
+import org.joda.money.Money;
 
 /**
  *
@@ -8,6 +9,6 @@ import dk.apaq.simplepay.model.Token;
  */
 public interface IDirectPaymentGateway extends IPaymentGateway {
     
-    public void authorize(Token token, long amount, String currency, String orderId, String terminalId);
+    public void authorize(Token token, Money money, String orderId, String terminalId);
     
 }

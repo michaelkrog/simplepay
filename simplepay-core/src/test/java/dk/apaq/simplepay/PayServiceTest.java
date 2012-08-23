@@ -2,18 +2,14 @@ package dk.apaq.simplepay;
 
 import dk.apaq.crud.Crud;
 import dk.apaq.filter.core.CompareFilter;
-import dk.apaq.simplepay.common.EPaymentMethod;
 import dk.apaq.simplepay.common.ETransactionStatus;
-import dk.apaq.simplepay.model.Card;
-import dk.apaq.simplepay.model.Merchant;
-import dk.apaq.simplepay.model.Token;
+import dk.apaq.simplepay.gateway.EPaymentGateway;
+import dk.apaq.simplepay.model.*;
 import dk.apaq.simplepay.security.ERole;
-import dk.apaq.simplepay.model.SystemUser;
-import dk.apaq.simplepay.model.TokenEvent;
-import dk.apaq.simplepay.model.Transaction;
-import dk.apaq.simplepay.model.TransactionEvent;
 import java.util.ArrayList;
 import java.util.List;
+import org.joda.money.CurrencyUnit;
+import org.joda.money.Money;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,11 +47,14 @@ public class PayServiceTest {
     @Test
     public void testWorkWithMerchant() {
         Merchant m = new Merchant();
+        m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null, null));
+        
         m = service.getMerchants().createAndRead(m);
         
         SystemUser user = service.getUsers().createAndRead(new SystemUser(m, "john", "doe"));
         
         Merchant m2 = new Merchant();
+        m2.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null, null));
         m2 = service.getMerchants().createAndRead(m2);
         
         SystemUser user2 = service.getUsers().createAndRead(new SystemUser(m, "jane", "doe"));
@@ -81,10 +80,10 @@ public class PayServiceTest {
         Token token2 = service.getTokens(m2).createNew(card);
         
         //Create transaction for m
-        Transaction t = service.getTransactions(m).createNew(token1, "T_123", "DKK");
+        Transaction t = service.getTransactions(m).createNew(token1, "T_123", Money.of(CurrencyUnit.USD, 123));
         
         //Create transaction for m2
-        Transaction t2 = service.getTransactions(m2).createNew(token2, "T_321", "DKK");
+        Transaction t2 = service.getTransactions(m2).createNew(token2, "T_321", Money.of(CurrencyUnit.USD, 123));
         
         //Make sure the right data has been set
         assertEquals(m.getId(), t.getMerchant().getId());
@@ -103,13 +102,14 @@ public class PayServiceTest {
     @Test
     public void testValidPayment() {
         Merchant m = new Merchant();
+        m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null, null));
         m = service.getMerchants().createAndRead(m);
         
         Token token = service.getTokens(m).createNew(card);
         assertFalse(token.isExpired());
         
         //Create transaction for m
-        Transaction t = service.getTransactions(m).createNew(token, "T_123", "DKK");
+        Transaction t = service.getTransactions(m).createNew(token, "T_123", Money.of(CurrencyUnit.USD, 123));
         assertEquals(t.getToken(), token.getId());
         assertEquals(ETransactionStatus.Authorized, t.getStatus());
         
@@ -124,16 +124,17 @@ public class PayServiceTest {
     @Test
     public void testInvalidPayment() {
         Merchant m = new Merchant();
+        m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null, null));
         m = service.getMerchants().createAndRead(m);
         
         Token token = service.getTokens(m).createNew(card);
         assertFalse(token.isExpired());
         
         //Create transaction for m
-        Transaction t = service.getTransactions(m).createNew(token, "T_123", "DKK");
+        Transaction t = service.getTransactions(m).createNew(token, "T_123", Money.of(CurrencyUnit.USD, 123));
         
         try {
-            service.getTransactions(m).createNew(token, "T_321", "DKK");
+            service.getTransactions(m).createNew(token, "T_321", Money.of(CurrencyUnit.USD, 123));
             fail("Should not allow same token twice.");
         } catch(SecurityException ex) { }
         
@@ -142,7 +143,7 @@ public class PayServiceTest {
     
     @Test
     public void testGetEvents() {
-        Transaction t = new Transaction("123", "T_123", "DKK");
+        Transaction t = new Transaction("123", "T_123", Money.of(CurrencyUnit.USD, 123));
         Merchant merchant = service.getMerchants().createAndRead(new Merchant());
         Crud.Complete<String, TransactionEvent> events = service.getEvents(merchant, TransactionEvent.class);
         TransactionEvent event = events.createAndRead(new TransactionEvent(t, "user", ETransactionStatus.Authorized, "129.129.129.912"));

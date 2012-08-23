@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import dk.apaq.simplepay.common.ETransactionStatus;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.joda.money.Money;
 
 /**
  *
@@ -46,10 +47,11 @@ public class Transaction extends BaseEntity {
 
     protected Transaction() { /* EMPTY */ }
     
-    public Transaction(String token, String refId, String currency) {
+    public Transaction(String token, String refId, Money money) {
         this.token = token;
         this.refId = refId;
-        this.currency = currency;
+        this.amount = money.getAmountMinorLong();
+        this.currency = money.getCurrencyUnit().getCurrencyCode();
     }
     
     
