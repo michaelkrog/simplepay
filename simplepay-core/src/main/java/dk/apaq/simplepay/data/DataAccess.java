@@ -1,5 +1,6 @@
 package dk.apaq.simplepay.data;
 
+import dk.apaq.framework.criteria.Criteria;
 import dk.apaq.framework.criteria.Rule;
 import dk.apaq.framework.criteria.Rules;
 import dk.apaq.framework.repository.BaseRepositoryListener;
@@ -22,6 +23,28 @@ import org.springframework.security.core.context.SecurityContextHolder;
  * @author krog
  */
 public class DataAccess {
+    public static class GeneralSecurity<BT> extends BaseRepositoryListener<BT, String> {
+        private final Merchant owner;
+
+        public GeneralSecurity(Merchant owner) {
+            this.owner = owner;
+        }
+        
+        @Override
+        public void onBeforeList(List<BT, String> event) {
+            Rule merchantRule = Rules.equals("merchant", owner);
+            Criteria c = event.getCriteria();
+            if(c == null) {
+                c = new Criteria();
+            }
+            
+            if(c!=null && c.getRule() != null) {
+                event.setCriteria(new Criteria(Rules.and(merchantRule, c.getRule()), c.getSorter(), c.getLimit()));
+            } else {
+                event.setCriteria(new Criteria(merchantRule, c.getSorter(), c.getLimit()));
+            }
+        }
+    }
     
     public static class MerchantSecurity extends BaseRepositoryListener<Merchant, String> {
 
@@ -43,12 +66,13 @@ public class DataAccess {
         
     }
     
-    public static class TransactionSecurity extends BaseRepositoryListener<Transaction, String> {
+    public static class TransactionSecurity extends GeneralSecurity<Transaction> {
         private final IPayService service;
         private final Merchant owner;
 
         
         public TransactionSecurity(PayService service, Merchant owner) {
+            super(owner);
             if(owner.getId() == null) {
                 throw new IllegalArgumentException("Merchant has never been persisted.");
             }
@@ -90,18 +114,6 @@ public class DataAccess {
             
             event.getEntity().setMerchant(owner);
             event.getEntity().setDateChanged(new Date());
-        }
-
-        @Override
-        public void onBeforeList(List<Transaction, String> event) {
-            Rule merchantRule = Rules.equals("merchant", owner);
-            
-            //TODO Set rule
-            if(event.getCriteria()!=null && event.getCriteria().getRule() != null) {
-                //event.getListSpecification().setFilter(new AndFilter(merchantFilter, event.getListSpecification().getFilter()));
-            } else {
-                //event.getListSpecification().setFilter(merchantFilter);
-            }
         }
         
         private void checkToken(Transaction t) {
@@ -162,12 +174,13 @@ public class DataAccess {
         
     }
     
-    public static class EventSecurity extends BaseRepositoryListener<Event, String> {
+    public static class EventSecurity extends GeneralSecurity<Event> {
         private final IPayService service;
         private final Merchant owner;
 
         
         public EventSecurity(PayService service, Merchant owner) {
+            super(owner);
             if(owner.getId() == null) {
                 throw new IllegalArgumentException("Merchant has never been persisted.");
             }
@@ -186,25 +199,15 @@ public class DataAccess {
             event.getEntity().setMerchant(owner);
         }
 
-        @Override
-        public void onBeforeList(List<Event, String> event) {
-            Rule merchantRule = Rules.equals("merchant", owner);
-            
-            //TODO Set rule
-            if(event.getCriteria()!=null && event.getCriteria().getRule() != null) {
-                //event.getListSpecification().setFilter(new AndFilter(merchantFilter, event.getListSpecification().getFilter()));
-            } else {
-                //event.getListSpecification().setFilter(merchantFilter);
-            }
-        }
     }
     
-    public static class TokenSecurity extends BaseRepositoryListener<Token, String> {
+    public static class TokenSecurity extends GeneralSecurity<Token> {
         private final IPayService service;
         private final Merchant owner;
 
         
         public TokenSecurity(PayService service, Merchant owner) {
+            super(owner);
             if(owner.getId() == null) {
                 throw new IllegalArgumentException("Merchant has never been persisted.");
             }
@@ -233,16 +236,5 @@ public class DataAccess {
             token.getEntity().setMerchant(owner);
         }
 
-        @Override
-        public void onBeforeList(List<Token, String> event) {
-            Rule merchantRule = Rules.equals("merchant", owner);
-            
-            //TODO Set rule
-            if(event.getCriteria()!=null && event.getCriteria().getRule() != null) {
-                //event.getListSpecification().setFilter(new AndFilter(merchantFilter, event.getListSpecification().getFilter()));
-            } else {
-                //event.getListSpecification().setFilter(merchantFilter);
-            }
-        }
     }
 }
