@@ -1,6 +1,6 @@
-package dk.apaq.simplepay.crud;
+package dk.apaq.simplepay.data;
 
-import dk.apaq.crud.jpa.EntityManagerCrudForSpring;
+import dk.apaq.framework.repository.jpa.EntityManagerRepositoryForSpring;
 import dk.apaq.simplepay.IPayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
@@ -16,7 +16,7 @@ import javax.persistence.EntityManager;
  *
  * @author michael
  */
-public class TokenCrud extends EntityManagerCrudForSpring<String, Token> implements ITokenCrud {
+public class TokenCrud extends EntityManagerRepositoryForSpring<Token, String> implements ITokenCrud {
 
     @Autowired
     private PaymentGatewayManager gatewayManager;
@@ -29,17 +29,17 @@ public class TokenCrud extends EntityManagerCrudForSpring<String, Token> impleme
     }
 
     public Token createNew(Card card) {
-        Token token = createAndRead(new Token(card));
+        Token token = save(new Token(card));
         
         TokenEvent evt = new TokenEvent(token, "Token created.", service.getCurrentUsername(), RequestInformationHelper.getRemoteAddress());
-        service.getEvents(token.getMerchant(), TokenEvent.class).create(evt);
+        service.getEvents(token.getMerchant(), TokenEvent.class).save(evt);
         
         return token;
     }
 
     public void markExpired(Token token) {
         token.setExpired(true);
-        update(token);
+        save(token);
     }
 
     

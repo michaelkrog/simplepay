@@ -1,6 +1,6 @@
-package dk.apaq.simplepay.crud;
+package dk.apaq.simplepay.data;
 
-import dk.apaq.crud.Crud;
+import dk.apaq.framework.repository.Repository;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Transaction;
 import org.joda.money.Money;
@@ -9,7 +9,7 @@ import org.joda.money.Money;
  *
  * @author michael
  */
-public interface ITransactionCrud extends Crud.Filterable<String, Transaction> {
+public interface ITransactionCrud extends Repository<Transaction, String> {
     
     Transaction createNew(Token token, String refId, Money money);
     

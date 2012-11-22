@@ -1,11 +1,10 @@
 package dk.apaq.simplepay.site;
 
-import dk.apaq.filter.limit.Limit;
-import dk.apaq.filter.sort.SortDirection;
-import dk.apaq.filter.sort.Sorter;
+import dk.apaq.framework.criteria.Criteria;
+import dk.apaq.framework.criteria.Limit;
+import dk.apaq.framework.criteria.Sorter;
 import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.PayService;
-import dk.apaq.simplepay.crud.ITransactionCrud;
+import dk.apaq.simplepay.data.ITransactionCrud;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
 import java.util.HashMap;
@@ -32,7 +31,7 @@ public class DashboardController {
         SystemUser privateUser = service.getOrCreatePrivateUser(user.getMerchant());
         
         ITransactionCrud crud = service.getTransactions(user.getMerchant());
-        List<Transaction> list =  crud.list(null, new Sorter("dateChanged", SortDirection.Descending), new Limit(300));
+        List<Transaction> list =  crud.findAll(new Criteria(new Sorter("dateChanged", Sorter.Direction.Descending), new Limit(300)));
         
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("transactions", list);

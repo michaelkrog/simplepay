@@ -1,12 +1,11 @@
-package dk.apaq.simplepay.crud;
+package dk.apaq.simplepay.data;
 
-import dk.apaq.crud.CrudEvent.List;
-import dk.apaq.crud.CrudEvent.WithEntity;
-import dk.apaq.crud.CrudEvent.WithIdAndEntity;
-import dk.apaq.crud.core.BaseCrudListener;
-import dk.apaq.filter.Filter;
-import dk.apaq.filter.core.AndFilter;
-import dk.apaq.filter.core.CompareFilter;
+import dk.apaq.framework.criteria.Rule;
+import dk.apaq.framework.criteria.Rules;
+import dk.apaq.framework.repository.BaseRepositoryListener;
+import dk.apaq.framework.repository.RepositoryEvent.List;
+import dk.apaq.framework.repository.RepositoryEvent.WithEntity;
+import dk.apaq.framework.repository.RepositoryEvent.WithIdAndEntity;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.PayService;
 import dk.apaq.simplepay.common.ETransactionStatus;
@@ -22,18 +21,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
  *
  * @author krog
  */
-public class CrudSecurity {
+public class DataAccess {
     
-    public static class MerchantSecurity extends BaseCrudListener<String, Merchant> {
+    public static class MerchantSecurity extends BaseRepositoryListener<Merchant, String> {
 
         private IPayService service;
 
         public MerchantSecurity(PayService service) {
             this.service = service;
         }
-        
+
         @Override
-        public void onBeforeEntityUpdate(WithIdAndEntity<String, Merchant> event) {
+        public void onBeforeEntityUpdate(WithIdAndEntity<Merchant, String> event) {
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
             SystemUser user = service.getUser(username); 
             Merchant usersMerchant = user.getMerchant();
@@ -44,7 +43,7 @@ public class CrudSecurity {
         
     }
     
-    public static class TransactionSecurity extends BaseCrudListener<String, Transaction> {
+    public static class TransactionSecurity extends BaseRepositoryListener<Transaction, String> {
         private final IPayService service;
         private final Merchant owner;
 
@@ -58,13 +57,13 @@ public class CrudSecurity {
         }
 
         @Override
-        public void onBeforeEntityUpdate(WithIdAndEntity<String, Transaction> event) {
-            Transaction stale = service.getTransactions(owner).read(event.getEntityId());
+        public void onBeforeEntityUpdate(WithIdAndEntity<Transaction, String> event) {
+            Transaction stale = service.getTransactions(owner).findOne(event.getEntityId());
             if(stale != null && !stale.getId().equals(event.getEntityId())) {
                 throw new IllegalArgumentException("Ordernumber already used.");
             }
             
-            stale = event.getCrud().read(event.getEntityId());
+            stale = event.getRepository().findOne(event.getEntityId());
             if(stale.getMerchant()!=null && stale.getMerchant().getId() != null) {
               if(!stale.getMerchant().getId().equals(event.getEntity().getMerchant().getId())) {
                   throw new SecurityException("Not allowed to take other merchants transactions.");
@@ -81,7 +80,7 @@ public class CrudSecurity {
         }
 
         @Override
-        public void onBeforeEntityCreate(WithEntity<String, Transaction> event) {
+        public void onBeforeEntityCreate(WithEntity<Transaction, String> event) {
             if(service.getTransactionByRefId(owner, event.getEntity().getRefId()) != null) {
                 throw new SecurityException("Ordernumber already used. [Merchant="+owner.getId()+";orderNumber="+event.getEntity().getRefId()+"]");
             }
@@ -94,12 +93,14 @@ public class CrudSecurity {
         }
 
         @Override
-        public void onBeforeList(List<String, Transaction> event) {
-            Filter merchantFilter = new CompareFilter("merchant", owner, CompareFilter.CompareType.Equals);
-            if(event.getListSpecification().getFilter() != null) {
-                event.getListSpecification().setFilter(new AndFilter(merchantFilter, event.getListSpecification().getFilter()));
+        public void onBeforeList(List<Transaction, String> event) {
+            Rule merchantRule = Rules.equals("merchant", owner);
+            
+            //TODO Set rule
+            if(event.getCriteria()!=null && event.getCriteria().getRule() != null) {
+                //event.getListSpecification().setFilter(new AndFilter(merchantFilter, event.getListSpecification().getFilter()));
             } else {
-                event.getListSpecification().setFilter(merchantFilter);
+                //event.getListSpecification().setFilter(merchantFilter);
             }
         }
         
@@ -110,7 +111,7 @@ public class CrudSecurity {
                 throw new IllegalArgumentException("A transactation must have token specified.");
             }
             
-            Token existingToken = service.getTokens(owner).read(token);
+            Token existingToken = service.getTokens(owner).findOne(token);
             
             if(t.getId() == null) { //new transaction
                 if(existingToken.isExpired()) {
@@ -119,7 +120,7 @@ public class CrudSecurity {
                 
                 //token.set(true);
             } else {
-               Transaction existingTransaction = service.getTransactions(owner).read(t.getId());
+               Transaction existingTransaction = service.getTransactions(owner).findOne(t.getId());
                if(!existingTransaction.getToken().equals(token)) {
                    throw new SecurityException("Cannot change token on transaction.");
                } 
@@ -161,7 +162,7 @@ public class CrudSecurity {
         
     }
     
-    public static class EventSecurity extends BaseCrudListener<String, Event> {
+    public static class EventSecurity extends BaseRepositoryListener<Event, String> {
         private final IPayService service;
         private final Merchant owner;
 
@@ -175,28 +176,30 @@ public class CrudSecurity {
         }
 
         @Override
-        public void onBeforeEntityUpdate(WithIdAndEntity<String, Event> event) {
+        public void onBeforeEntityUpdate(WithIdAndEntity<Event, String> event) {
             throw new SecurityException("Events cannot be changed.");
             
         }
 
         @Override
-        public void onBeforeEntityCreate(WithEntity<String, Event> event) {
+        public void onBeforeEntityCreate(WithEntity<Event, String> event) {
             event.getEntity().setMerchant(owner);
         }
 
         @Override
-        public void onBeforeList(List<String, Event> event) {
-            Filter merchantFilter = new CompareFilter("merchant", owner, CompareFilter.CompareType.Equals);
-            if(event.getListSpecification().getFilter() != null) {
-                event.getListSpecification().setFilter(new AndFilter(merchantFilter, event.getListSpecification().getFilter()));
+        public void onBeforeList(List<Event, String> event) {
+            Rule merchantRule = Rules.equals("merchant", owner);
+            
+            //TODO Set rule
+            if(event.getCriteria()!=null && event.getCriteria().getRule() != null) {
+                //event.getListSpecification().setFilter(new AndFilter(merchantFilter, event.getListSpecification().getFilter()));
             } else {
-                event.getListSpecification().setFilter(merchantFilter);
+                //event.getListSpecification().setFilter(merchantFilter);
             }
         }
     }
     
-    public static class TokenSecurity extends BaseCrudListener<String, Token> {
+    public static class TokenSecurity extends BaseRepositoryListener<Token, String> {
         private final IPayService service;
         private final Merchant owner;
 
@@ -210,12 +213,12 @@ public class CrudSecurity {
         }
 
         @Override
-        public void onBeforeEntityUpdate(WithIdAndEntity<String, Token> event) {
+        public void onBeforeEntityUpdate(WithIdAndEntity<Token, String> event) {
             if(!event.getEntity().getMerchant().getId().equals(owner.getId())) {
                 throw new SecurityException("Unable to change owner of token.");
             }
             
-            Token existingToken = service.getTokens(owner).read(event.getEntityId());
+            Token existingToken = service.getTokens(owner).findOne(event.getEntityId());
             if(existingToken == null) {
                 throw new IllegalArgumentException("No token for merchant with specified entityid[id="+event.getEntityId()+"]");
             }
@@ -226,17 +229,19 @@ public class CrudSecurity {
         }
 
         @Override
-        public void onBeforeEntityCreate(WithEntity<String, Token> token) {
+        public void onBeforeEntityCreate(WithEntity<Token, String> token) {
             token.getEntity().setMerchant(owner);
         }
 
         @Override
-        public void onBeforeList(List<String, Token> event) {
-            Filter merchantFilter = new CompareFilter("merchant", owner, CompareFilter.CompareType.Equals);
-            if(event.getListSpecification().getFilter() != null) {
-                event.getListSpecification().setFilter(new AndFilter(merchantFilter, event.getListSpecification().getFilter()));
+        public void onBeforeList(List<Token, String> event) {
+            Rule merchantRule = Rules.equals("merchant", owner);
+            
+            //TODO Set rule
+            if(event.getCriteria()!=null && event.getCriteria().getRule() != null) {
+                //event.getListSpecification().setFilter(new AndFilter(merchantFilter, event.getListSpecification().getFilter()));
             } else {
-                event.getListSpecification().setFilter(merchantFilter);
+                //event.getListSpecification().setFilter(merchantFilter);
             }
         }
     }

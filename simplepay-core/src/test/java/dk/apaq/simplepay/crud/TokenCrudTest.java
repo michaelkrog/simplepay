@@ -1,5 +1,6 @@
 package dk.apaq.simplepay.crud;
 
+import dk.apaq.simplepay.data.ITokenCrud;
 import dk.apaq.simplepay.IPayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.junit.runner.RunWith;
@@ -37,7 +38,7 @@ public class TokenCrudTest {
         System.out.println("createNew");
         
         Merchant m = new Merchant();
-        m = service.getMerchants().createAndRead(m);
+        m = service.getMerchants().save(m);
         
         EPaymentGateway gatewayType = EPaymentGateway.Test;
         String orderNumber = "ordernum";
@@ -50,7 +51,7 @@ public class TokenCrudTest {
         //assertEquals(false, token.isAuthorized());
         assertEquals(ETokenPurpose.SinglePayment, token.getPurpose());
         
-        assertFalse(crud.list().isEmpty());
+        assertFalse(crud.findAll().isEmpty());
         
     }
 

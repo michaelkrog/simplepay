@@ -1,8 +1,8 @@
 package dk.apaq.simplepay;
 
-import dk.apaq.crud.Crud;
-import dk.apaq.simplepay.crud.ITokenCrud;
-import dk.apaq.simplepay.crud.ITransactionCrud;
+import dk.apaq.framework.repository.Repository;
+import dk.apaq.simplepay.data.ITokenCrud;
+import dk.apaq.simplepay.data.ITransactionCrud;
 import dk.apaq.simplepay.model.Event;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
@@ -26,14 +26,14 @@ public interface IPayService {
     String getCurrentUsername();
     
     SystemUser getUser(String username);
-    Crud.Complete<String, SystemUser> getUsers();
+    Repository<SystemUser, String> getUsers();
     
-    Crud.Complete<String, Merchant> getMerchants();
+    Repository<Merchant, String> getMerchants();
 
     Transaction getTransactionByRefId(Merchant m, String orderNumber);
     
     ITransactionCrud getTransactions(Merchant merchant);
     ITokenCrud getTokens(Merchant merchant);
 
-    <T extends Event> Crud.Complete<String, T> getEvents(Merchant merchant, Class<T> type);
+    <T extends Event> Repository<T, String> getEvents(Merchant merchant, Class<T> type);
 }

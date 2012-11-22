@@ -1,16 +1,16 @@
 package dk.apaq.simplepay;
 
-import dk.apaq.crud.Crud;
-import dk.apaq.crud.Crud.Complete;
-import dk.apaq.crud.CrudNotifier;
-import dk.apaq.filter.Filter;
-import dk.apaq.filter.core.CompareFilter;
+import dk.apaq.framework.criteria.Criteria;
+import dk.apaq.framework.criteria.Rule;
+import dk.apaq.framework.criteria.Rules;
+import dk.apaq.framework.repository.Repository;
+import dk.apaq.framework.repository.RepositoryNotifier;
 import dk.apaq.simplepay.model.Event;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Transaction;
-import dk.apaq.simplepay.crud.CrudSecurity;
-import dk.apaq.simplepay.crud.ITokenCrud;
-import dk.apaq.simplepay.crud.ITransactionCrud;
+import dk.apaq.simplepay.data.DataAccess;
+import dk.apaq.simplepay.data.ITokenCrud;
+import dk.apaq.simplepay.data.ITransactionCrud;
 import dk.apaq.simplepay.security.ERole;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Token;
@@ -38,9 +38,9 @@ public class PayService implements ApplicationContextAware, IPayService {
     private EntityManager em;
     
     private ApplicationContext context;
-    private Crud.Complete<String, Merchant> merchantCrud;
-    private Crud.Complete<String, SystemUser> userCrud;
-    private CrudSecurity.MerchantSecurity merchantSecurity = new CrudSecurity.MerchantSecurity(this);
+    private Repository<Merchant, String> merchantRep;
+    private Repository<SystemUser, String> userRep;
+    private DataAccess.MerchantSecurity merchantSecurity = new DataAccess.MerchantSecurity(this);
 
     @Override
     public void setApplicationContext(ApplicationContext ac) throws BeansException {
@@ -56,7 +56,7 @@ public class PayService implements ApplicationContextAware, IPayService {
         }
         
         ITransactionCrud crud =  (ITransactionCrud) context.getBean("transactionCrud", em);
-        ((CrudNotifier)crud).addListener(new CrudSecurity.TransactionSecurity(this, merchant));
+        ((RepositoryNotifier)crud).addListener(new DataAccess.TransactionSecurity(this, merchant));
         
         return crud;
     }
@@ -70,33 +70,33 @@ public class PayService implements ApplicationContextAware, IPayService {
         }
         
         ITokenCrud crud = (ITokenCrud) context.getBean("tokenCrud", em);
-        ((CrudNotifier)crud).addListener(new CrudSecurity.TokenSecurity(this, merchant));
+        ((RepositoryNotifier)crud).addListener(new DataAccess.TokenSecurity(this, merchant));
         
         return crud;
             
     }
 
-    public <T extends Event> Complete<String, T> getEvents(Merchant merchant, Class<T> type) {
+    public <T extends Event> Repository<T, String> getEvents(Merchant merchant, Class<T> type) {
         LOG.debug("Retrieving TransactionCrud");
         
         if(merchant.getId() == null) {
             throw new IllegalArgumentException("Merchant must have been persisted before used for retrieving transactions.");
         }
         
-        Complete<String, T> crud = (Crud.Complete<String,T>) context.getBean("crud", em, type);
-        ((CrudNotifier)crud).addListener(new CrudSecurity.EventSecurity(this, merchant));
+        Repository<T, String> crud = (Repository<T, String>) context.getBean("crud", em, type);
+        ((RepositoryNotifier)crud).addListener(new DataAccess.EventSecurity(this, merchant));
         
         return crud;
     }
     
     @Override
-    public Crud.Complete<String, Merchant> getMerchants() {
+    public Repository<Merchant, String> getMerchants() {
         LOG.debug("Retrieving MerchantCrud");
-        if(merchantCrud==null) {
-            merchantCrud = (Crud.Complete) context.getBean("crud", em, Merchant.class);
-            ((CrudNotifier)merchantCrud).addListener(merchantSecurity);
+        if(merchantRep==null) {
+            merchantRep = (Repository<Merchant, String>)context.getBean("crud", em, Merchant.class);
+            ((RepositoryNotifier)merchantRep).addListener(merchantSecurity);
         }
-        return merchantCrud;
+        return merchantRep;
     }
     
     
@@ -111,7 +111,7 @@ public class PayService implements ApplicationContextAware, IPayService {
             }
         }
         
-        return getUsers().createAndRead(new SystemUser(merchant, IdGenerator.generateUniqueId(), "", ERole.PublicApiAccessor));
+        return getUsers().save(new SystemUser(merchant, IdGenerator.generateUniqueId(), "", ERole.PublicApiAccessor));
     }
     
     @Transactional
@@ -125,16 +125,16 @@ public class PayService implements ApplicationContextAware, IPayService {
             }
         }
         
-        return getUsers().createAndRead(new SystemUser(merchant, IdGenerator.generateUniqueId(), "", ERole.PrivateApiAccessor));
+        return getUsers().save(new SystemUser(merchant, IdGenerator.generateUniqueId(), "", ERole.PrivateApiAccessor));
     }
     
     @Override
-    public Crud.Complete<String, SystemUser> getUsers() {
+    public Repository<SystemUser, String> getUsers() {
         LOG.debug("Retrieving SystemUserCrud");
-        if(userCrud==null) {
-            userCrud = (Crud.Complete) context.getBean("crud", em, SystemUser.class);
+        if(userRep==null) {
+            userRep = (Repository) context.getBean("crud", em, SystemUser.class);
         }
-        return userCrud;
+        return userRep;
     }
     
     @Override
@@ -158,20 +158,18 @@ public class PayService implements ApplicationContextAware, IPayService {
     }
     
     private SystemUser getUser(String key, String value) {
-        Filter filter = new CompareFilter(key, value, CompareFilter.CompareType.Equals);
-        List<SystemUser> list = getUsers().list(filter, null);
-        return list.isEmpty() ? null : list.get(0);
+        Rule rule = Rules.equals(key, value);
+        return getUsers().findFirst(new Criteria(rule));
     }
     
     private List<SystemUser> getUserlist(String key, Object value) {
-        Filter filter = new CompareFilter(key, value, CompareFilter.CompareType.Equals);
-        return getUsers().list(filter, null);
+        Rule rule = Rules.equals(key, value);
+        return getUsers().findAll(new Criteria(rule));
     }
     
     @Override
     public Transaction getTransactionByRefId(Merchant m, String orderNumber) {
-        Filter filter = new CompareFilter("refId", orderNumber, CompareFilter.CompareType.Equals);
-        List<Transaction> list = getTransactions(m).list(filter, null);
-        return list.isEmpty() ? null : list.get(0);
+        Rule rule = Rules.equals("refId", orderNumber);
+        return getTransactions(m).findFirst(new Criteria(rule));
     }
 }

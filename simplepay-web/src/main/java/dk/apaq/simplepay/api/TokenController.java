@@ -2,7 +2,7 @@ package dk.apaq.simplepay.api;
 
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.common.EPaymentMethod;
-import dk.apaq.simplepay.crud.ITransactionCrud;
+import dk.apaq.simplepay.data.ITransactionCrud;
 import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.gateway.IPaymentGateway;
 import dk.apaq.simplepay.gateway.IRemoteAuthPaymentGateway;
@@ -57,7 +57,7 @@ public class TokenController {
     private String publicUrl;
     
     private Token getToken(Merchant m, String token) {
-        Token t = service.getTokens(m).read(token);
+        Token t = service.getTokens(m).findOne(token);
         if(t == null) {
             throw new ResourceNotFoundException("No token exists with the given token id.");
         }
@@ -109,7 +109,7 @@ public class TokenController {
     public List<Token> listTokens() {
         Merchant m = SecurityHelper.getMerchant(service);
         LOG.debug("Listing tokens. [merchant={}]", m.getId());
-        return service.getTokens(m).list();
+        return service.getTokens(m).findAll();
     }
     
     @RequestMapping(value="/tokens/{token}", method=RequestMethod.GET)
@@ -174,7 +174,7 @@ public class TokenController {
             throw new InvalidRequestException("amount not a valid number [value=" + request.getParameter("amount") + "]");
         }
 
-        Token token = service.getTokens(merchant).read(tokenId);
+        Token token = service.getTokens(merchant).findOne(tokenId);
         Transaction transaction = service.getTransactionByRefId(merchant, orderNumber);
         
         if (transaction == null) {

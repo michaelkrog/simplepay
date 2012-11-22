@@ -1,12 +1,11 @@
 package dk.apaq.simplepay.api;
 
+import dk.apaq.framework.criteria.Criteria;
+import dk.apaq.framework.criteria.Rules;
+import dk.apaq.framework.criteria.Sorter;
+import dk.apaq.framework.criteria.rules.AndRule;
+import dk.apaq.framework.criteria.rules.OrRule;
 import dk.apaq.simplepay.security.SecurityHelper;
-import dk.apaq.filter.core.AndFilter;
-import dk.apaq.filter.core.CompareFilter;
-import dk.apaq.filter.core.LikeFilter;
-import dk.apaq.filter.core.OrFilter;
-import dk.apaq.filter.sort.SortDirection;
-import dk.apaq.filter.sort.Sorter;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.common.ETransactionStatus;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
@@ -56,7 +55,7 @@ public class TransactionController {
     private String publicUrl;
     
     private Transaction getTransaction(Merchant m, String token) {
-        Transaction t = service.getTransactions(m).read(token);
+        Transaction t = service.getTransactions(m).findOne(token);
         if(t == null) {
             throw new ResourceNotFoundException("No transaction exists with the given token.");
         }
@@ -72,37 +71,35 @@ public class TransactionController {
         Merchant m = SecurityHelper.getMerchant(service);
         LOG.debug("Listing transactions. [merchant={}]", m.getId());
         
-        //There is a bug in the JPA-Filter code causing empty And-filter to create invalid HQL.
-        //We make sure not to use an empty AndFilter
-        boolean useFilter = status != null || searchString != null || beforeTimestamp != null || afterTimestamp != null;
+        boolean useRule = status != null || searchString != null || beforeTimestamp != null || afterTimestamp != null;
         
-        AndFilter filter = new AndFilter();
+        AndRule rule = new AndRule();
         if(status != null) {
-            filter.addFilter(new CompareFilter("status", status, CompareFilter.CompareType.Equals));
+            rule.addRule(Rules.equals("status", status));
         }
         
         if(searchString != null) {
             if(!searchString.endsWith("*")) {
                 searchString = searchString + "*";
             }
-            filter.addFilter(new OrFilter(
-                    new LikeFilter("currency", searchString),
-                    new LikeFilter("description", searchString),
-                    new LikeFilter("orderNumber", searchString)
+            rule.addRule(Rules.or(
+                    Rules.like("currency", searchString),
+                    Rules.like("description", searchString),
+                    Rules.like("orderNumber", searchString)
                     ));
         }
         
         if(beforeTimestamp != null) {
-            filter.addFilter(new CompareFilter("dateCreated", new Date(beforeTimestamp), CompareFilter.CompareType.LessOrEqual));
+            rule.addRule(Rules.lessOrEqual("dateCreated", new Date(beforeTimestamp)));
         }
         
         if(afterTimestamp != null) {
-            filter.addFilter(new CompareFilter("dateCreated", new Date(afterTimestamp), CompareFilter.CompareType.GreaterOrEqual));
+            rule.addRule(Rules.greaterOrEqual("dateCreated", new Date(afterTimestamp)));
         }
         
-        Sorter sorter = new Sorter("dateCreated", SortDirection.Descending);
+        Sorter sorter = new Sorter("dateCreated", Sorter.Direction.Descending);
         
-        return service.getTransactions(m).list(useFilter ? filter : null, sorter);
+        return service.getTransactions(m).findAll(new Criteria(useRule ? rule : null, sorter));
     }
     
     @RequestMapping(value="/transactions/{id}", method=RequestMethod.GET)

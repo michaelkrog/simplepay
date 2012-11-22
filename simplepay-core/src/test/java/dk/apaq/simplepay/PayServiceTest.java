@@ -1,7 +1,8 @@
 package dk.apaq.simplepay;
 
-import dk.apaq.crud.Crud;
-import dk.apaq.filter.core.CompareFilter;
+import dk.apaq.framework.criteria.Criteria;
+import dk.apaq.framework.criteria.Rules;
+import dk.apaq.framework.repository.Repository;
 import dk.apaq.simplepay.common.ETransactionStatus;
 import dk.apaq.simplepay.gateway.EPaymentGateway;
 import dk.apaq.simplepay.model.*;
@@ -49,30 +50,30 @@ public class PayServiceTest {
         Merchant m = new Merchant();
         m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null, null));
         
-        m = service.getMerchants().createAndRead(m);
+        m = service.getMerchants().save(m);
         
-        SystemUser user = service.getUsers().createAndRead(new SystemUser(m, "john", "doe"));
+        SystemUser user = service.getUsers().save(new SystemUser(m, "john", "doe"));
         
         Merchant m2 = new Merchant();
         m2.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null, null));
-        m2 = service.getMerchants().createAndRead(m2);
+        m2 = service.getMerchants().save(m2);
         
-        SystemUser user2 = service.getUsers().createAndRead(new SystemUser(m, "jane", "doe"));
+        SystemUser user2 = service.getUsers().save(new SystemUser(m, "jane", "doe"));
         
         //We are not logged in - we should not be allowed to change this merchant.
         try {
-            service.getMerchants().update(m);
+            service.getMerchants().save(m);
             fail("Should not be able to update merchant.");
         } catch(Exception ex) { }
         
         login(user);
         
         //Now we should be allowed
-        m = service.getMerchants().update(m);
+        m = service.getMerchants().save(m);
         
         //But not for m2
         try {
-            service.getMerchants().update(m2);
+            service.getMerchants().save(m2);
             fail("Should not be able to update merchant.");
         } catch(Exception ex) { }
         
@@ -90,8 +91,8 @@ public class PayServiceTest {
         assertEquals(ETransactionStatus.Authorized, t.getStatus());
         
         //Make sure that transactions are only available throught he right merchants
-        List<Transaction> tlist = service.getTransactions(m).list();
-        List<Transaction> tlist2 = service.getTransactions(m2).list();
+        List<Transaction> tlist = service.getTransactions(m).findAll();
+        List<Transaction> tlist2 = service.getTransactions(m2).findAll();
         assertEquals(1, tlist.size());
         assertEquals(1, tlist2.size());
         assertEquals("T_123", tlist.get(0).getRefId());
@@ -103,7 +104,7 @@ public class PayServiceTest {
     public void testValidPayment() {
         Merchant m = new Merchant();
         m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null, null));
-        m = service.getMerchants().createAndRead(m);
+        m = service.getMerchants().save(m);
         
         Token token = service.getTokens(m).createNew(card);
         assertFalse(token.isExpired());
@@ -125,7 +126,7 @@ public class PayServiceTest {
     public void testInvalidPayment() {
         Merchant m = new Merchant();
         m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null, null));
-        m = service.getMerchants().createAndRead(m);
+        m = service.getMerchants().save(m);
         
         Token token = service.getTokens(m).createNew(card);
         assertFalse(token.isExpired());
@@ -144,47 +145,47 @@ public class PayServiceTest {
     @Test
     public void testGetEvents() {
         Transaction t = new Transaction("123", "T_123", Money.of(CurrencyUnit.USD, 123));
-        Merchant merchant = service.getMerchants().createAndRead(new Merchant());
-        Crud.Complete<String, TransactionEvent> events = service.getEvents(merchant, TransactionEvent.class);
-        TransactionEvent event = events.createAndRead(new TransactionEvent(t, "user", ETransactionStatus.Authorized, "129.129.129.912"));
+        Merchant merchant = service.getMerchants().save(new Merchant());
+        Repository<TransactionEvent, String> events = service.getEvents(merchant, TransactionEvent.class);
+        TransactionEvent event = events.save(new TransactionEvent(t, "user", ETransactionStatus.Authorized, "129.129.129.912"));
         assertNotNull(event);
     }
     
     @Test
     public void testGetOrCreatePublicUser() {
-        Merchant merchant = service.getMerchants().createAndRead(new Merchant());
-        List<SystemUser> users = service.getUsers().list(new CompareFilter("merchant", merchant, CompareFilter.CompareType.Equals), null);
+        Merchant merchant = service.getMerchants().save(new Merchant());
+        List<SystemUser> users = service.getUsers().findAll(new Criteria(Rules.equals("merchant", merchant)));
         assertTrue(users.isEmpty());
         
         SystemUser user = service.getOrCreatePublicUser(merchant);
         assertNotNull(user);
         
-        users = service.getUsers().list(new CompareFilter("merchant", merchant, CompareFilter.CompareType.Equals), null);
+        users = service.getUsers().findAll(new Criteria(Rules.equals("merchant", merchant)));
         assertFalse(users.isEmpty());
     }
     
     @Test
     public void testGetOrCreatePrivateUser() {
-        Merchant merchant = service.getMerchants().createAndRead(new Merchant());
-        List<SystemUser> users = service.getUsers().list(new CompareFilter("merchant", merchant, CompareFilter.CompareType.Equals), null);
+        Merchant merchant = service.getMerchants().save(new Merchant());
+        List<SystemUser> users = service.getUsers().findAll(new Criteria(Rules.equals("merchant", merchant)));
         assertTrue(users.isEmpty());
         
         SystemUser user = service.getOrCreatePrivateUser(merchant);
         assertNotNull(user);
         
-        users = service.getUsers().list(new CompareFilter("merchant", merchant, CompareFilter.CompareType.Equals), null);
+        users = service.getUsers().findAll(new Criteria(Rules.equals("merchant", merchant)));
         assertFalse(users.isEmpty());
     }
     
     @Test
     public void testEvents() {
-        Merchant merchant = service.getMerchants().createAndRead(new Merchant());
-        List<TokenEvent> evts = service.getEvents(merchant, TokenEvent.class).list();
+        Merchant merchant = service.getMerchants().save(new Merchant());
+        List<TokenEvent> evts = service.getEvents(merchant, TokenEvent.class).findAll();
         assertTrue(evts.isEmpty());
         
         Token token = service.getTokens(merchant).createNew(card);
         
-        evts = service.getEvents(merchant, TokenEvent.class).list();
+        evts = service.getEvents(merchant, TokenEvent.class).findAll();
         assertFalse(evts.isEmpty());
         
     }

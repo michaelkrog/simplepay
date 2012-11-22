@@ -116,9 +116,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>crud4j-jpa</artifactId>
-            <version>1.2.1</version>
+            <groupId>dk.apaq.framework</groupId>
+            <artifactId>repository-jpa</artifactId>
+            <version>1.0.5</version>
         </dependency>
         <dependency>
             <groupId>org.joda</groupId>
