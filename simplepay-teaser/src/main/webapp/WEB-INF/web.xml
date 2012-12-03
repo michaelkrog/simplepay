@@ -6,7 +6,7 @@
     </context-param>
     <filter>
         <filter-name>AliasFilter</filter-name>
-        <filter-class>dk.apaq.common.web.filter.AliasFilter</filter-class>
+        <filter-class>dk.apaq.framework.web.filters.AliasFilter</filter-class>
         <init-param>
             <param-name>hosts</param-name>
             <param-value>simplepay.dk,www.simplepay.dk</param-value>
@@ -18,7 +18,7 @@
     </filter-mapping>
     <filter>
         <filter-name>LocaleFilter</filter-name>
-        <filter-class>dk.apaq.common.web.filter.LocaleFilter</filter-class>
+        <filter-class>dk.apaq.framework.web.filters.LocaleFilter</filter-class>
         <init-param>
             <param-name>supportedLanguages</param-name>
             <param-value>en,da,no,se,fo,is</param-value>

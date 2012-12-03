@@ -70,9 +70,9 @@
         </dependency>
 
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>common-web-filters</artifactId>
-            <version>${project.version}</version>
+            <groupId>dk.apaq.framework</groupId>
+            <artifactId>web</artifactId>
+            <version>1.0.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
