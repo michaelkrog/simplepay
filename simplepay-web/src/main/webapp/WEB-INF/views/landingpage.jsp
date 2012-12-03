@@ -57,13 +57,20 @@
                     <div id="teaser2" class="span7">
                         <div style="margin:40px 40px 0px 20px;">
                             <pre class="prettyprint linenums">
+&lt;form action="http://dinserver.dk/confirm_order" <b>data-type="payment" data-key="[ID]" 
+    data-orderref="[ORDRE_NR]" data-amount="9900" data-currency="DKK"</b>&gt;
+	&lt;input type="text" name="cardno"&gt;
+	&lt;input type="text" name="cvd"&gt;
+	&lt;input type="text" name="expireMonth"&gt;
+	&lt;input type="text" name="expireYear"&gt;
+
+        &lt;!-- Flere input felter vedr. ordren som du vil have sendt til din server --&gt;
+        &lt;input type="hidden" name="orderid" value="[ORDRE_NR]"&gt;
+        &lt;input type="text" name="firstname"&gt;
+        &lt;input type="text" name="surname"&gt;
+&lt;/form&gt;
+
 &lt;script src="http://simplepay.dk/pay.js"&gt;&lt;/script&gt;
-&lt;script&gt;
-Pay.setPublicKey('&lt;din tildelte n&oslash;gle&gt;');
-Pay.createToken('&lt;ordrenummer&gt;', '&lt;beskrivelse&gt;', function(token) {
-    Pay.authorizeRemote(token, &lt;bel&oslash;b&gt;, '&lt;valuta&gt;', '&lt;ok-side&gt;', '&lt;fejl-side&gt;');
-});
-&lt;/script&gt;
 </pre>
                         </div>
                     </div>

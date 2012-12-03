@@ -59,7 +59,7 @@ public class PaymentWindowController {
         /*Token token = service.getTokens(merchant).read(tokenId);
         token = service.getTokens(merchant).authorize(token, currency, amount, paymentMethod, cardNumber, cvc, expireMonth, expireYear);
         service.getTransactions(merchant).createNew(token);
-            */
+        */
         return "OK";
     }
 }
