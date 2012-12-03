@@ -28,9 +28,14 @@
             <id>jade4j-releases</id>
             <url>https://github.com/neuland/jade4j/raw/master/releases</url>
         </repository>
+        <repository>
+            <id>oss-public</id>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
+        </repository>
+        
     </repositories>
 
-
+    
 
     <dependencies>
         <dependency>
