@@ -1,15 +1,16 @@
 package dk.apaq.simplepay.teaser.api;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import dk.apaq.filter.Filter;
 import dk.apaq.filter.core.LikeFilter;
 import dk.apaq.simplepay.teaser.ITeaserService;
 import dk.apaq.simplepay.teaser.MessageBundle;
 import dk.apaq.simplepay.teaser.model.NotificationReceiver;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

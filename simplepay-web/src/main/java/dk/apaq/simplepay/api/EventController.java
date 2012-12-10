@@ -1,5 +1,7 @@
 package dk.apaq.simplepay.api;
 
+import java.util.List;
+
 import dk.apaq.framework.criteria.Criteria;
 import dk.apaq.framework.criteria.Limit;
 import dk.apaq.framework.criteria.Rule;
@@ -10,7 +12,6 @@ import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.TokenEvent;
 import dk.apaq.simplepay.model.TransactionEvent;
 import dk.apaq.simplepay.security.SecurityHelper;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -28,31 +29,31 @@ public class EventController {
 
     @Autowired
     private IPayService service;
-    
-    @RequestMapping(value="/events", method= RequestMethod.GET)
+
+    @RequestMapping(value = "/events", method = RequestMethod.GET)
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
     public List listEvents(@RequestParam(required = false) String type, @RequestParam(required = false) String entityId) {
         Merchant m = SecurityHelper.getMerchant(service);
-        
+
         Class clazz = null;
         if ("transaction".equals(type)) {
             clazz = TransactionEvent.class;
         }
-        
+
         if ("token".equals(type)) {
             clazz = TokenEvent.class;
         }
-        
-        if(clazz == null) {
+
+        if (clazz == null) {
             clazz = Event.class;
         }
-        
+
         Rule rule = null;
-        if(entityId != null) {
+        if (entityId != null) {
             rule = Rules.equals("transaction.id", entityId);
         }
-        
+
         List<Event> events = service.getEvents(m, clazz).findAll(new Criteria(rule, new Limit(15)));
         return events;
 

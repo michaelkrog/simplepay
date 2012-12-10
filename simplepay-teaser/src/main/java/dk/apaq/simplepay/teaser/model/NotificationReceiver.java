@@ -1,22 +1,26 @@
 package dk.apaq.simplepay.teaser.model;
 
 import java.util.Date;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Temporal;
+
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 public class NotificationReceiver {
-    
+
     @Id
-    @GeneratedValue(generator="system-uuid")
+    @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
-    @Column(name="COPY_SCRIPT_ID",length=40, nullable=false)
+    @Column(name = "COPY_SCRIPT_ID", length = 40, nullable = false)
     private String id;
-    
     private String mail;
     private String locale;
     private String ip;
-    
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date timestamp = new Date();
 
@@ -64,5 +68,4 @@ public class NotificationReceiver {
     public void setLocale(String locale) {
         this.locale = locale;
     }
-    
 }

@@ -1,18 +1,19 @@
 package dk.apaq.simplepay.api;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.common.EPaymentMethod;
 import dk.apaq.simplepay.data.ITransactionCrud;
-import dk.apaq.simplepay.gateway.PaymentException;
+import dk.apaq.simplepay.gateway.EPaymentGateway;
 import dk.apaq.simplepay.gateway.IPaymentGateway;
 import dk.apaq.simplepay.gateway.IRemoteAuthPaymentGateway;
+import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
-import dk.apaq.simplepay.gateway.EPaymentGateway;
 import dk.apaq.simplepay.gateway.quickpay.QuickPay;
 import dk.apaq.simplepay.model.*;
 import dk.apaq.simplepay.security.SecurityHelper;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,12 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
@@ -36,7 +32,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
  */
 @Controller
 public class TokenController {
- 
+
     private static final Logger LOG = LoggerFactory.getLogger(TokenController.class);
     public static final String[] QUICKPAY_KEYS = {"msgtype", "ordernumber", "amount", "currency", "time", "state", "qpstat", "qpstatmsg",
         "chstat", "chstatmsg", "merchant", "merchantemail", "transaction", "cardtype", "cardnumber",
@@ -44,84 +40,79 @@ public class TokenController {
     public static final String[] QUICKPAY_KEYS_SUBSCRIBE = {"msgtype", "ordernumber", "amount", "currency", "time", "state", "qpstat", "qpstatmsg",
         "chstat", "chstatmsg", "merchant", "merchantemail", "transaction", "cardtype", "cardnumber",
         "cardexpire", "splitpayment", "fraudprobability", "fraudremarks", "fraudreport", "fee"};
-    
-    
     @Autowired
     private IPayService service;
-    
     @Autowired
     private PaymentGatewayManager gatewayManager;
-    
     @Autowired
     @Qualifier("publicUrl")
     private String publicUrl;
-    
+
     private Token getToken(Merchant m, String token) {
         Token t = service.getTokens(m).findOne(token);
-        if(t == null) {
+        if (t == null) {
             throw new ResourceNotFoundException("No token exists with the given token id.");
         }
         return t;
     }
-    
-    @RequestMapping(value = "/form", method=RequestMethod.POST)
-    @Secured({"ROLE_PUBLICAPIACCESSOR","ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
+
+    @RequestMapping(value = "/form", method = RequestMethod.POST)
+    @Secured({"ROLE_PUBLICAPIACCESSOR", "ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
     @Transactional
     public IRemoteAuthPaymentGateway.FormData generateForm(HttpServletRequest request, EPaymentGateway gatewayType, String token, Long amount, String currency, String returnUrl, String cancelUrl) {
         Merchant m = SecurityHelper.getMerchant(service);
         Token t = getToken(token);
-        
-        if(!(t instanceof Token)) {
+
+        if (!(t instanceof Token)) {
             throw new IllegalArgumentException("The token specificed is not a token for remote authorization.");
         }
-        
-        
+
+
         SystemUser publicUser = service.getOrCreatePublicUser(m);
         String callbackUrl = publicUrl + "/api/callback/" + gatewayType.name().toLowerCase() + "/" + publicUser.getUsername() + "/" + t.getId();
         IPaymentGateway gateway = gatewayManager.createPaymentGateway(gatewayType);
-        
-        if(!(gateway instanceof IRemoteAuthPaymentGateway)) {
+
+        if (!(gateway instanceof IRemoteAuthPaymentGateway)) {
             throw new InvalidRequestException("gateway does not support remote authentication.");
         } else {
-            return ((IRemoteAuthPaymentGateway)gateway).generateFormdata(t, amount, currency, returnUrl, cancelUrl, callbackUrl, request.getLocale());
+            return ((IRemoteAuthPaymentGateway) gateway).generateFormdata(t, amount, currency, returnUrl, cancelUrl, callbackUrl, request.getLocale());
         }
-        
+
     }
-    
-    @RequestMapping(value = "/tokens", method=RequestMethod.POST)
+
+    @RequestMapping(value = "/tokens", method = RequestMethod.POST)
     @Transactional()
-    @Secured({"ROLE_PUBLICAPIACCESSOR","ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
+    @Secured({"ROLE_PUBLICAPIACCESSOR", "ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
     public String createToken(HttpServletRequest request, @RequestParam String cardNumber, @RequestParam int expireMonth, @RequestParam int expireYear, @RequestParam String cvd) {
         Merchant m = SecurityHelper.getMerchant(service);
         LOG.debug("Creating token. [merchant={}]", m.getId());
-        
+
         Card card = new Card(cardNumber, expireMonth, expireYear, cvd);
         return service.getTokens(m).createNew(card).getId();
     }
-    
-    
-    @RequestMapping(value = "/tokens" , method=RequestMethod.GET)
-    @Transactional(readOnly=true)
-    @Secured({"ROLE_PRIVATEAPIACCESSOR","ROLE_MERCHANT"})     
+
+    @RequestMapping(value = "/tokens", method = RequestMethod.GET)
+    @Transactional(readOnly = true)
+    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
     public List<Token> listTokens() {
         Merchant m = SecurityHelper.getMerchant(service);
         LOG.debug("Listing tokens. [merchant={}]", m.getId());
         return service.getTokens(m).findAll();
     }
-    
-    @RequestMapping(value="/tokens/{token}", method=RequestMethod.GET)
-    @Transactional(readOnly=true)
-    @Secured({"ROLE_PRIVATEAPIACCESSOR","ROLE_MERCHANT"})     
+
+    @RequestMapping(value = "/tokens/{token}", method = RequestMethod.GET)
+    @Transactional(readOnly = true)
+    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
     public Token getToken(@PathVariable String token) {
         Merchant m = SecurityHelper.getMerchant(service);
         LOG.debug("Retrieving token. [merchant={};token={}]", m.getId(), token);
         return getToken(m, token);
     }
-    
+
     @RequestMapping(value = "/callback/quickpay/{publicKey}/{tokenId}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     public void handleQuickpayEvent(MultipartHttpServletRequest request, @PathVariable String publicKey, @PathVariable String tokenId) {
@@ -142,14 +133,14 @@ public class TokenController {
 
         String[] keys = "subscribe".equals(eventType) ? QUICKPAY_KEYS_SUBSCRIBE : QUICKPAY_KEYS;
         String secret = null;
-        
-        for(PaymentGatewayAccess pga : merchant.getPaymentGatewayAccesses()) {
-            if(pga.getPaymentGatewayType() == EPaymentGateway.QuickPay) {
+
+        for (PaymentGatewayAccess pga : merchant.getPaymentGatewayAccesses()) {
+            if (pga.getPaymentGatewayType() == EPaymentGateway.QuickPay) {
                 secret = pga.getAcquirerApiKey();
                 break;
             }
         }
-        
+
         if (!validateQuickpayCallback(request, request.getParameter("md5check"), secret, keys)) {
             LOG.warn("Payment data is invalid!!! [merchantId={}; remoteIp={}]", merchant.getId(), request.getRemoteAddr());
             throw new InvalidRequestException("The data sent is not valid(checked against md5check).");
@@ -176,31 +167,31 @@ public class TokenController {
 
         Token token = service.getTokens(merchant).findOne(tokenId);
         Transaction transaction = service.getTransactionByRefId(merchant, orderNumber);
-        
+
         if (transaction == null) {
             throw new ResourceNotFoundException("Could not find the transaction.");
         }
-        
-        if(!orderNumber.equals(transaction.getRefId())) {
+
+        if (!orderNumber.equals(transaction.getRefId())) {
             throw new InvalidRequestException("Ordernumber does not match.");
         }
-        
+
         int expireMonth = 0;
         int expireYear = 0;
 
-        if(request.getParameter("cardexpire") != null) {
+        if (request.getParameter("cardexpire") != null) {
             String expireTime = request.getParameter("cardexpire");
             expireMonth = Integer.parseInt(expireTime.substring(0, 2));
             expireYear = Integer.parseInt(expireTime.substring(2, 4));
         }
 
         /*if ("authorize".equals(eventType)) {
-            EPaymentMethod paymentMethod = QuickPay.getCardTypeFromString(request.getParameter("cardtype"));
-            token = service.getTokens(merchant).authorizedRemote(token, currency, amount, paymentMethod, expireMonth, expireYear, 
-                                                                request.getParameter("cardnumber"), gatewayTransactionId);
-            service.getTransactions(merchant).createNew(token);
+         EPaymentMethod paymentMethod = QuickPay.getCardTypeFromString(request.getParameter("cardtype"));
+         token = service.getTokens(merchant).authorizedRemote(token, currency, amount, paymentMethod, expireMonth, expireYear, 
+         request.getParameter("cardnumber"), gatewayTransactionId);
+         service.getTransactions(merchant).createNew(token);
 
-        }*/
+         }*/
     }
 
     private boolean validateQuickpayCallback(HttpServletRequest request, String md5check, String secret, String[] keys) {

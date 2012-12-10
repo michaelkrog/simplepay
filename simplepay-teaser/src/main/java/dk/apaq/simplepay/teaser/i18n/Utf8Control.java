@@ -11,10 +11,9 @@ import java.util.ResourceBundle;
 import java.util.ResourceBundle.Control;
 
 public class Utf8Control extends Control {
-    public ResourceBundle newBundle
-        (String baseName, Locale locale, String format, ClassLoader loader, boolean reload)
-            throws IllegalAccessException, InstantiationException, IOException
-    {
+
+    public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload)
+            throws IllegalAccessException, InstantiationException, IOException {
         // The below is a copy of the default implementation.
         String bundleName = toBundleName(baseName, locale);
         String resourceName = toResourceName(bundleName, "properties");
@@ -48,8 +47,4 @@ public class Utf8Control extends Control {
         //Returns null to replicate orignial locale fallback when not using a controller
         return null;
     }
-    
-    
-    
-    
 }
