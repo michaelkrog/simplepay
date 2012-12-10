@@ -3,6 +3,7 @@ package dk.apaq.simplepay.model;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
@@ -11,31 +12,26 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  */
 @Entity
 public class Token extends BaseEntity {
-    
-    
+
     @NotNull
     private ETokenPurpose purpose = ETokenPurpose.SinglePayment;
-    
     private boolean expired = false;
     private boolean test = false;
-    
     private Card data;
-    
     //Variables we dont want in a JSON output is here.
     //TODO Move the ignore descision to the JSON mapper instead
     @NotNull
     @ManyToOne
     @JsonIgnore
     private Merchant merchant;
-    
-    protected Token() {
 
+    protected Token() {
     }
 
     public Token(Card data) {
         this.data = data;
     }
-    
+
     public boolean isExpired() {
         return expired;
     }
@@ -71,5 +67,4 @@ public class Token extends BaseEntity {
     public Card getData() {
         return data;
     }
-    
 }

@@ -1,9 +1,6 @@
 package dk.apaq.simplepay.model;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import org.hibernate.annotations.GenericGenerator;
 
 /**
  *
@@ -11,16 +8,15 @@ import org.hibernate.annotations.GenericGenerator;
  */
 @Entity
 public class Card extends BaseEntity {
-    
+
     private String number;
     private int expMonth;
     private int expYear;
     private String name;
     private String cvd;
     private String country;
-    
-    //private String type; f.x Visa
 
+    //private String type; f.x Visa
     public Card(String number, int expMonth, int expYear, String cvd) {
         this.number = number;
         this.expMonth = expMonth;
@@ -36,7 +32,6 @@ public class Card extends BaseEntity {
         this.cvd = cvd;
     }
 
-    
     public String getCountry() {
         return country;
     }
@@ -78,17 +73,19 @@ public class Card extends BaseEntity {
     }
 
     public String getLast4() {
-        if(number == null) {
+        if (number == null) {
             return null;
         } else {
             int noOfChars = Math.min(number.length(), 4);
             return number.substring(number.length() - noOfChars, number.length());
         }
     }
-    
+
     public boolean isValid() {
-        if(number == null) return false;
-        
+        if (number == null) {
+            return false;
+        }
+
         int sum = 0;
         boolean alternate = false;
         for (int i = number.length() - 1; i >= 0; i--) {
@@ -112,7 +109,4 @@ public class Card extends BaseEntity {
     public void setName(String name) {
         this.name = name;
     }
-    
-    
-    
 }

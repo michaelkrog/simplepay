@@ -2,7 +2,9 @@ package dk.apaq.simplepay.model;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import javax.persistence.*;
+
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -10,13 +12,13 @@ import org.hibernate.annotations.GenericGenerator;
  * @author krog
  */
 @Entity
-@Inheritance(strategy= InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class BaseEntity implements Serializable {
+
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
     private String _id;
-    
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date dateCreated;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -45,6 +47,4 @@ public abstract class BaseEntity implements Serializable {
     public void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;
     }
-    
-    
 }

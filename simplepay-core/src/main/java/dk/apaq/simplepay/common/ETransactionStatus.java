@@ -5,6 +5,7 @@ package dk.apaq.simplepay.common;
  * @author krog
  */
 public enum ETransactionStatus {
+    
     /**
      * Transaction authorized but not completed.
      */
@@ -21,7 +22,7 @@ public enum ETransactionStatus {
     Cancelled, 
     
     /**
-     * Transaction refunded. You have returned money to the customers bank account, eg. you or the customer has cancelled a part of or the entire order.
+     * Transaction refunded. You have returned money to the customer, eg. you or the customer has cancelled a part of or the entire order.
      */
     Refunded, 
     

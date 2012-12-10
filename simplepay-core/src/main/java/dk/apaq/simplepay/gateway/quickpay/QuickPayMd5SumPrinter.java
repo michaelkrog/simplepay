@@ -11,8 +11,7 @@ import org.slf4j.LoggerFactory;
  */
 public class QuickPayMd5SumPrinter {
 
-    private static final Logger log = LoggerFactory.getLogger(QuickPayMd5SumPrinter.class);
-
+    private static final Logger LOG = LoggerFactory.getLogger(QuickPayMd5SumPrinter.class);
     private StringBuilder builder = new StringBuilder();
 
     public String printHtmlHidden(String name, String input) {
@@ -25,7 +24,6 @@ public class QuickPayMd5SumPrinter {
         return new BasicNameValuePair(name, value);
     }
 
-
     public void add(String input) {
         //md.update(input.getBytes());
         builder.append(input);
@@ -34,19 +32,18 @@ public class QuickPayMd5SumPrinter {
     public String getMD5Result() {
         String fullString = builder.toString();
         String toReturn = DigestUtils.md5Hex(fullString);
-        log.debug("getMD5Result: " + fullString + "=" + toReturn);
+        LOG.debug("getMD5Result: " + fullString + "=" + toReturn);
         return toReturn;
     }
 
     public String getSHAResult() {
         String fullString = builder.toString().replaceAll("\\s", "");
         String toReturn = DigestUtils.shaHex(fullString);
-        log.debug("getSHAResult: " + fullString + "=" + toReturn);
+        LOG.debug("getSHAResult: " + fullString + "=" + toReturn);
         return toReturn;
     }
 
     public void clear() {
         builder.setLength(0);
     }
-
 }

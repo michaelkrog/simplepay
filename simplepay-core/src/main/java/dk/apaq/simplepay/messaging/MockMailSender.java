@@ -3,6 +3,7 @@ package dk.apaq.simplepay.messaging;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -15,7 +16,7 @@ public class MockMailSender implements MailSender {
 
     boolean mailSend;
     private List<SimpleMailMessage> messages = new ArrayList<SimpleMailMessage>();
-    
+
     @Override
     public void send(SimpleMailMessage simpleMessage) throws MailException {
         mailSend = true;
@@ -31,7 +32,7 @@ public class MockMailSender implements MailSender {
     public boolean isMailSend() {
         return mailSend;
     }
-    
+
     public void reset() {
         mailSend = false;
         messages.clear();
@@ -40,9 +41,8 @@ public class MockMailSender implements MailSender {
     public List<SimpleMailMessage> getMessages() {
         return messages;
     }
-    
+
     public SimpleMailMessage lastMessageSent() {
-        return messages.isEmpty() ? null : messages.get(messages.size()-1);
+        return messages.isEmpty() ? null : messages.get(messages.size() - 1);
     }
-    
 }

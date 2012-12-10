@@ -20,22 +20,24 @@ public interface IPaymentGateway {
 
     /**
      * Captures an already authorized amount.
+     *
      * @param amountInCents The amount in cents(smallest denominator in the currency.)
      */
     void capture(Token token, long amountInCents);
 
     /**
      * Refund a transaction
+     *
      * @param amountInCents The amount in cents(smallest denominator in the currency.)
      */
     void refund(Token token, long amountInCents);
 
     /**
      * Renews an existing auhorization.
+     *
      * @param amountInCents The amount in cents(smallest denominator in the currency.)
      */
     void renew(Token token, long amountInCents);
 
     void setService(IPayService service);
-    
 }

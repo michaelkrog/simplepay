@@ -1,25 +1,16 @@
 package dk.apaq.simplepay.gateway.test;
 
-import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.common.ETransactionStatus;
+import java.util.Locale;
+
 import dk.apaq.simplepay.gateway.IRemoteAuthPaymentGateway;
-import dk.apaq.simplepay.gateway.PaymentInformation;
-import dk.apaq.simplepay.model.Merchant;
-import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Token;
-import dk.apaq.simplepay.model.Transaction;
-import java.util.Locale;
-import org.springframework.security.authentication.rcp.RemoteAuthenticationProvider;
 
 /**
  *
  * @author krog
  */
 public class TestRemoteGateway extends TestGateway implements IRemoteAuthPaymentGateway {
-
-    
-
 
     public FormData generateFormdata(Token token, long amount, String currency, String returnUrl, String cancelUrl, String callbackUrl, Locale locale) {
         SystemUser publicUser = service.getOrCreatePublicUser(token.getMerchant());
@@ -31,9 +22,7 @@ public class TestRemoteGateway extends TestGateway implements IRemoteAuthPayment
         data.getFields().put("currency", currency);
         data.getFields().put("returnUrl", returnUrl);
         data.getFields().put("cancelUrl", cancelUrl);
-        
+
         return data;
     }
-
-    
 }

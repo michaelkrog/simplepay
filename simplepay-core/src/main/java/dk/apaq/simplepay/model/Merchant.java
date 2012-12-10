@@ -1,11 +1,13 @@
 package dk.apaq.simplepay.model;
 
-import dk.apaq.simplepay.gateway.EPaymentGateway;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+
+import dk.apaq.simplepay.gateway.EPaymentGateway;
 import org.joda.money.Money;
 
 /**
@@ -14,7 +16,7 @@ import org.joda.money.Money;
  */
 @Entity
 public class Merchant extends BaseEntity {
-    
+
     private String name;
     private String email;
     private String phone;
@@ -22,8 +24,7 @@ public class Merchant extends BaseEntity {
     private String zipcode;
     private String city;
     private String country;
-    
-    @OneToMany(cascade= CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<PaymentGatewayAccess> paymentGatewayAccesses = new ArrayList<PaymentGatewayAccess>();
 
     public List<PaymentGatewayAccess> getPaymentGatewayAccesses() {
@@ -87,11 +88,10 @@ public class Merchant extends BaseEntity {
     }
 
     public EPaymentGateway getPreferredPaymentGateway(Card card, Money money) {
-        for(PaymentGatewayAccess pga : paymentGatewayAccesses) {
+        for (PaymentGatewayAccess pga : paymentGatewayAccesses) {
             //TODO Create som clever rule handling
             return pga.getPaymentGatewayType();
         }
         return null;
     }
-    
 }

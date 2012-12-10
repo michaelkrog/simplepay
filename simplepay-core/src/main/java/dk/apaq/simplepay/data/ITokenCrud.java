@@ -9,7 +9,8 @@ import dk.apaq.simplepay.model.Token;
  * @author michael
  */
 public interface ITokenCrud extends Repository<Token, String> {
-    
+
     Token createNew(Card card);
+
     void markExpired(Token token);
 }

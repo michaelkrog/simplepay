@@ -1,17 +1,18 @@
 package dk.apaq.simplepay.gateway;
 
-import dk.apaq.simplepay.common.EPaymentMethod;
-import dk.apaq.simplepay.common.ETransactionStatus;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import dk.apaq.simplepay.common.EPaymentMethod;
+import dk.apaq.simplepay.common.ETransactionStatus;
 
 /**
  *
  * @author krog
  */
 public class PaymentInformation {
-    
+
     private final ETransactionStatus transationStatus;
     private final List<HistoryEntry> history;
     private final String orderNumber;
@@ -22,8 +23,9 @@ public class PaymentInformation {
     private final String merchantEmail;
     private final String transactionId;
     private final EPaymentMethod cardType;
-    
+
     public class HistoryEntry {
+
         private String type;
         private int amount;
         private PaymentInformation status;
@@ -59,7 +61,7 @@ public class PaymentInformation {
         }
     }
 
-    public PaymentInformation(ETransactionStatus transactionStatus, List<HistoryEntry> history, String orderNumber, int amount, String currency, 
+    public PaymentInformation(ETransactionStatus transactionStatus, List<HistoryEntry> history, String orderNumber, int amount, String currency,
             String gatewayStatus, String merchantId, String merchantEmail, String transactionId, EPaymentMethod cardType) {
         this.transationStatus = transactionStatus;
         this.history = history;
@@ -71,7 +73,7 @@ public class PaymentInformation {
         this.merchantEmail = merchantEmail;
         this.transactionId = transactionId;
         this.cardType = cardType;
-        
+
     }
 
     public int getAmount() {
@@ -109,7 +111,4 @@ public class PaymentInformation {
     public String getTransactionId() {
         return transactionId;
     }
-    
-    
-    
 }

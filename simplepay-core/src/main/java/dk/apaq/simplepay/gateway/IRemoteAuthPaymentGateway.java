@@ -1,22 +1,19 @@
 package dk.apaq.simplepay.gateway;
 
-import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.PayService;
-import dk.apaq.simplepay.model.Merchant;
-import dk.apaq.simplepay.model.Token;
-import dk.apaq.simplepay.model.Token;
-import dk.apaq.simplepay.model.Transaction;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import dk.apaq.simplepay.model.Token;
 
 /**
  *
  * @author krog
  */
 public interface IRemoteAuthPaymentGateway extends IPaymentGateway {
-    
+
     public class FormData {
+
         private String url;
         private Map<String, String> fields = new LinkedHashMap<String, String>();
 
@@ -31,7 +28,6 @@ public interface IRemoteAuthPaymentGateway extends IPaymentGateway {
         public Map<String, String> getFields() {
             return fields;
         }
-        
     }
 
     /**

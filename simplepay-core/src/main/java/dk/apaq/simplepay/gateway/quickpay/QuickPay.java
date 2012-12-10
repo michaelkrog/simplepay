@@ -1,19 +1,20 @@
 package dk.apaq.simplepay.gateway.quickpay;
 
-import dk.apaq.simplepay.common.EPaymentMethod;
-import dk.apaq.simplepay.common.ETransactionStatus;
-import dk.apaq.simplepay.gateway.AbstractPaymentGateway;
-import dk.apaq.simplepay.gateway.IHasPaymentInformation;
-import dk.apaq.simplepay.gateway.PaymentException;
-import dk.apaq.simplepay.gateway.IRemoteAuthPaymentGateway;
-import dk.apaq.simplepay.gateway.PaymentInformation;
-import dk.apaq.simplepay.model.Token;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import dk.apaq.simplepay.common.EPaymentMethod;
+import dk.apaq.simplepay.common.ETransactionStatus;
+import dk.apaq.simplepay.gateway.AbstractPaymentGateway;
+import dk.apaq.simplepay.gateway.IHasPaymentInformation;
+import dk.apaq.simplepay.gateway.IRemoteAuthPaymentGateway;
+import dk.apaq.simplepay.gateway.PaymentException;
+import dk.apaq.simplepay.gateway.PaymentInformation;
+import dk.apaq.simplepay.model.Token;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -34,7 +35,6 @@ import org.slf4j.LoggerFactory;
 public class QuickPay extends AbstractPaymentGateway implements IRemoteAuthPaymentGateway, IHasPaymentInformation {
 
     private static final Logger LOG = LoggerFactory.getLogger(QuickPay.class);
-
     private String apiUrl = "https://secure.quickpay.dk/api";
     private String formUrl = "https://secure.quickpay.dk/form/";
     private boolean testMode;
@@ -52,14 +52,14 @@ public class QuickPay extends AbstractPaymentGateway implements IRemoteAuthPayme
     public void setHttpClient(HttpClient httpClient) {
         this.httpClient = httpClient;
     }
-    
+
     public HttpClient getHttpClient() {
-        if(httpClient == null) {
+        if (httpClient == null) {
             httpClient = new DefaultHttpClient();
         }
         return httpClient;
     }
-    
+
     @Override
     public void cancel(Token token) {
         validateToken(token);
@@ -72,11 +72,11 @@ public class QuickPay extends AbstractPaymentGateway implements IRemoteAuthPayme
             nvps.add(md5.getBasicNameValuePair("msgtype", "cancel"));
             //nvps.add(md5.getBasicNameValuePair("merchant", token.getMerchant().getGatewayUserId()));
             //nvps.add(md5.getBasicNameValuePair("transaction", token.getGatewayTransactionId()));
-            
-            if(testMode) {
+
+            if (testMode) {
                 nvps.add(md5.getBasicNameValuePair("testmode", "1"));
             }
-            
+
             //md5.add(token.getMerchant().getGatewaySecret());
             nvps.add(new BasicNameValuePair("md5check", md5.getMD5Result()));
             post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
@@ -89,12 +89,12 @@ public class QuickPay extends AbstractPaymentGateway implements IRemoteAuthPayme
             entity.writeTo(ba);
             String result = new String(ba.toByteArray(), 0, ba.size());
             checkQuickpayResult(new QuickPayResult(result));
-            
+
         } catch (IOException ex) {
             LOG.error("Unable to cancel payment.", ex);
             throw new PaymentException("Unable to cancel payment.", ex);
-        } 
-        
+        }
+
     }
 
     public PaymentInformation getPaymentInformation(Token token) {
@@ -108,11 +108,11 @@ public class QuickPay extends AbstractPaymentGateway implements IRemoteAuthPayme
             nvps.add(md5.getBasicNameValuePair("msgtype", "status"));
             //nvps.add(md5.getBasicNameValuePair("merchant", token.getMerchant().getGatewayUserId()));
             //nvps.add(md5.getBasicNameValuePair("transaction", token.getGatewayTransactionId()));
-            
-            if(testMode) {
+
+            if (testMode) {
                 nvps.add(md5.getBasicNameValuePair("testmode", "1"));
             }
-            
+
             //md5.add(token.getMerchant().getGatewaySecret());
             nvps.add(new BasicNameValuePair("md5check", md5.getMD5Result()));
             post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
@@ -122,30 +122,28 @@ public class QuickPay extends AbstractPaymentGateway implements IRemoteAuthPayme
             ByteArrayOutputStream ba = new ByteArrayOutputStream((int) entity.getContentLength());
             entity.writeTo(ba);
             String result = new String(ba.toByteArray(), 0, ba.size());
-            
+
             QuickPayResult qpresult = new QuickPayResult(result);
-            
+
             List<PaymentInformation.HistoryEntry> history = new ArrayList();
-            
+
             return new PaymentInformation(getStatusFromState(Integer.parseInt(qpresult.getParameter("state"))),
-                                            history, 
-                                            qpresult.getParameter("ordernumber"), 
-                                            Integer.parseInt(qpresult.getParameter("amount")),
-                                            qpresult.getParameter("currency"), 
-                                            qpresult.getParameter("qpstat") + ": " + qpresult.getParameter("qpstatmsg"),
-                                            qpresult.getParameter("merchant"),
-                                            qpresult.getParameter("merchantemail"),
-                                            qpresult.getParameter("transaction"),
-                                            getCardTypeFromString(qpresult.getParameter("cardtype")));
-            
-            
+                    history,
+                    qpresult.getParameter("ordernumber"),
+                    Integer.parseInt(qpresult.getParameter("amount")),
+                    qpresult.getParameter("currency"),
+                    qpresult.getParameter("qpstat") + ": " + qpresult.getParameter("qpstatmsg"),
+                    qpresult.getParameter("merchant"),
+                    qpresult.getParameter("merchantemail"),
+                    qpresult.getParameter("transaction"),
+                    getCardTypeFromString(qpresult.getParameter("cardtype")));
+
+
         } catch (IOException ex) {
             LOG.error("Unable to get status for payment.", ex);
             throw new PaymentException("Unable to get status for payment.", ex);
         }
     }
-
-
 
     @Override
     public void capture(Token token, long amountInCents) {
@@ -161,10 +159,10 @@ public class QuickPay extends AbstractPaymentGateway implements IRemoteAuthPayme
             nvps.add(md5.getBasicNameValuePair("amount", "" + amountInCents));
             nvps.add(md5.getBasicNameValuePair("finalize", "1"));
             //nvps.add(md5.getBasicNameValuePair("transaction", token.getGatewayTransactionId()));
-            if(testMode) {
+            if (testMode) {
                 nvps.add(md5.getBasicNameValuePair("testmode", "1"));
             }
-            
+
             //md5.add(token.getMerchant().getGatewaySecret());
             nvps.add(new BasicNameValuePair("md5check", md5.getMD5Result()));
             post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
@@ -182,42 +180,41 @@ public class QuickPay extends AbstractPaymentGateway implements IRemoteAuthPayme
     }
 
     /*public void recurring(String orderNumber, long amountInCents, String currency, boolean autocapture, String transactionId) {
-        try {
-            LOG.debug("Recurrings authorization for transaction [transactionId={}; orderNumber={}; amountInCents={}; currency={}; autoCapture={}]", 
-                                                                    new Object[]{transactionId, orderNumber, amountInCents, currency, autocapture});
+     try {
+     LOG.debug("Recurrings authorization for transaction [transactionId={}; orderNumber={}; amountInCents={}; currency={}; autoCapture={}]", 
+     new Object[]{transactionId, orderNumber, amountInCents, currency, autocapture});
             
-            QuickPayMd5SumPrinter md5 = new QuickPayMd5SumPrinter();
-            HttpPost post = new HttpPost(apiUrl);
-            List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-            nvps.add(md5.getBasicNameValuePair("protocol", protocolVersion));
-            nvps.add(md5.getBasicNameValuePair("msgtype", "capture"));
-            nvps.add(md5.getBasicNameValuePair("merchant", transaction.getMerchant().getGatewayUserId()));
-            nvps.add(md5.getBasicNameValuePair("ordernumber", orderNumber));
-            nvps.add(md5.getBasicNameValuePair("amount", "" + amountInCents));
-            nvps.add(md5.getBasicNameValuePair("currency", currency));
-            nvps.add(md5.getBasicNameValuePair("autocapture", autocapture ? "1" : "0"));
-            nvps.add(md5.getBasicNameValuePair("transaction", transactionId));
+     QuickPayMd5SumPrinter md5 = new QuickPayMd5SumPrinter();
+     HttpPost post = new HttpPost(apiUrl);
+     List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+     nvps.add(md5.getBasicNameValuePair("protocol", protocolVersion));
+     nvps.add(md5.getBasicNameValuePair("msgtype", "capture"));
+     nvps.add(md5.getBasicNameValuePair("merchant", transaction.getMerchant().getGatewayUserId()));
+     nvps.add(md5.getBasicNameValuePair("ordernumber", orderNumber));
+     nvps.add(md5.getBasicNameValuePair("amount", "" + amountInCents));
+     nvps.add(md5.getBasicNameValuePair("currency", currency));
+     nvps.add(md5.getBasicNameValuePair("autocapture", autocapture ? "1" : "0"));
+     nvps.add(md5.getBasicNameValuePair("transaction", transactionId));
             
-            if(testMode) {
-                nvps.add(md5.getBasicNameValuePair("testmode", "1"));
-            }
+     if(testMode) {
+     nvps.add(md5.getBasicNameValuePair("testmode", "1"));
+     }
             
-            md5.add(transaction.getMerchant().getGatewaySecret());
-            nvps.add(new BasicNameValuePair("md5check", md5.getMD5Result()));
-            post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
+     md5.add(transaction.getMerchant().getGatewaySecret());
+     nvps.add(new BasicNameValuePair("md5check", md5.getMD5Result()));
+     post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 
-            HttpResponse response = getHttpClient().execute(post);
-            HttpEntity entity = response.getEntity();
-            ByteArrayOutputStream ba = new ByteArrayOutputStream((int) entity.getContentLength());
-            entity.writeTo(ba);
-            String result = new String(ba.toByteArray(), 0, ba.size());
-            checkQuickpayResult(new QuickPayResult(result));
-        } catch (IOException ex) {
-            LOG.error("Unable to create recurring payment.", ex);
-            throw new PaymentException("Unable to create recurring payment.", ex);
-        }
-    }*/
-
+     HttpResponse response = getHttpClient().execute(post);
+     HttpEntity entity = response.getEntity();
+     ByteArrayOutputStream ba = new ByteArrayOutputStream((int) entity.getContentLength());
+     entity.writeTo(ba);
+     String result = new String(ba.toByteArray(), 0, ba.size());
+     checkQuickpayResult(new QuickPayResult(result));
+     } catch (IOException ex) {
+     LOG.error("Unable to create recurring payment.", ex);
+     throw new PaymentException("Unable to create recurring payment.", ex);
+     }
+     }*/
     public void renew(Token token, long amountInCents) {
         validateToken(token);
         try {
@@ -229,11 +226,11 @@ public class QuickPay extends AbstractPaymentGateway implements IRemoteAuthPayme
             nvps.add(md5.getBasicNameValuePair("msgtype", "renew"));
             //nvps.add(md5.getBasicNameValuePair("merchant", token.getMerchant().getGatewayUserId()));
             //nvps.add(md5.getBasicNameValuePair("transaction", token.getGatewayTransactionId()));
-            
-            if(testMode) {
+
+            if (testMode) {
                 nvps.add(md5.getBasicNameValuePair("testmode", "1"));
             }
-            
+
             //md5.add(token.getMerchant().getGatewaySecret());
             nvps.add(new BasicNameValuePair("md5check", md5.getMD5Result()));
             post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
@@ -250,8 +247,6 @@ public class QuickPay extends AbstractPaymentGateway implements IRemoteAuthPayme
         }
     }
 
-
-
     public void refund(Token token, long amountInCents) {
         validateToken(token);
         try {
@@ -264,11 +259,11 @@ public class QuickPay extends AbstractPaymentGateway implements IRemoteAuthPayme
             //nvps.add(md5.getBasicNameValuePair("merchant", token.getMerchant().getGatewayUserId()));
             nvps.add(md5.getBasicNameValuePair("amount", "" + amountInCents));
             //nvps.add(md5.getBasicNameValuePair("transaction", token.getGatewayTransactionId()));
-            
-            if(testMode) {
+
+            if (testMode) {
                 nvps.add(md5.getBasicNameValuePair("testmode", "1"));
             }
-            
+
             //md5.add(token.getMerchant().getGatewaySecret());
             nvps.add(new BasicNameValuePair("md5check", md5.getMD5Result()));
             post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
@@ -288,7 +283,7 @@ public class QuickPay extends AbstractPaymentGateway implements IRemoteAuthPayme
     public FormData generateFormdata(Token token, long amount, String currency, String okUrl, String cancelUrl, String callbackUrl, Locale locale) {
         FormData formData = new FormData();
         formData.setUrl("https://secure.quickpay.dk/form/");
-        
+
         Map<String, String> map = formData.getFields();
         map.put("protocol", "4");
         map.put("msgtype", "authorize");
@@ -305,20 +300,20 @@ public class QuickPay extends AbstractPaymentGateway implements IRemoteAuthPayme
         map.put("cardtypelock", "creditcard");
         //map.put("description", token.getDescription());
         map.put("splitpayment", "1");
-        
+
         //md5
         StringBuilder builder = new StringBuilder();
-        for(String value : map.values()) {
+        for (String value : map.values()) {
             builder.append(value);
         }
         //builder.append(token.getMerchant().getGatewaySecret());
         map.put("md5check", DigestUtils.md5Hex(builder.toString()));
-        
+
         return formData;
     }
-    
+
     public static ETransactionStatus getStatusFromState(int state) {
-        switch(state) {
+        switch (state) {
             case 0:
                 return ETransactionStatus.Cancelled;
             case 1:
@@ -335,40 +330,42 @@ public class QuickPay extends AbstractPaymentGateway implements IRemoteAuthPayme
     }
 
     public static EPaymentMethod getCardTypeFromString(String type) {
-        if("american-express".equals(type) || "american-express-dk".equals(type)) {
+        if ("american-express".equals(type) || "american-express-dk".equals(type)) {
             return EPaymentMethod.American_Express;
         }
-        
-        if("dankort".equals(type)) {
+
+        if ("dankort".equals(type)) {
             return EPaymentMethod.Dankort;
         }
-        
-        if("diners-express".equals(type) || "diners-express-dk".equals(type)) {
+
+        if ("diners-express".equals(type) || "diners-express-dk".equals(type)) {
             return EPaymentMethod.Diners;
         }
-        
-        if("jcb".equals(type)) {
+
+        if ("jcb".equals(type)) {
             return EPaymentMethod.Jcb;
         }
-        
-        if("mastercard".equals(type) || "mastercard-dk".equals(type)) {
+
+        if ("mastercard".equals(type) || "mastercard-dk".equals(type)) {
             return EPaymentMethod.Mastercard;
         }
-        
-        if("visa".equals(type) || "visa-dk".equals(type)) {
+
+        if ("visa".equals(type) || "visa-dk".equals(type)) {
             return EPaymentMethod.Visa;
         }
-        
-        if("visa-electron".equals(type) || "visa-electron-dk".equals(type)) {
+
+        if ("visa-electron".equals(type) || "visa-electron-dk".equals(type)) {
             return EPaymentMethod.Visa_Electron;
         }
         return null;
     }
-    
+
     public static String getStringFromCardType(EPaymentMethod type) {
-        if(type == null) return null;
-        
-        switch(type) {
+        if (type == null) {
+            return null;
+        }
+
+        switch (type) {
             case American_Express:
                 return "american-express";
             case Dankort:
@@ -383,53 +380,51 @@ public class QuickPay extends AbstractPaymentGateway implements IRemoteAuthPayme
                 return "visa";
             case Visa_Electron:
                 return "visa-electron";
-            default: 
+            default:
                 return null;
         }
-        
+
     }
-    
+
     public static void checkQuickpayResult(QuickPayResult result) {
         checkQuickpayResult(result.getParameter("qpstat"), result.getParameter("qpstatmsg"));
     }
-    
+
     public static void checkQuickpayResult(String qpstat, String qpstatmsg) {
-        
-        if("000".equals(qpstat)) {
+
+        if ("000".equals(qpstat)) {
             return;
-        } else if("001".equals(qpstat)) {
+        } else if ("001".equals(qpstat)) {
             throw new PaymentException("001: " + qpstatmsg + ". Rejected by acquirer.");
-        } else if("002".equals(qpstat)) {
+        } else if ("002".equals(qpstat)) {
             throw new PaymentException("002: " + qpstatmsg + ". Communication error.");
-        } else if("003".equals(qpstat)) {
+        } else if ("003".equals(qpstat)) {
             throw new PaymentException("003: " + qpstatmsg + ". Card expired.");
-        } else if("004".equals(qpstat)) {
+        } else if ("004".equals(qpstat)) {
             throw new PaymentException("004: " + qpstatmsg + ". Transition is not allowed for transaction current state.");
-        } else if("005".equals(qpstat)) {
+        } else if ("005".equals(qpstat)) {
             throw new PaymentException("005: " + qpstatmsg + ". Authorization is expired.");
-        } else if("006".equals(qpstat)) {
+        } else if ("006".equals(qpstat)) {
             throw new PaymentException("006: " + qpstatmsg + ". Error reported by acquirer.");
-        } else if("007".equals(qpstat)) {
+        } else if ("007".equals(qpstat)) {
             throw new PaymentException("007: " + qpstatmsg + ". Error reported by QuickPay.");
-        } else if("008".equals(qpstat)) {
+        } else if ("008".equals(qpstat)) {
             throw new PaymentException("008: " + qpstatmsg + ". Error in request data.");
-        } else if("009".equals(qpstat)) {
+        } else if ("009".equals(qpstat)) {
             throw new PaymentException("009: " + qpstatmsg + ". Payment aborted by shopper.");
         } else {
             throw new PaymentException("Unknown status. [status=" + qpstat + "]");
         }
 
     }
-    
+
     private void validateToken(Token token) {
-        if(token == null) {
+        if (token == null) {
             throw new NullPointerException("token was null.");
         }
-        
-        if(token.getMerchant() == null) {
+
+        if (token.getMerchant() == null) {
             throw new IllegalArgumentException("token does not have merchant specified which is required.");
         }
     }
-
 }
-

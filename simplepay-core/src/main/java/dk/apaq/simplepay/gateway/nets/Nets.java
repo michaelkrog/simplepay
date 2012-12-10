@@ -1,10 +1,7 @@
 package dk.apaq.simplepay.gateway.nets;
 
-import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.gateway.AbstractPaymentGateway;
 import dk.apaq.simplepay.gateway.IDirectPaymentGateway;
-import dk.apaq.simplepay.gateway.PaymentInformation;
-import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
 import org.joda.money.Money;
 
@@ -33,6 +30,4 @@ public class Nets extends AbstractPaymentGateway implements IDirectPaymentGatewa
     public void renew(Token token, long amountInCents) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    
 }

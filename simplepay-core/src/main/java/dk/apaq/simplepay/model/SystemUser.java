@@ -1,19 +1,14 @@
 package dk.apaq.simplepay.model;
 
-import dk.apaq.simplepay.security.ERole;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
+import dk.apaq.simplepay.security.ERole;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -22,24 +17,22 @@ import org.hibernate.annotations.GenericGenerator;
  */
 @Entity
 public class SystemUser implements Serializable {
+
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
     private String id;
-    
     @NotNull
-    @Column(unique=true)
+    @Column(unique = true)
     private String username;
     private String password;
     private boolean disabled;
     private boolean expired;
     private boolean credentialsExpired;
     private boolean locked;
-    
     @NotNull
     @ManyToOne
     private Merchant merchant;
-
     @Enumerated(EnumType.STRING)
     @ElementCollection
     private List<ERole> roles = new ArrayList<ERole>();
@@ -47,15 +40,13 @@ public class SystemUser implements Serializable {
     public SystemUser() {
     }
 
-    public SystemUser(Merchant merchant, String username, String password, ERole ... roles) {
+    public SystemUser(Merchant merchant, String username, String password, ERole... roles) {
         this.username = username;
         this.password = password;
         this.merchant = merchant;
         this.roles.addAll(Arrays.asList(roles));
     }
-    
-  
-    
+
     public boolean isCredentialsExpired() {
         return credentialsExpired;
     }
@@ -123,7 +114,4 @@ public class SystemUser implements Serializable {
     public void setMerchant(Merchant merchant) {
         this.merchant = merchant;
     }
-    
-    
- 
 }

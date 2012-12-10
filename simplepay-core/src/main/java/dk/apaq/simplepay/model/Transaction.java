@@ -1,6 +1,5 @@
 package dk.apaq.simplepay.model;
 
-
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -8,7 +7,6 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import dk.apaq.simplepay.common.ETransactionStatus;
-
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.joda.money.Money;
 
@@ -18,43 +16,36 @@ import org.joda.money.Money;
  */
 @Entity
 public class Transaction extends BaseEntity {
-    
+
     private long amount;
     private long amountCharged;
     private long amountRefunded;
-    
     @NotNull
     private String refId;
-    
     private boolean test;
     private String message;
-
     @JsonIgnore
     @ManyToOne
     @NotNull
     private Merchant merchant;
-    
     @NotNull
     private String currency;
     private String description;
-    
     @NotNull
     private String token;
-    
     @Enumerated(EnumType.STRING)
     @NotNull
     private ETransactionStatus status = ETransactionStatus.Authorized;
 
     protected Transaction() { /* EMPTY */ }
-    
+
     public Transaction(String token, String refId, Money money) {
         this.token = token;
         this.refId = refId;
         this.amount = money.getAmountMinorLong();
         this.currency = money.getCurrencyUnit().getCurrencyCode();
     }
-    
-    
+
     public String getCurrency() {
         return currency;
     }
@@ -142,6 +133,4 @@ public class Transaction extends BaseEntity {
     public void setToken(String token) {
         this.token = token;
     }
-
-    
 }

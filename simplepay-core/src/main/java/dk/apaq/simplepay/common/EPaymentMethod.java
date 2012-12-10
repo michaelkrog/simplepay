@@ -5,6 +5,7 @@ package dk.apaq.simplepay.common;
  * @author krog
  */
 public enum EPaymentMethod {
+    //CHECKSTYLE:OFF
     American_Express(EPaymentInstrument.CreditCard), 
     Dankort(EPaymentInstrument.CreditCard), 
     Diners(EPaymentInstrument.CreditCard), 
@@ -13,6 +14,7 @@ public enum EPaymentMethod {
     Visa(EPaymentInstrument.CreditCard), 
     Visa_Electron(EPaymentInstrument.CreditCard), 
     Money(EPaymentInstrument.Cash);
+    //CHECKSTYLE:ON
 
     private EPaymentInstrument instrument;
 

@@ -1,7 +1,8 @@
 package dk.apaq.simplepay.model;
 
-import dk.apaq.simplepay.gateway.EPaymentGateway;
 import javax.persistence.Entity;
+
+import dk.apaq.simplepay.gateway.EPaymentGateway;
 
 /**
  *
@@ -9,7 +10,7 @@ import javax.persistence.Entity;
  */
 @Entity
 public class PaymentGatewayAccess extends BaseEntity {
-    
+
     private EPaymentGateway paymentGatewayType;
     private String acquirerRefId;
     private String acquirerApiKey;
@@ -22,7 +23,7 @@ public class PaymentGatewayAccess extends BaseEntity {
         this.acquirerRefId = acquirerRefId;
         this.acquirerApiKey = acquirerApiKey;
     }
-    
+
     public EPaymentGateway getPaymentGatewayType() {
         return paymentGatewayType;
     }
@@ -30,7 +31,7 @@ public class PaymentGatewayAccess extends BaseEntity {
     public void setPaymentGatewayType(EPaymentGateway paymentGatewayType) {
         this.paymentGatewayType = paymentGatewayType;
     }
-    
+
     public String getAcquirerApiKey() {
         return acquirerApiKey;
     }
@@ -46,5 +47,4 @@ public class PaymentGatewayAccess extends BaseEntity {
     public void setAcquirerRefId(String acquirerRefId) {
         this.acquirerRefId = acquirerRefId;
     }
-    
 }
