@@ -1,14 +1,22 @@
 package dk.apaq.simplepay.gateway.test;
 
 import dk.apaq.simplepay.gateway.AbstractPaymentGateway;
+import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.model.Token;
+import org.joda.money.Money;
 
 /**
  *
  * @author krog
  */
-public abstract class TestGateway extends AbstractPaymentGateway {
+public class TestGateway extends AbstractPaymentGateway {
 
+    public void authorize(Token token, Money money, String orderId, String terminalId) {
+        if (money.getAmountMinorLong() > 1000000) {
+            throw new PaymentException("Amount to large");
+        }
+    }
+    
     public void cancel(Token token) {
         /*transaction.setStatus(TransactionStatus.Cancelled);
         service.getTransactions(merchant).update(transaction);*/

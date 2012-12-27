@@ -1,7 +1,8 @@
 package dk.apaq.simplepay.crud;
 
-import dk.apaq.simplepay.data.ITokenCrud;
+import dk.apaq.simplepay.data.ITokenRepository;
 import dk.apaq.simplepay.IPayService;
+import dk.apaq.simplepay.common.EPaymentIntrument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -28,7 +29,7 @@ public class TokenCrudTest {
     private IPayService service;
     
 
-    private Card card = new Card("4571123412341234",12, 2012, "123");
+    private Card card = new Card("xxxxxxxxxxx", "1234", 12, 2012, "xxx", true, EPaymentIntrument.Dankort);
     
     /**
      * Test of createNew method, of class TokenCrud.
@@ -44,7 +45,7 @@ public class TokenCrudTest {
         String orderNumber = "ordernum";
         String description = "description";
         
-        ITokenCrud crud = service.getTokens(m);
+        ITokenRepository crud = service.getTokens(m);
         Token token = crud.createNew(card);
         assertNotNull(token);
         //assertEquals(0, token.getAuthorizedAmount());

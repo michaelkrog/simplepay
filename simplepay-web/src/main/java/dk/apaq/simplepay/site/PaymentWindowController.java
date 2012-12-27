@@ -6,7 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.common.EPaymentMethod;
+import dk.apaq.simplepay.common.EPaymentIntrument;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +49,7 @@ public class PaymentWindowController {
         Merchant merchant = user.getMerchant();
 
         //TODO Detect payment method
-        EPaymentMethod paymentMethod = null;
+        EPaymentIntrument paymentMethod = null;
 
         /*Token token = service.getTokens(merchant).read(tokenId);
          token = service.getTokens(merchant).authorize(token, currency, amount, paymentMethod, cardNumber, cvc, expireMonth, expireYear);

@@ -9,6 +9,8 @@ import dk.apaq.simplepay.model.*;
 import dk.apaq.simplepay.security.ERole;
 import java.util.ArrayList;
 import java.util.List;
+
+import dk.apaq.simplepay.common.EPaymentIntrument;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.junit.Test;
@@ -34,7 +36,7 @@ public class PayServiceTest {
     @Autowired
     private IPayService service;
     
-    private Card card = new Card("4571123412341234",12, 2012, "123");
+    private Card card = new Card("xxxxxxxxxxxx", "1234",12, 2012, "xxx", true, EPaymentIntrument.Dankort);
     
     private void login(SystemUser user) {
         List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
@@ -144,7 +146,7 @@ public class PayServiceTest {
     
     @Test
     public void testGetEvents() {
-        Transaction t = new Transaction("123", "T_123", Money.of(CurrencyUnit.USD, 123));
+        Transaction t = new Transaction("123", "T_123", Money.of(CurrencyUnit.USD, 123), EPaymentGateway.Test);
         Merchant merchant = service.getMerchants().save(new Merchant());
         Repository<TransactionEvent, String> events = service.getEvents(merchant, TransactionEvent.class);
         TransactionEvent event = events.save(new TransactionEvent(t, "user", ETransactionStatus.Authorized, "129.129.129.912"));

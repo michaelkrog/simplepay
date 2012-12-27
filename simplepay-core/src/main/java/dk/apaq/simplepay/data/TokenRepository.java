@@ -10,22 +10,25 @@ import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.TokenEvent;
 import dk.apaq.simplepay.util.RequestInformationHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author michael
  */
-public class TokenCrud extends EntityManagerRepositoryForSpring<Token, String> implements ITokenCrud {
+public class TokenRepository extends EntityManagerRepositoryForSpring<Token, String> implements ITokenRepository {
 
     @Autowired
     private PaymentGatewayManager gatewayManager;
     @Autowired
     private IPayService service;
 
-    public TokenCrud(EntityManager em) {
+    public TokenRepository(EntityManager em) {
         super(em, Token.class);
     }
 
+    @Override
+    @Transactional
     public Token createNew(Card card) {
         Token token = save(new Token(card));
 
@@ -35,6 +38,7 @@ public class TokenCrud extends EntityManagerRepositoryForSpring<Token, String> i
         return token;
     }
 
+    @Override
     public void markExpired(Token token) {
         token.setExpired(true);
         save(token);

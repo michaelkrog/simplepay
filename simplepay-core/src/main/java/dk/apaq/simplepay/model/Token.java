@@ -1,5 +1,6 @@
 package dk.apaq.simplepay.model;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
@@ -17,7 +18,7 @@ public class Token extends BaseEntity {
     private ETokenPurpose purpose = ETokenPurpose.SinglePayment;
     private boolean expired = false;
     private boolean test = false;
-    private Card data;
+    @Embedded private Card data;
     //Variables we dont want in a JSON output is here.
     //TODO Move the ignore descision to the JSON mapper instead
     @NotNull

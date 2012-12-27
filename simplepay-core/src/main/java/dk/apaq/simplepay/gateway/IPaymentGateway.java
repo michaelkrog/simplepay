@@ -6,6 +6,7 @@ package dk.apaq.simplepay.gateway;
 
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.model.Token;
+import org.joda.money.Money;
 
 /**
  *
@@ -14,7 +15,12 @@ import dk.apaq.simplepay.model.Token;
 public interface IPaymentGateway {
 
     /**
-     * Cancels an transaction.
+     * Authorizes a transaction
+     */
+    public void authorize(Token token, Money money, String orderId, String terminalId);
+    
+    /**
+     * Cancels a transaction.
      */
     void cancel(Token token);
 

@@ -1,8 +1,8 @@
 package dk.apaq.simplepay;
 
 import dk.apaq.framework.repository.Repository;
-import dk.apaq.simplepay.data.ITokenCrud;
-import dk.apaq.simplepay.data.ITransactionCrud;
+import dk.apaq.simplepay.data.ITokenRepository;
+import dk.apaq.simplepay.data.ITransactionRepository;
 import dk.apaq.simplepay.model.Event;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
@@ -34,7 +34,7 @@ public interface IPayService {
     SystemUser getCurrentUser();
     
     /**
-     * Retrieves the name of the current user. If not user is currenctly logged in 'Anonymous' is returned;
+     * Retrieves the name of the current user. If not user is currently logged in 'Anonymous' is returned;
      * @return The name.
      */
     String getCurrentUsername();
@@ -59,26 +59,26 @@ public interface IPayService {
     Repository<Merchant, String> getMerchants();
 
     /**
-     * Reteives transaction by ordernumber
-     * @param m The MErchant.
-     * @param orderNumber The ordernumber
+     * Retreives transaction by refid(fx. order number).
+     * @param m The Merchant.
+     * @param refId The ordernumber
      * @return The Transaction or null if nothing matches.
      */
-    Transaction getTransactionByRefId(Merchant m, String orderNumber);
+    Transaction getTransactionByRefId(Merchant m, String refId);
     
     /**
      * Retrieves Repository for Transactions only for the given merchant..
      * @param merchant The Merchant.
      * @return The Repository.
      */
-    ITransactionCrud getTransactions(Merchant merchant);
+    ITransactionRepository getTransactions(Merchant merchant);
     
     /**
      * Retrieves Repository for Tokens only for the given MErchant.
      * @param merchant The merchant.
      * @return The Repository.
      */
-    ITokenCrud getTokens(Merchant merchant);
+    ITokenRepository getTokens(Merchant merchant);
 
     /**
      * Retrieves Repository for Events only for the given merchant and Event type.

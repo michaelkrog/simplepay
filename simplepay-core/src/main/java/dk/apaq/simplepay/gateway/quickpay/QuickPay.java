@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import dk.apaq.simplepay.common.EPaymentMethod;
+import dk.apaq.simplepay.common.EPaymentIntrument;
 import dk.apaq.simplepay.common.ETransactionStatus;
 import dk.apaq.simplepay.gateway.AbstractPaymentGateway;
 import dk.apaq.simplepay.gateway.IHasPaymentInformation;
-import dk.apaq.simplepay.gateway.IRemoteAuthPaymentGateway;
+import dk.apaq.simplepay.gateway.IPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.gateway.PaymentInformation;
 import dk.apaq.simplepay.model.Token;
@@ -25,6 +25,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
+import org.joda.money.Money;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +33,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author krog
  */
-public class QuickPay extends AbstractPaymentGateway implements IRemoteAuthPaymentGateway, IHasPaymentInformation {
+public class QuickPay extends AbstractPaymentGateway implements IPaymentGateway, IHasPaymentInformation {
 
     private static final Logger LOG = LoggerFactory.getLogger(QuickPay.class);
     private String apiUrl = "https://secure.quickpay.dk/api";
@@ -58,6 +59,11 @@ public class QuickPay extends AbstractPaymentGateway implements IRemoteAuthPayme
             httpClient = new DefaultHttpClient();
         }
         return httpClient;
+    }
+
+    @Override
+    public void authorize(Token token, Money money, String orderId, String terminalId) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -280,37 +286,7 @@ public class QuickPay extends AbstractPaymentGateway implements IRemoteAuthPayme
         }
     }
 
-    public FormData generateFormdata(Token token, long amount, String currency, String okUrl, String cancelUrl, String callbackUrl, Locale locale) {
-        FormData formData = new FormData();
-        formData.setUrl("https://secure.quickpay.dk/form/");
-
-        Map<String, String> map = formData.getFields();
-        map.put("protocol", "4");
-        map.put("msgtype", "authorize");
-        //map.put("merchant", token.getMerchant().getGatewayUserId());
-        map.put("language", locale.getLanguage());
-        //map.put("ordernumber", token.getOrderNumber()); 
-        map.put("amount", Long.toString(amount));
-        map.put("currency", currency);
-        map.put("continueurl", okUrl);
-        map.put("cancelurl", cancelUrl);
-        map.put("callbackurl", callbackUrl);
-        map.put("autocapture", "0");
-        map.put("autofee", "0");
-        map.put("cardtypelock", "creditcard");
-        //map.put("description", token.getDescription());
-        map.put("splitpayment", "1");
-
-        //md5
-        StringBuilder builder = new StringBuilder();
-        for (String value : map.values()) {
-            builder.append(value);
-        }
-        //builder.append(token.getMerchant().getGatewaySecret());
-        map.put("md5check", DigestUtils.md5Hex(builder.toString()));
-
-        return formData;
-    }
+    
 
     public static ETransactionStatus getStatusFromState(int state) {
         switch (state) {
@@ -329,38 +305,38 @@ public class QuickPay extends AbstractPaymentGateway implements IRemoteAuthPayme
         }
     }
 
-    public static EPaymentMethod getCardTypeFromString(String type) {
+    public static EPaymentIntrument getCardTypeFromString(String type) {
         if ("american-express".equals(type) || "american-express-dk".equals(type)) {
-            return EPaymentMethod.American_Express;
+            return EPaymentIntrument.American_Express;
         }
 
         if ("dankort".equals(type)) {
-            return EPaymentMethod.Dankort;
+            return EPaymentIntrument.Dankort;
         }
 
         if ("diners-express".equals(type) || "diners-express-dk".equals(type)) {
-            return EPaymentMethod.Diners;
+            return EPaymentIntrument.Diners;
         }
 
         if ("jcb".equals(type)) {
-            return EPaymentMethod.Jcb;
+            return EPaymentIntrument.Jcb;
         }
 
         if ("mastercard".equals(type) || "mastercard-dk".equals(type)) {
-            return EPaymentMethod.Mastercard;
+            return EPaymentIntrument.Mastercard;
         }
 
         if ("visa".equals(type) || "visa-dk".equals(type)) {
-            return EPaymentMethod.Visa;
+            return EPaymentIntrument.Visa;
         }
 
         if ("visa-electron".equals(type) || "visa-electron-dk".equals(type)) {
-            return EPaymentMethod.Visa_Electron;
+            return EPaymentIntrument.Visa_Electron;
         }
         return null;
     }
 
-    public static String getStringFromCardType(EPaymentMethod type) {
+    public static String getStringFromCardType(EPaymentIntrument type) {
         if (type == null) {
             return null;
         }
