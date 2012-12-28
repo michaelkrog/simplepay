@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author michael
  */
 @Controller
-public class EventController {
+public class EventController extends BaseController {
 
     @Autowired
     private IPayService service;

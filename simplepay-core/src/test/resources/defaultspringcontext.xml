@@ -27,16 +27,29 @@
 
     <context:property-placeholder ignore-resource-not-found="true" location="classpath:simplepay_default.properties,file:${user.home}/simplepay.properties" />
     
-        <!-- CRUD AND SERVICE BEANS -->
-    <bean id="crud" class="dk.apaq.framework.repository.jpa.EntityManagerRepositoryForSpring" scope="prototype">
+    <bean id="strongEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+        <!--property name="algorithm">
+            <value>PBEWithMD5AndTripleDES</value>
+        </property-->
+        <property name="password">
+            <value>jasypt</value>
+        </property>
+    </bean>
+    
+    <bean id="cardService" class="dk.apaq.simplepay.CardService">
+        <constructor-arg ref="strongEncryptor"/>
+    </bean>        
+        
+    <!-- CRUD AND SERVICE BEANS -->
+    <bean id="repository" class="dk.apaq.framework.repository.jpa.EntityManagerRepositoryForSpring" scope="prototype">
         <property name="transactionsHandledByProvider" value="false"/>
     </bean>
 
-    <bean id="tokenCrud" class="dk.apaq.simplepay.data.TokenCrud" scope="prototype">
+    <bean id="tokenRepository" class="dk.apaq.simplepay.data.TokenRepository" scope="prototype">
         <property name="transactionsHandledByProvider" value="false"/>
     </bean>
     
-    <bean id="transactionCrud" class="dk.apaq.simplepay.data.TransactionCrud" scope="prototype">
+    <bean id="transactionRepository" class="dk.apaq.simplepay.data.TransactionRepository" scope="prototype">
         <property name="transactionsHandledByProvider" value="false"/>
     </bean>
 
@@ -48,7 +61,7 @@
         <property name="gatewayMap">
             <map value-type="java.lang.Class"> 
                 <entry key="QuickPay" value="dk.apaq.simplepay.gateway.quickpay.QuickPay"/>
-                <entry key="Test" value="dk.apaq.simplepay.gateway.test.TestDirectGateway"/>
+                <entry key="Test" value="dk.apaq.simplepay.gateway.test.TestGateway"/>
             </map>    
         </property>   
     </bean>    

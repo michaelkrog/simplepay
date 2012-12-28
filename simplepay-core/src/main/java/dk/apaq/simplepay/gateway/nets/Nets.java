@@ -5,12 +5,14 @@ import dk.apaq.nets.payment.Address;
 import dk.apaq.nets.payment.Card;
 import dk.apaq.nets.payment.Merchant;
 import dk.apaq.nets.payment.NetsException;
+import dk.apaq.simplepay.CardService;
 import dk.apaq.simplepay.gateway.AbstractPaymentGateway;
 import dk.apaq.simplepay.gateway.IPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.model.ETokenPurpose;
 import dk.apaq.simplepay.model.PaymentGatewayAccess;
 import org.apache.commons.lang.Validate;
+import dk.apaq.simplepay.model.Token;
 import org.joda.money.Money;
 
 /**
@@ -20,10 +22,15 @@ import org.joda.money.Money;
 public class Nets extends AbstractPaymentGateway implements IPaymentGateway {
 
     private final dk.apaq.nets.payment.Nets api;
+    private final CardService service;
 
-    public Nets(dk.apaq.nets.payment.Nets api) {
+    
+    public Nets(dk.apaq.nets.payment.Nets api, CardService service) {
         this.api = api;
+        this.service = service;
     }
+    
+    
     
     public void authorize(dk.apaq.simplepay.model.Merchant sMerchant, PaymentGatewayAccess access, dk.apaq.simplepay.model.Card sCard, Money money, 
             String orderId, String terminalId, ETokenPurpose purpose) {
@@ -67,7 +74,10 @@ public class Nets extends AbstractPaymentGateway implements IPaymentGateway {
     
     private Card convertCard(dk.apaq.simplepay.model.Card card) {
         Validate.notNull(card, "card is null");
-        return new Card(card.getName(), card.getNumber(), card.getExpMonth(), card.getExpYear(), card.getCvd());
+        String number = service.decrypt(card.getEncryptedNumber());
+        String cvd = service.decrypt(card.getEncryptedCvd());
+        
+        return new Card(card.getName(), number, card.getExpMonth(), card.getExpYear(), cvd);
     }
     
     private Merchant merchantFromMerchantAndAccess(dk.apaq.simplepay.model.Merchant sMerchant, PaymentGatewayAccess access) {

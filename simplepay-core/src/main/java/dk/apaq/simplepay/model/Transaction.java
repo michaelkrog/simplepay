@@ -7,6 +7,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import dk.apaq.simplepay.common.ETransactionStatus;
+import dk.apaq.simplepay.gateway.EPaymentGateway;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.joda.money.Money;
 
@@ -37,14 +38,18 @@ public class Transaction extends BaseEntity {
     @NotNull
     private ETransactionStatus status = ETransactionStatus.Authorized;
     private String gatewayTransactionId;
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private EPaymentGateway gatewayType;
 
     protected Transaction() { /* EMPTY */ }
 
-    public Transaction(String token, String refId, Money money) {
+    public Transaction(String token, String refId, Money money, EPaymentGateway gatewayType) {
         this.token = token;
         this.refId = refId;
         this.amount = money.getAmountMinorLong();
         this.currency = money.getCurrencyUnit().getCurrencyCode();
+        this.gatewayType = gatewayType;
     }
 
     public String getGatewayTransactionId() {
@@ -57,10 +62,6 @@ public class Transaction extends BaseEntity {
 
     public String getCurrency() {
         return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
     }
 
     public String getDescription() {
@@ -79,6 +80,10 @@ public class Transaction extends BaseEntity {
         this.merchant = merchant;
     }
 
+    public EPaymentGateway getGatewayType() {
+        return gatewayType;
+    }
+
     public ETransactionStatus getStatus() {
         return status;
     }
@@ -89,10 +94,6 @@ public class Transaction extends BaseEntity {
 
     public long getAmount() {
         return amount;
-    }
-
-    public void setAmount(long amount) {
-        this.amount = amount;
     }
 
     public long getAmountCharged() {
@@ -121,10 +122,6 @@ public class Transaction extends BaseEntity {
 
     public String getRefId() {
         return refId;
-    }
-
-    public void setRefId(String refId) {
-        this.refId = refId;
     }
 
     public boolean isTest() {

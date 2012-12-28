@@ -34,14 +34,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author krog
  */
 @Controller
-public class TransactionController {
+public class TransactionController extends BaseController {
 
     private static final Logger LOG = LoggerFactory.getLogger(TransactionController.class);
-    private static final NumberFormat nfQuickPayOrderNumber = NumberFormat.getIntegerInstance();
 
-    static {
-        nfQuickPayOrderNumber.setGroupingUsed(false);
-    }
     @Autowired
     private IPayService service;
     @Autowired
@@ -62,39 +58,10 @@ public class TransactionController {
     @Transactional(readOnly = true)
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
-    public List<Transaction> listTransactions(@RequestParam(required = false) ETransactionStatus status, @RequestParam(required = false) String searchString,
-            @RequestParam(required = false) Long beforeTimestamp, @RequestParam(required = false) Long afterTimestamp) {
+    public List<Transaction> listTransactions(@RequestParam(required = false) String query, @RequestParam(defaultValue = "0") Integer offset,
+            @RequestParam(defaultValue = "1000") Integer limit) {
         Merchant m = SecurityHelper.getMerchant(service);
-        LOG.debug("Listing transactions. [merchant={}]", m.getId());
-
-        boolean useRule = status != null || searchString != null || beforeTimestamp != null || afterTimestamp != null;
-
-        AndRule rule = new AndRule();
-        if (status != null) {
-            rule.addRule(Rules.equals("status", status));
-        }
-
-        if (searchString != null) {
-            if (!searchString.endsWith("*")) {
-                searchString = searchString + "*";
-            }
-            rule.addRule(Rules.or(
-                    Rules.like("currency", searchString),
-                    Rules.like("description", searchString),
-                    Rules.like("orderNumber", searchString)));
-        }
-
-        if (beforeTimestamp != null) {
-            rule.addRule(Rules.lessOrEqual("dateCreated", new Date(beforeTimestamp)));
-        }
-
-        if (afterTimestamp != null) {
-            rule.addRule(Rules.greaterOrEqual("dateCreated", new Date(afterTimestamp)));
-        }
-
-        Sorter sorter = new Sorter("dateCreated", Sorter.Direction.Descending);
-
-        return service.getTransactions(m).findAll(new Criteria(useRule ? rule : null, sorter));
+        return listEntities(service.getTransactions(m), query, new Sorter("dateCreated", Sorter.Direction.Descending), offset, limit);
     }
 
     @RequestMapping(value = "/transactions/{id}", method = RequestMethod.GET)

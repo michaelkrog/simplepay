@@ -11,7 +11,7 @@ import dk.apaq.framework.criteria.Rules;
 import dk.apaq.framework.repository.Repository;
 import dk.apaq.framework.repository.RepositoryNotifier;
 import dk.apaq.simplepay.data.DataAccess;
-import dk.apaq.simplepay.data.ITokenCrud;
+import dk.apaq.simplepay.data.ITokenRepository;
 import dk.apaq.simplepay.data.ITransactionRepository;
 import dk.apaq.simplepay.model.Event;
 import dk.apaq.simplepay.model.Merchant;
@@ -28,7 +28,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * The default implements of the IPayService interface.
+ * The default implementation of the IPayService interface.<br><br>
+ * This implemenation expects a Spring <code>ApplicationConext</code> to be injected via the <code>setApplicationContext</code> method 
+ * before being used. 
  */
 public class PayService implements ApplicationContextAware, IPayService {
 
@@ -47,51 +49,52 @@ public class PayService implements ApplicationContextAware, IPayService {
 
     @Override
     public ITransactionRepository getTransactions(Merchant merchant) {
-        LOG.debug("Retrieving TransactionCrud");
+        LOG.debug("Retrieving TransactionRepository");
 
         if (merchant.getId() == null) {
             throw new IllegalArgumentException("Merchant must have been persisted before used for retrieving transactions.");
         }
 
-        ITransactionRepository crud = (ITransactionRepository) context.getBean("transactionCrud", em);
-        ((RepositoryNotifier) crud).addListener(new DataAccess.TransactionSecurity(this, merchant));
+        ITransactionRepository repository = (ITransactionRepository) context.getBean("transactionRepository", em);
+        ((RepositoryNotifier) repository).addListener(new DataAccess.TransactionSecurity(this, merchant));
 
-        return crud;
+        return repository;
     }
 
     @Override
-    public ITokenCrud getTokens(Merchant merchant) {
-        LOG.debug("Retrieving TokenCrud");
+    public ITokenRepository getTokens(Merchant merchant) {
+        LOG.debug("Retrieving TokenRepository");
 
         if (merchant.getId() == null) {
             throw new IllegalArgumentException("Merchant must have been persisted before used for retrieving tokens.");
         }
 
-        ITokenCrud crud = (ITokenCrud) context.getBean("tokenCrud", em);
-        ((RepositoryNotifier) crud).addListener(new DataAccess.TokenSecurity(this, merchant));
+        ITokenRepository repository = (ITokenRepository) context.getBean("tokenRepository", em);
+        ((RepositoryNotifier) repository).addListener(new DataAccess.TokenSecurity(this, merchant));
 
-        return crud;
+        return repository;
 
     }
 
+    @Override
     public <T extends Event> Repository<T, String> getEvents(Merchant merchant, Class<T> type) {
-        LOG.debug("Retrieving TransactionCrud");
+        LOG.debug("Retrieving TransactionRepository");
 
         if (merchant.getId() == null) {
             throw new IllegalArgumentException("Merchant must have been persisted before used for retrieving transactions.");
         }
 
-        Repository<T, String> crud = (Repository<T, String>) context.getBean("crud", em, type);
-        ((RepositoryNotifier) crud).addListener(new DataAccess.EventSecurity(this, merchant));
+        Repository<T, String> repository = (Repository<T, String>) context.getBean("repository", em, type);
+        ((RepositoryNotifier) repository).addListener(new DataAccess.EventSecurity(this, merchant));
 
-        return crud;
+        return repository;
     }
 
     @Override
     public Repository<Merchant, String> getMerchants() {
-        LOG.debug("Retrieving MerchantCrud");
+        LOG.debug("Retrieving MerchantRepository");
         if (merchantRep == null) {
-            merchantRep = (Repository<Merchant, String>) context.getBean("crud", em, Merchant.class);
+            merchantRep = (Repository<Merchant, String>) context.getBean("repository", em, Merchant.class);
             ((RepositoryNotifier) merchantRep).addListener(merchantSecurity);
         }
         return merchantRep;
@@ -127,9 +130,9 @@ public class PayService implements ApplicationContextAware, IPayService {
 
     @Override
     public Repository<SystemUser, String> getUsers() {
-        LOG.debug("Retrieving SystemUserCrud");
+        LOG.debug("Retrieving SystemUserRepository");
         if (userRep == null) {
-            userRep = (Repository) context.getBean("crud", em, SystemUser.class);
+            userRep = (Repository) context.getBean("repository", em, SystemUser.class);
         }
         return userRep;
     }
@@ -139,6 +142,7 @@ public class PayService implements ApplicationContextAware, IPayService {
         return getUser("username", username);
     }
 
+    @Override
     public String getCurrentUsername() {
         SystemUser user = getCurrentUser();
         return user == null ? "Anonymous" : user.getUsername();
@@ -164,8 +168,8 @@ public class PayService implements ApplicationContextAware, IPayService {
     }
 
     @Override
-    public Transaction getTransactionByRefId(Merchant m, String orderNumber) {
-        Rule rule = Rules.equals("refId", orderNumber);
+    public Transaction getTransactionByRefId(Merchant m, String refId) {
+        Rule rule = Rules.equals("refId", refId);
         return getTransactions(m).findFirst(new Criteria(rule));
     }
 }

@@ -9,11 +9,7 @@ import dk.apaq.simplepay.gateway.EPaymentGateway;
 import dk.apaq.simplepay.gateway.IPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
-import dk.apaq.simplepay.model.ETokenPurpose;
-import dk.apaq.simplepay.model.PaymentGatewayAccess;
-import dk.apaq.simplepay.model.Token;
-import dk.apaq.simplepay.model.Transaction;
-import dk.apaq.simplepay.model.TransactionEvent;
+import dk.apaq.simplepay.model.*;
 import dk.apaq.simplepay.util.RequestInformationHelper;
 import org.joda.money.Money;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,20 +26,26 @@ public class TransactionRepository extends EntityManagerRepositoryForSpring<Tran
     @Autowired
     private IPayService service;
 
+    /**
+     * Constructs an instance of Transaction Repository.
+     * @param em The entitymanager that holds transactions.
+     */
     public TransactionRepository(EntityManager em) {
         super(em, Transaction.class);
 
     }
 
     @Transactional
+    @Override
     public Transaction createNew(Token token, String refId, Money money) {
-        Transaction transaction = new Transaction(token.getId(), refId, money);
-
         //Get preferred gateway
         PaymentGatewayAccess access = token.getMerchant().getPaymentGatewayAccessPreferred(token.getData(), money);
         if (access == null) {
             throw new PaymentException("Unable to retrieve preferred payment type for merchant. [Merchant=" + token.getMerchant().getId() + "]");
         }
+
+        Transaction transaction = new Transaction(token.getId(), refId, money, access.getPaymentGatewayType());
+
 
         //Create gateway
         IPaymentGateway gateway = gatewayManager.createPaymentGateway(access.getPaymentGatewayType());
@@ -59,59 +61,101 @@ public class TransactionRepository extends EntityManagerRepositoryForSpring<Tran
             service.getTokens(token.getMerchant()).markExpired(token);
         }
 
-        TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), ETransactionStatus.Authorized, RequestInformationHelper.getRemoteAddress());
+        TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), ETransactionStatus.Authorized,
+                RequestInformationHelper.getRemoteAddress());
         service.getEvents(token.getMerchant(), TransactionEvent.class).save(evt);
 
         return transaction;
     }
 
     @Transactional
+    @Override
     public Transaction charge(Transaction transaction, long amount) {
-        transaction = findOne(transaction.getId());
+        transaction = loadTransaction(transaction);
+        Token token = loadtoken(transaction);
+        PaymentGatewayAccess access = getGatewayAccess(token.getMerchant(), transaction.getGatewayType());
+        
         transaction.setAmountCharged(amount);
         transaction.setStatus(ETransactionStatus.Charged);
 
-        IPaymentGateway gateway = null;//gatewayManager.createPaymentGateway(transaction.getToken().getGatewayType());
-        //gateway.capture(transaction.getToken(), amount);
+        IPaymentGateway gateway = gatewayManager.createPaymentGateway(transaction.getGatewayType());
+        gateway.capture(token.getMerchant(), access, transaction.getGatewayTransactionId(), transaction.getRefId(), amount);
 
         transaction = save(transaction);
 
-        TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), ETransactionStatus.Charged, RequestInformationHelper.getRemoteAddress());
+        TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), ETransactionStatus.Charged, 
+                RequestInformationHelper.getRemoteAddress());
         service.getEvents(transaction.getMerchant(), TransactionEvent.class).save(evt);
 
         return transaction;
     }
 
     @Transactional
+    @Override
     public Transaction cancel(Transaction transaction) {
-        transaction = findOne(transaction.getId());
+        transaction = loadTransaction(transaction);
+        Token token = loadtoken(transaction);
+        PaymentGatewayAccess access = getGatewayAccess(token.getMerchant(), transaction.getGatewayType());
+        
         transaction.setStatus(ETransactionStatus.Cancelled);
 
-        IPaymentGateway gateway = null;//gatewayManager.createPaymentGateway(transaction.getToken().getGatewayType());
-        //gateway.cancel(transaction.getToken());
+        IPaymentGateway gateway = gatewayManager.createPaymentGateway(transaction.getGatewayType());
+        gateway.cancel(token.getMerchant(), access, transaction.getGatewayTransactionId(), transaction.getRefId());
 
         transaction = save(transaction);
 
-        TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), ETransactionStatus.Cancelled, RequestInformationHelper.getRemoteAddress());
+        TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), ETransactionStatus.Cancelled, 
+                RequestInformationHelper.getRemoteAddress());
         service.getEvents(transaction.getMerchant(), TransactionEvent.class).save(evt);
 
         return transaction;
     }
 
     @Transactional
+    @Override
     public Transaction refund(Transaction transaction, long amount) {
-        transaction = findOne(transaction.getId());
+        transaction = loadTransaction(transaction);
+        Token token = loadtoken(transaction);
+        PaymentGatewayAccess access = getGatewayAccess(token.getMerchant(), transaction.getGatewayType());
+        
         transaction.setAmountRefunded(amount);
         transaction.setStatus(ETransactionStatus.Refunded);
 
-        IPaymentGateway gateway = null;//gatewayManager.createPaymentGateway(transaction.getToken().getGatewayType());
-        //gateway.refund(transaction.getToken(), amount);
+        IPaymentGateway gateway = gatewayManager.createPaymentGateway(transaction.getGatewayType());
+        gateway.refund(token.getMerchant(), access, transaction.getGatewayTransactionId(), transaction.getRefId(), amount);
 
         transaction = save(transaction);
 
-        TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), ETransactionStatus.Refunded, RequestInformationHelper.getRemoteAddress());
+        TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), ETransactionStatus.Refunded, 
+                RequestInformationHelper.getRemoteAddress());
         service.getEvents(transaction.getMerchant(), TransactionEvent.class).save(evt);
 
         return transaction;
+    }
+    
+    private Transaction loadTransaction(Transaction transaction) {
+        transaction = findOne(transaction.getId());
+
+        if (transaction == null) {
+            throw new IllegalArgumentException("Transaction not found");
+        }
+        return transaction;
+    }
+    
+    private Token loadtoken(Transaction transaction) {
+        Token token = service.getTokens(transaction.getMerchant()).findOne(transaction.getToken());
+        if (token == null) {
+            throw new IllegalArgumentException("token not found");
+        }
+        return token;
+    }
+    
+    private PaymentGatewayAccess getGatewayAccess(Merchant merchant, EPaymentGateway type) {
+        PaymentGatewayAccess access = merchant.getPaymentGatewayAccessByType(type);
+        if (access == null) {
+            throw new PaymentException("Unable to retrieve transactions payment type for merchant. [Merchant=" + merchant.getId() + 
+                    ";PaymentType"+type+"]");
+        }
+        return access;
     }
 }

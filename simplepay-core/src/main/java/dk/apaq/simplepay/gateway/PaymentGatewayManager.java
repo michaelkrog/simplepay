@@ -35,7 +35,7 @@ public class PaymentGatewayManager {
     public IPaymentGateway createPaymentGateway(EPaymentGateway type) {
         Class<IPaymentGateway> clazz = gatewayMap.get(type.name());
         if (clazz == null) {
-            throw new NullPointerException("No gateway by that type [type=" + type + "]");
+            throw new IllegalArgumentException("No gateway by that type [type=" + type + "]");
         }
 
         IPaymentGateway paymentGateway = null;
@@ -43,8 +43,9 @@ public class PaymentGatewayManager {
         try {
             paymentGateway = clazz.newInstance();
         } catch (Exception ex) {
+            ex.printStackTrace();
             LOG.error("Unable to create instance of PaymentGateway.", ex);
-            throw new NullPointerException("No gateway by that type because an error occured when trying to create it. [type=" + type + "]");
+            throw new IllegalArgumentException("No gateway by that type because an error occured. [type=" + type + "]", ex);
         }
 
         paymentGateway.setService(service);

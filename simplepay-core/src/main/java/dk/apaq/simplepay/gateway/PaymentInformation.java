@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import dk.apaq.simplepay.common.EPaymentMethod;
+import dk.apaq.simplepay.common.EPaymentIntrument;
 import dk.apaq.simplepay.common.ETransactionStatus;
 
 /**
@@ -22,7 +22,7 @@ public class PaymentInformation {
     private final String merchantId;
     private final String merchantEmail;
     private final String transactionId;
-    private final EPaymentMethod cardType;
+    private final EPaymentIntrument cardType;
 
     public class HistoryEntry {
 
@@ -62,7 +62,7 @@ public class PaymentInformation {
     }
 
     public PaymentInformation(ETransactionStatus transactionStatus, List<HistoryEntry> history, String orderNumber, int amount, String currency,
-            String gatewayStatus, String merchantId, String merchantEmail, String transactionId, EPaymentMethod cardType) {
+            String gatewayStatus, String merchantId, String merchantEmail, String transactionId, EPaymentIntrument cardType) {
         this.transationStatus = transactionStatus;
         this.history = history;
         this.orderNumber = orderNumber;

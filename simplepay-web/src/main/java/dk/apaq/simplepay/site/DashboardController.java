@@ -31,8 +31,8 @@ public class DashboardController {
         SystemUser user = service.getCurrentUser();
         SystemUser privateUser = service.getOrCreatePrivateUser(user.getMerchant());
 
-        ITransactionRepository crud = service.getTransactions(user.getMerchant());
-        List<Transaction> list = crud.findAll(new Criteria(new Sorter("dateChanged", Sorter.Direction.Descending), new Limit(300)));
+        ITransactionRepository repository = service.getTransactions(user.getMerchant());
+        List<Transaction> list = repository.findAll(new Criteria(new Sorter("dateChanged", Sorter.Direction.Descending), new Limit(300)));
 
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("transactions", list);

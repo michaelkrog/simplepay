@@ -1,112 +1,88 @@
 package dk.apaq.simplepay.model;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
+
+import dk.apaq.simplepay.common.EPaymentIntrument;
+import dk.apaq.simplepay.common.EPaymentType;
+import org.apache.commons.lang.Validate;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
  * @author krog
  */
-@Entity
-public class Card extends BaseEntity {
+@Embeddable
+public class Card {
 
-    private String number;
+    @JsonIgnore
+    private String encryptedNumber;
     private int expMonth;
     private int expYear;
     private String name;
-    private String cvd;
-    private String country;
+    @JsonIgnore
+    private String encryptedCvd;
+    private EPaymentIntrument type;
+    private String last4;
+    private boolean valid;
 
-    //private String type; f.x Visa
-    public Card(String number, int expMonth, int expYear, String cvd) {
-        this.number = number;
-        this.expMonth = expMonth;
-        this.expYear = expYear;
-        this.cvd = cvd;
+    protected Card() {
     }
 
-    public Card(String name, String number, int expMonth, int expYear, String cvd) {
-        this.number = number;
-        this.expMonth = expMonth;
-        this.expYear = expYear;
+    public Card(String encryptedNumber, String last4, int expMonth, int expYear, String encryptedCvd, boolean valid, EPaymentIntrument type) {
+        this(null, encryptedNumber, last4, expMonth, expYear, encryptedCvd, valid, type);
+    }
+
+    public Card(String name, String encryptedNumber, String last4, int expMonth, int expYear, String encryptedCvd, boolean valid,
+            EPaymentIntrument type) {
+        Validate.isTrue(expMonth >= 1 && expMonth <= 12, "expMonth must be within the range of 1-12.");
+        Validate.isTrue(expYear >= 2000 && expMonth <= 2100, "expMonth must be within the range of 2000-2100.");
+        Validate.notNull(encryptedNumber, "encryptedNumber is null.");
+        Validate.notNull(last4, "last4 is null.");
+        Validate.isTrue(last4.length() == 4, "last4 must have length of 4.");
+        Validate.notNull(encryptedCvd, "encryptedCvd is null.");
+        Validate.notNull(type, "type is null.");
+
         this.name = name;
-        this.cvd = cvd;
+        this.encryptedNumber = encryptedNumber;
+        this.expMonth = expMonth;
+        this.expYear = expYear;
+        this.encryptedCvd = encryptedCvd;
+        this.type = type;
+        this.last4 = last4;
     }
 
-    public String getCountry() {
-        return country;
+    public boolean isValid() {
+        return valid;
     }
 
-    public String getCvd() {
-        return cvd;
+    public String getEncryptedCvd() {
+        return encryptedCvd;
     }
 
-    public void setCvd(String cvd) {
-        this.cvd = cvd;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
+    public String getEncryptedNumber() {
+        return encryptedNumber;
     }
 
     public int getExpMonth() {
         return expMonth;
     }
 
-    public void setExpMonth(int expMonth) {
-        this.expMonth = expMonth;
-    }
-
     public int getExpYear() {
         return expYear;
     }
 
-    public void setExpYear(int expYear) {
-        this.expYear = expYear;
-    }
-
     public String getLast4() {
-        if (number == null) {
-            return null;
-        } else {
-            int noOfChars = Math.min(number.length(), 4);
-            return number.substring(number.length() - noOfChars, number.length());
-        }
-    }
-
-    public boolean isValid() {
-        if (number == null) {
-            return false;
-        }
-
-        int sum = 0;
-        boolean alternate = false;
-        for (int i = number.length() - 1; i >= 0; i--) {
-            int n = Integer.parseInt(number.substring(i, i + 1));
-            if (alternate) {
-                n *= 2;
-                if (n > 9) {
-                    n = (n % 10) + 1;
-                }
-            }
-            sum += n;
-            alternate = !alternate;
-        }
-        return (sum % 10 == 0);
+        return last4;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public EPaymentIntrument getType() {
+        return type;
     }
 }

@@ -7,13 +7,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import dk.apaq.simplepay.common.EPaymentMethod;
+import dk.apaq.simplepay.common.EPaymentIntrument;
 import dk.apaq.simplepay.common.ETransactionStatus;
 import dk.apaq.simplepay.gateway.*;
 import dk.apaq.simplepay.model.Card;
 import dk.apaq.simplepay.model.ETokenPurpose;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.PaymentGatewayAccess;
+import dk.apaq.simplepay.gateway.AbstractPaymentGateway;
+import dk.apaq.simplepay.gateway.IHasPaymentInformation;
+import dk.apaq.simplepay.gateway.IPaymentGateway;
+import dk.apaq.simplepay.gateway.PaymentException;
+import dk.apaq.simplepay.gateway.PaymentInformation;
 import dk.apaq.simplepay.model.Token;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.HttpEntity;
@@ -307,38 +312,38 @@ public class QuickPay extends AbstractPaymentGateway implements IPaymentGateway,
         }
     }
 
-    public static EPaymentMethod getCardTypeFromString(String type) {
+    public static EPaymentIntrument getCardTypeFromString(String type) {
         if ("american-express".equals(type) || "american-express-dk".equals(type)) {
-            return EPaymentMethod.American_Express;
+            return EPaymentIntrument.American_Express;
         }
 
         if ("dankort".equals(type)) {
-            return EPaymentMethod.Dankort;
+            return EPaymentIntrument.Dankort;
         }
 
         if ("diners-express".equals(type) || "diners-express-dk".equals(type)) {
-            return EPaymentMethod.Diners;
+            return EPaymentIntrument.Diners;
         }
 
         if ("jcb".equals(type)) {
-            return EPaymentMethod.Jcb;
+            return EPaymentIntrument.Jcb;
         }
 
         if ("mastercard".equals(type) || "mastercard-dk".equals(type)) {
-            return EPaymentMethod.Mastercard;
+            return EPaymentIntrument.Mastercard;
         }
 
         if ("visa".equals(type) || "visa-dk".equals(type)) {
-            return EPaymentMethod.Visa;
+            return EPaymentIntrument.Visa;
         }
 
         if ("visa-electron".equals(type) || "visa-electron-dk".equals(type)) {
-            return EPaymentMethod.Visa_Electron;
+            return EPaymentIntrument.Visa_Electron;
         }
         return null;
     }
 
-    public static String getStringFromCardType(EPaymentMethod type) {
+    public static String getStringFromCardType(EPaymentIntrument type) {
         if (type == null) {
             return null;
         }

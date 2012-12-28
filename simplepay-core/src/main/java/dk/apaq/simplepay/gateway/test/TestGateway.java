@@ -13,7 +13,7 @@ import org.joda.money.Money;
  *
  * @author krog
  */
-public abstract class TestGateway extends AbstractPaymentGateway {
+public class TestGateway extends AbstractPaymentGateway {
 
     @Override
     public void authorize(Merchant marchant, PaymentGatewayAccess access, Card card, Money money, String orderId, String terminalId, ETokenPurpose purpose) {

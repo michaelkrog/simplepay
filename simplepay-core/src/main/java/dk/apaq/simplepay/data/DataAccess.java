@@ -20,8 +20,7 @@ import dk.apaq.simplepay.model.Transaction;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
- *
- * @author krog
+ * Defines logic for access to data. This is used by the repositories returned by the service interface.
  */
 public class DataAccess {
 
