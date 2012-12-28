@@ -12,7 +12,7 @@ import dk.apaq.framework.repository.Repository;
 import dk.apaq.framework.repository.RepositoryNotifier;
 import dk.apaq.simplepay.data.DataAccess;
 import dk.apaq.simplepay.data.ITokenCrud;
-import dk.apaq.simplepay.data.ITransactionCrud;
+import dk.apaq.simplepay.data.ITransactionRepository;
 import dk.apaq.simplepay.model.Event;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
@@ -46,14 +46,14 @@ public class PayService implements ApplicationContextAware, IPayService {
     }
 
     @Override
-    public ITransactionCrud getTransactions(Merchant merchant) {
+    public ITransactionRepository getTransactions(Merchant merchant) {
         LOG.debug("Retrieving TransactionCrud");
 
         if (merchant.getId() == null) {
             throw new IllegalArgumentException("Merchant must have been persisted before used for retrieving transactions.");
         }
 
-        ITransactionCrud crud = (ITransactionCrud) context.getBean("transactionCrud", em);
+        ITransactionRepository crud = (ITransactionRepository) context.getBean("transactionCrud", em);
         ((RepositoryNotifier) crud).addListener(new DataAccess.TransactionSecurity(this, merchant));
 
         return crud;

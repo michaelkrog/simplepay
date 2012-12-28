@@ -6,11 +6,11 @@ import dk.apaq.framework.repository.jpa.EntityManagerRepositoryForSpring;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.common.ETransactionStatus;
 import dk.apaq.simplepay.gateway.EPaymentGateway;
-import dk.apaq.simplepay.gateway.IDirectPaymentGateway;
 import dk.apaq.simplepay.gateway.IPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.model.ETokenPurpose;
+import dk.apaq.simplepay.model.PaymentGatewayAccess;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.model.TransactionEvent;
@@ -23,14 +23,14 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author michael
  */
-public class TransactionCrud extends EntityManagerRepositoryForSpring<Transaction, String> implements ITransactionCrud {
+public class TransactionRepository extends EntityManagerRepositoryForSpring<Transaction, String> implements ITransactionRepository {
 
     @Autowired
     private PaymentGatewayManager gatewayManager;
     @Autowired
     private IPayService service;
 
-    public TransactionCrud(EntityManager em) {
+    public TransactionRepository(EntityManager em) {
         super(em, Transaction.class);
 
     }
@@ -40,16 +40,16 @@ public class TransactionCrud extends EntityManagerRepositoryForSpring<Transactio
         Transaction transaction = new Transaction(token.getId(), refId, money);
 
         //Get preferred gateway
-        EPaymentGateway type = token.getMerchant().getPreferredPaymentGateway(token.getData(), money);
-        if (type == null) {
+        PaymentGatewayAccess access = token.getMerchant().getPaymentGatewayAccessPreferred(token.getData(), money);
+        if (access == null) {
             throw new PaymentException("Unable to retrieve preferred payment type for merchant. [Merchant=" + token.getMerchant().getId() + "]");
         }
 
         //Create gateway
-        IPaymentGateway gateway = gatewayManager.createPaymentGateway(type);
+        IPaymentGateway gateway = gatewayManager.createPaymentGateway(access.getPaymentGatewayType());
 
         //authorize payment
-        ((IDirectPaymentGateway) gateway).authorize(token, money, refId, "");
+        gateway.authorize(token.getMerchant(), access, token.getData(), money, refId, "", token.getPurpose());
 
         //Store authorized transaction
         transaction = save(transaction);

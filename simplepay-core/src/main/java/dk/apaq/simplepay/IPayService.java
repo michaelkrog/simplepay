@@ -2,7 +2,7 @@ package dk.apaq.simplepay;
 
 import dk.apaq.framework.repository.Repository;
 import dk.apaq.simplepay.data.ITokenCrud;
-import dk.apaq.simplepay.data.ITransactionCrud;
+import dk.apaq.simplepay.data.ITransactionRepository;
 import dk.apaq.simplepay.model.Event;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
@@ -71,7 +71,7 @@ public interface IPayService {
      * @param merchant The Merchant.
      * @return The Repository.
      */
-    ITransactionCrud getTransactions(Merchant merchant);
+    ITransactionRepository getTransactions(Merchant merchant);
     
     /**
      * Retrieves Repository for Tokens only for the given MErchant.

@@ -5,16 +5,17 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.data.ITransactionCrud;
+import dk.apaq.simplepay.data.ITransactionRepository;
 import dk.apaq.simplepay.gateway.EPaymentGateway;
 import dk.apaq.simplepay.gateway.IPaymentGateway;
-import dk.apaq.simplepay.gateway.IRemoteAuthPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.gateway.quickpay.QuickPay;
 import dk.apaq.simplepay.model.*;
 import dk.apaq.simplepay.security.SecurityHelper;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.joda.money.CurrencyUnit;
+import org.joda.money.Money;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,31 +55,6 @@ public class TokenController {
             throw new ResourceNotFoundException("No token exists with the given token id.");
         }
         return t;
-    }
-
-    @RequestMapping(value = "/form", method = RequestMethod.POST)
-    @Secured({"ROLE_PUBLICAPIACCESSOR", "ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
-    @ResponseBody
-    @Transactional
-    public IRemoteAuthPaymentGateway.FormData generateForm(HttpServletRequest request, EPaymentGateway gatewayType, String token, Long amount, String currency, String returnUrl, String cancelUrl) {
-        Merchant m = SecurityHelper.getMerchant(service);
-        Token t = getToken(token);
-
-        if (!(t instanceof Token)) {
-            throw new IllegalArgumentException("The token specificed is not a token for remote authorization.");
-        }
-
-
-        SystemUser publicUser = service.getOrCreatePublicUser(m);
-        String callbackUrl = publicUrl + "/api/callback/" + gatewayType.name().toLowerCase() + "/" + publicUser.getUsername() + "/" + t.getId();
-        IPaymentGateway gateway = gatewayManager.createPaymentGateway(gatewayType);
-
-        if (!(gateway instanceof IRemoteAuthPaymentGateway)) {
-            throw new InvalidRequestException("gateway does not support remote authentication.");
-        } else {
-            return ((IRemoteAuthPaymentGateway) gateway).generateFormdata(t, amount, currency, returnUrl, cancelUrl, callbackUrl, request.getLocale());
-        }
-
     }
 
     @RequestMapping(value = "/tokens", method = RequestMethod.POST)
@@ -123,7 +99,7 @@ public class TokenController {
             throw new ResourceNotFoundException("No user with the given key was found");
         }
         Merchant merchant = user.getMerchant();
-        ITransactionCrud transactions = service.getTransactions(merchant);
+        ITransactionRepository transactions = service.getTransactions(merchant);
         String eventType = request.getParameter("msgtype");
         String qpstat = request.getParameter("qpstat");
         String qpstatmsg = request.getParameter("qpstatmsg");

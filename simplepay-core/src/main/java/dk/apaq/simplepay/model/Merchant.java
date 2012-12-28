@@ -20,10 +20,10 @@ public class Merchant extends BaseEntity {
     private String name;
     private String email;
     private String phone;
-    private String road;
-    private String zipcode;
+    private String street;
+    private String postalCode;
     private String city;
-    private String country;
+    private String countryCode;
     @OneToMany(cascade = CascadeType.ALL)
     private List<PaymentGatewayAccess> paymentGatewayAccesses = new ArrayList<PaymentGatewayAccess>();
 
@@ -39,12 +39,20 @@ public class Merchant extends BaseEntity {
         this.city = city;
     }
 
-    public String getCountry() {
-        return country;
+    /**
+     * Retrieves the 3-letter countryCode.
+     * @return The countryCode or null if not set.
+     */
+    public String getCountryCode() {
+        return countryCode;
     }
 
+    /**
+     * Sets the 3-letter countryCode.
+     * @param country The countrycode fx. DNK
+     */
     public void setCountry(String country) {
-        this.country = country;
+        this.countryCode = country;
     }
 
     public String getEmail() {
@@ -63,20 +71,20 @@ public class Merchant extends BaseEntity {
         this.name = name;
     }
 
-    public String getRoad() {
-        return road;
+    public String getStreet() {
+        return street;
     }
 
-    public void setRoad(String road) {
-        this.road = road;
+    public void setStreet(String street) {
+        this.street = street;
     }
 
-    public String getZipcode() {
-        return zipcode;
+    public String getPostalCode() {
+        return postalCode;
     }
 
-    public void setZipcode(String zipcode) {
-        this.zipcode = zipcode;
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
     }
 
     public String getPhone() {
@@ -87,11 +95,22 @@ public class Merchant extends BaseEntity {
         this.phone = phone;
     }
 
-    public EPaymentGateway getPreferredPaymentGateway(Card card, Money money) {
+    public PaymentGatewayAccess getPaymentGatewayAccessPreferred(Card card, Money money) {
         for (PaymentGatewayAccess pga : paymentGatewayAccesses) {
             //TODO Create som clever rule handling
-            return pga.getPaymentGatewayType();
+            return pga;
         }
         return null;
     }
+    
+    public PaymentGatewayAccess getPaymentGatewayAccessByType(EPaymentGateway type) {
+        for (PaymentGatewayAccess pga : paymentGatewayAccesses) {
+            if(pga.getPaymentGatewayType() == type) {
+                return pga;
+            }
+        }
+        return null;
+    }
+    
+    
 }

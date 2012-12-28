@@ -8,7 +8,7 @@ import dk.apaq.framework.criteria.Criteria;
 import dk.apaq.framework.criteria.Limit;
 import dk.apaq.framework.criteria.Sorter;
 import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.data.ITransactionCrud;
+import dk.apaq.simplepay.data.ITransactionRepository;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class DashboardController {
         SystemUser user = service.getCurrentUser();
         SystemUser privateUser = service.getOrCreatePrivateUser(user.getMerchant());
 
-        ITransactionCrud crud = service.getTransactions(user.getMerchant());
+        ITransactionRepository crud = service.getTransactions(user.getMerchant());
         List<Transaction> list = crud.findAll(new Criteria(new Sorter("dateChanged", Sorter.Direction.Descending), new Limit(300)));
 
         Map<String, Object> model = new HashMap<String, Object>();

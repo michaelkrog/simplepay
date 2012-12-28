@@ -9,7 +9,7 @@ import org.joda.money.Money;
  *
  * @author michael
  */
-public interface ITransactionCrud extends Repository<Transaction, String> {
+public interface ITransactionRepository extends Repository<Transaction, String> {
     
     Transaction createNew(Token token, String refId, Money money);
     

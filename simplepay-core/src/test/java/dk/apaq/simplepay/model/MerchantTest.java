@@ -26,11 +26,11 @@ public class MerchantTest {
         instance.setId("id");
         instance.setName("name");
         instance.setPhone("phone");
-        instance.setRoad("road");
-        instance.setZipcode("zip");
+        instance.setStreet("road");
+        instance.setPostalCode("zip");
         
         assertEquals("city", instance.getCity());
-        assertEquals("country", instance.getCountry());
+        assertEquals("country", instance.getCountryCode());
         assertEquals("email", instance.getEmail());
         /*assertEquals("gatewaySecret", instance.getGatewaySecret());
         assertEquals(PaymentGatewayType.Test, instance.getGatewayType());
@@ -38,8 +38,8 @@ public class MerchantTest {
         assertEquals("id", instance.getId());
         assertEquals("name", instance.getName());
         assertEquals("phone", instance.getPhone());
-        assertEquals("road", instance.getRoad());
-        assertEquals("zip", instance.getZipcode());
+        assertEquals("road", instance.getStreet());
+        assertEquals("zip", instance.getPostalCode());
         
     }
 

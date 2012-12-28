@@ -36,6 +36,7 @@ public class Transaction extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @NotNull
     private ETransactionStatus status = ETransactionStatus.Authorized;
+    private String gatewayTransactionId;
 
     protected Transaction() { /* EMPTY */ }
 
@@ -44,6 +45,14 @@ public class Transaction extends BaseEntity {
         this.refId = refId;
         this.amount = money.getAmountMinorLong();
         this.currency = money.getCurrencyUnit().getCurrencyCode();
+    }
+
+    public String getGatewayTransactionId() {
+        return gatewayTransactionId;
+    }
+
+    public void setGatewayTransactionId(String gatewayTransactionId) {
+        this.gatewayTransactionId = gatewayTransactionId;
     }
 
     public String getCurrency() {
