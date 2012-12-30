@@ -17,6 +17,7 @@ import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Transaction;
+import org.apache.commons.lang.Validate;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
@@ -29,6 +30,11 @@ public class DataAccess {
         private final Merchant owner;
 
         public GeneralSecurity(Merchant owner) {
+            Validate.notNull(owner, "owner is null.");
+            if (owner.getId() == null) {
+                throw new IllegalArgumentException("Merchant has never been persisted.");
+            }
+            
             this.owner = owner;
         }
 
@@ -46,6 +52,11 @@ public class DataAccess {
                 event.setCriteria(new Criteria(merchantRule, c.getSorter(), c.getLimit()));
             }
         }
+
+        public Merchant getOwner() {
+            return owner;
+        }
+        
     }
 
     public static class MerchantSecurity extends BaseRepositoryListener<Merchant, String> {
@@ -70,20 +81,15 @@ public class DataAccess {
     public static class TransactionSecurity extends GeneralSecurity<Transaction> {
 
         private final IPayService service;
-        private final Merchant owner;
-
+        
         public TransactionSecurity(PayService service, Merchant owner) {
             super(owner);
-            if (owner.getId() == null) {
-                throw new IllegalArgumentException("Merchant has never been persisted.");
-            }
-            this.owner = owner;
             this.service = service;
         }
 
         @Override
         public void onBeforeEntityUpdate(WithIdAndEntity<Transaction, String> event) {
-            Transaction stale = service.getTransactions(owner).findOne(event.getEntityId());
+            Transaction stale = service.getTransactions(getOwner()).findOne(event.getEntityId());
             if (stale != null && !stale.getId().equals(event.getEntityId())) {
                 throw new IllegalArgumentException("Ordernumber already used.");
             }
@@ -94,7 +100,7 @@ public class DataAccess {
                     throw new SecurityException("Not allowed to take other merchants transactions.");
                 }
             } else {
-                event.getEntity().setMerchant(owner);
+                event.getEntity().setMerchant(getOwner());
             }
 
             checkStatus(event.getEntity());
@@ -106,14 +112,14 @@ public class DataAccess {
 
         @Override
         public void onBeforeEntityCreate(WithEntity<Transaction, String> event) {
-            if (service.getTransactionByRefId(owner, event.getEntity().getRefId()) != null) {
-                throw new SecurityException("Ordernumber already used. [Merchant=" + owner.getId() + ";orderNumber=" + event.getEntity().getRefId() + "]");
+            if (service.getTransactionByRefId(getOwner(), event.getEntity().getRefId()) != null) {
+                throw new SecurityException("Ordernumber already used. [Merchant=" + getOwner().getId() + ";orderNumber=" + event.getEntity().getRefId() + "]");
             }
 
             checkStatus(event.getEntity());
             checkToken(event.getEntity());
 
-            event.getEntity().setMerchant(owner);
+            event.getEntity().setMerchant(getOwner());
             event.getEntity().setDateChanged(new Date());
         }
 
@@ -124,7 +130,7 @@ public class DataAccess {
                 throw new IllegalArgumentException("A transactation must have token specified.");
             }
 
-            Token existingToken = service.getTokens(owner).findOne(token);
+            Token existingToken = service.getTokens(getOwner()).findOne(token);
 
             if (t.getId() == null) { //new transaction
                 if (existingToken.isExpired()) {
@@ -133,7 +139,7 @@ public class DataAccess {
 
                 //token.set(true);
             } else {
-                Transaction existingTransaction = service.getTransactions(owner).findOne(t.getId());
+                Transaction existingTransaction = service.getTransactions(getOwner()).findOne(t.getId());
                 if (!existingTransaction.getToken().equals(token)) {
                     throw new SecurityException("Cannot change token on transaction.");
                 }

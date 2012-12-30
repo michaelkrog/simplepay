@@ -10,7 +10,8 @@ import dk.apaq.simplepay.security.ERole;
 import java.util.ArrayList;
 import java.util.List;
 
-import dk.apaq.simplepay.common.EPaymentIntrument;
+import dk.apaq.framework.common.beans.finance.Card;
+import dk.apaq.framework.repository.RepositoryNotifier;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.junit.Test;
@@ -36,7 +37,7 @@ public class PayServiceTest {
     @Autowired
     private IPayService service;
     
-    private Card card = new Card("xxxxxxxxxxxx", "1234",12, 2012, "xxx", true, EPaymentIntrument.Dankort);
+    private Card card = new Card("xxxxxxxxxxxx",12, 2012, "xxx");
     
     private void login(SystemUser user) {
         List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();

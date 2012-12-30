@@ -36,9 +36,6 @@
         </property>
     </bean>
     
-    <bean id="cardService" class="dk.apaq.simplepay.CardService">
-        <constructor-arg ref="strongEncryptor"/>
-    </bean>        
         
     <!-- CRUD AND SERVICE BEANS -->
     <bean id="repository" class="dk.apaq.framework.repository.jpa.EntityManagerRepositoryForSpring" scope="prototype">

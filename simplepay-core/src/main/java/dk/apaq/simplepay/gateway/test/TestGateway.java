@@ -1,12 +1,11 @@
 package dk.apaq.simplepay.gateway.test;
 
+import dk.apaq.framework.common.beans.finance.Card;
 import dk.apaq.simplepay.gateway.AbstractPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentException;
-import dk.apaq.simplepay.model.Card;
 import dk.apaq.simplepay.model.ETokenPurpose;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.PaymentGatewayAccess;
-import dk.apaq.simplepay.model.Token;
 import org.joda.money.Money;
 
 /**

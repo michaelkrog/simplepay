@@ -1,7 +1,7 @@
 package dk.apaq.simplepay.data;
 
+import dk.apaq.framework.common.beans.finance.Card;
 import dk.apaq.framework.repository.Repository;
-import dk.apaq.simplepay.model.Card;
 import dk.apaq.simplepay.model.Token;
 
 /**

@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import dk.apaq.framework.common.beans.finance.Card;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
@@ -18,7 +19,10 @@ public class Token extends BaseEntity {
     private ETokenPurpose purpose = ETokenPurpose.SinglePayment;
     private boolean expired = false;
     private boolean test = false;
-    @Embedded private Card data;
+    
+    @Embedded 
+    private Card tokenData;
+    
     //Variables we dont want in a JSON output is here.
     //TODO Move the ignore descision to the JSON mapper instead
     @NotNull
@@ -30,7 +34,7 @@ public class Token extends BaseEntity {
     }
 
     public Token(Card data) {
-        this.data = data;
+        this.tokenData = data;
     }
 
     public boolean isExpired() {
@@ -66,6 +70,6 @@ public class Token extends BaseEntity {
     }
 
     public Card getData() {
-        return data;
+        return tokenData;
     }
 }

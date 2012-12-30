@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
+import dk.apaq.framework.common.beans.finance.Card;
 import dk.apaq.simplepay.gateway.EPaymentGateway;
 import org.joda.money.Money;
 

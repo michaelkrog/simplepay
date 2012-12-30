@@ -4,8 +4,8 @@
 
 package dk.apaq.simplepay.model;
 
+import dk.apaq.framework.common.beans.finance.Card;
 import dk.apaq.nets.payment.ActionCode;
-import dk.apaq.nets.payment.Card;
 import dk.apaq.nets.payment.ITransactionData;
 import org.joda.money.Money;
 

@@ -2,8 +2,7 @@ package dk.apaq.simplepay.api;
 
 import java.util.List;
 
-
-import dk.apaq.simplepay.CardService;
+import dk.apaq.framework.common.beans.finance.Card;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.model.*;
@@ -28,8 +27,6 @@ public class TokenController {
     @Autowired
     private IPayService service;
     @Autowired
-    private CardService cardService;
-    @Autowired
     private PaymentGatewayManager gatewayManager;
     @Autowired
     @Qualifier("publicUrl")
@@ -51,7 +48,7 @@ public class TokenController {
             @RequestParam String cvd) {
         Merchant m = SecurityHelper.getMerchant(service);
         LOG.debug("Creating token. [merchant={}]", m.getId());
-        Card card = cardService.generateCard(cardNumber, expireMonth, expireYear, cvd);
+        Card card = new Card(cardNumber, expireMonth, expireYear, cvd);
         return service.getTokens(m).createNew(card).getId();
     }
 
