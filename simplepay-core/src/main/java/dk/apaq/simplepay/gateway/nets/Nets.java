@@ -39,7 +39,7 @@ public class Nets extends AbstractPaymentGateway implements IPaymentGateway {
             
             Merchant merchant = merchantFromMerchantAndAccess(sMerchant, access);
             api.authorize(merchant, card, money, orderId, purpose == ETokenPurpose.RecurringPayment, false, false, false);
-            throw new UnsupportedOperationException("Not supported yet.");
+            
         } catch (IOException ex) {
             throw new PaymentException("Error communicating with Nets.", ex);
         } catch (NetsException ex) {
