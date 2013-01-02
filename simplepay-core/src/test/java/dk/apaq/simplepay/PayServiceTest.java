@@ -102,9 +102,10 @@ public class PayServiceTest {
         assertEquals("T_321", tlist2.get(0).getRefId());
         
     }
+
     
     @Test
-    public void testValidPayment() {
+    public void testValidTestPayment() {
         Merchant m = new Merchant();
         m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null, null));
         m = service.getMerchants().save(m);
@@ -126,7 +127,7 @@ public class PayServiceTest {
     }
     
     @Test
-    public void testInvalidPayment() {
+    public void testInvalidTestPayment() {
         Merchant m = new Merchant();
         m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null, null));
         m = service.getMerchants().save(m);

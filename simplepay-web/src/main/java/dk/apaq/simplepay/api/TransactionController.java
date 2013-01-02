@@ -14,8 +14,11 @@ import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.common.ETransactionStatus;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.model.Merchant;
+import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.security.SecurityHelper;
+import org.joda.money.CurrencyUnit;
+import org.joda.money.Money;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +65,18 @@ public class TransactionController extends BaseController {
             @RequestParam(defaultValue = "1000") Integer limit) {
         Merchant m = SecurityHelper.getMerchant(service);
         return listEntities(service.getTransactions(m), query, new Sorter("dateCreated", Sorter.Direction.Descending), offset, limit);
+    }
+    
+    @RequestMapping(value = "/transactions", method = RequestMethod.POST)
+    @Transactional(readOnly = true)
+    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
+    @ResponseBody
+    public String createTransaction(@RequestParam String token, @RequestParam String refId, @RequestParam String currency, @RequestParam Integer amount) {
+        Merchant m = SecurityHelper.getMerchant(service);
+        
+        Token tokenObject = service.getTokens(m).findOne(token);
+        Money money = Money.ofMinor(CurrencyUnit.getInstance(currency), amount);
+        return service.getTransactions(m).createNew(tokenObject, refId, money).getId();
     }
 
     @RequestMapping(value = "/transactions/{id}", method = RequestMethod.GET)

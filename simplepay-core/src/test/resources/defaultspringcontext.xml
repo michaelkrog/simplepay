@@ -52,13 +52,20 @@
 
     
     <bean id="service" class="dk.apaq.simplepay.PayService"/>
+    
+    <bean id="testGateway" class="dk.apaq.simplepay.gateway.test.TestGateway"/>
+    <!--bean id="netsGateway" class="dk.apaq.simplepay.gateway.nets.Nets">
+        <constructor-arg>
+            <bean class="dk.apaq.nets.payment.Nets"/>
+        </constructor-arg>
+    </bean-->
         
     <!-- PAYMENT -->
     <bean id="paymentGatewayManager" class="dk.apaq.simplepay.gateway.PaymentGatewayManager">
         <property name="gatewayMap">
-            <map value-type="java.lang.Class"> 
-                <entry key="QuickPay" value="dk.apaq.simplepay.gateway.quickpay.QuickPay"/>
-                <entry key="Test" value="dk.apaq.simplepay.gateway.test.TestGateway"/>
+            <map> 
+                <entry key="Test" value-ref="testGateway"/>
+                <!--entry key="Nets" value-ref="netsGateway"/-->
             </map>    
         </property>   
     </bean>    

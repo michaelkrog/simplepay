@@ -48,7 +48,7 @@ public class TransactionRepository extends EntityManagerRepositoryForSpring<Tran
 
 
         //Create gateway
-        IPaymentGateway gateway = gatewayManager.createPaymentGateway(access.getPaymentGatewayType());
+        IPaymentGateway gateway = gatewayManager.getPaymentGateway(access.getPaymentGatewayType());
 
         //authorize payment
         gateway.authorize(token.getMerchant(), access, token.getData(), money, refId, "", token.getPurpose());
@@ -78,7 +78,7 @@ public class TransactionRepository extends EntityManagerRepositoryForSpring<Tran
         transaction.setAmountCharged(amount);
         transaction.setStatus(ETransactionStatus.Charged);
 
-        IPaymentGateway gateway = gatewayManager.createPaymentGateway(transaction.getGatewayType());
+        IPaymentGateway gateway = gatewayManager.getPaymentGateway(transaction.getGatewayType());
         gateway.capture(token.getMerchant(), access, transaction.getGatewayTransactionId(), transaction.getRefId(), amount);
 
         transaction = save(transaction);
@@ -99,7 +99,7 @@ public class TransactionRepository extends EntityManagerRepositoryForSpring<Tran
         
         transaction.setStatus(ETransactionStatus.Cancelled);
 
-        IPaymentGateway gateway = gatewayManager.createPaymentGateway(transaction.getGatewayType());
+        IPaymentGateway gateway = gatewayManager.getPaymentGateway(transaction.getGatewayType());
         gateway.cancel(token.getMerchant(), access, transaction.getGatewayTransactionId(), transaction.getRefId());
 
         transaction = save(transaction);
@@ -121,7 +121,7 @@ public class TransactionRepository extends EntityManagerRepositoryForSpring<Tran
         transaction.setAmountRefunded(amount);
         transaction.setStatus(ETransactionStatus.Refunded);
 
-        IPaymentGateway gateway = gatewayManager.createPaymentGateway(transaction.getGatewayType());
+        IPaymentGateway gateway = gatewayManager.getPaymentGateway(transaction.getGatewayType());
         gateway.refund(token.getMerchant(), access, transaction.getGatewayTransactionId(), transaction.getRefId(), amount);
 
         transaction = save(transaction);

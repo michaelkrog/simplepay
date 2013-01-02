@@ -19,38 +19,26 @@ public class PaymentGatewayManager {
     @Autowired
     private IPayService service;
     private static final Logger LOG = LoggerFactory.getLogger(PaymentGatewayManager.class);
-    private Map<String, Class> gatewayMap;
+    private Map<String, IPaymentGateway> gatewayMap;
 
     @PostConstruct
     protected void init() {
         if (gatewayMap == null) {
-            gatewayMap = new HashMap<String, Class>();
+            gatewayMap = new HashMap<String, IPaymentGateway>();
         }
     }
 
-    public void setGatewayMap(Map<String, Class> gatewayMap) {
+    public void setGatewayMap(Map<String, IPaymentGateway> gatewayMap) {
         this.gatewayMap = gatewayMap;
     }
 
-    public IPaymentGateway createPaymentGateway(EPaymentGateway type) {
-        Class<IPaymentGateway> clazz = gatewayMap.get(type.name());
-        if (clazz == null) {
+    public IPaymentGateway getPaymentGateway(EPaymentGateway type) {
+        IPaymentGateway gateway = gatewayMap.get(type.name());
+        if (gateway == null) {
             throw new IllegalArgumentException("No gateway by that type [type=" + type + "]");
         }
 
-        IPaymentGateway paymentGateway = null;
-
-        try {
-            paymentGateway = clazz.newInstance();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            LOG.error("Unable to create instance of PaymentGateway.", ex);
-            throw new IllegalArgumentException("No gateway by that type because an error occured. [type=" + type + "]", ex);
-        }
-
-        paymentGateway.setService(service);
-
-        return paymentGateway;
+        return gateway;
 
     }
 }

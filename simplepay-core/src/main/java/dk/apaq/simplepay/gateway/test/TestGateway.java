@@ -1,7 +1,7 @@
 package dk.apaq.simplepay.gateway.test;
 
 import dk.apaq.framework.common.beans.finance.Card;
-import dk.apaq.simplepay.gateway.AbstractPaymentGateway;
+import dk.apaq.simplepay.gateway.IPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.model.ETokenPurpose;
 import dk.apaq.simplepay.model.Merchant;
@@ -12,7 +12,7 @@ import org.joda.money.Money;
  *
  * @author krog
  */
-public class TestGateway extends AbstractPaymentGateway {
+public class TestGateway implements IPaymentGateway {
 
     @Override
     public void authorize(Merchant marchant, PaymentGatewayAccess access, Card card, Money money, String orderId, String terminalId, ETokenPurpose purpose) {

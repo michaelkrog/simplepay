@@ -336,7 +336,6 @@ public class QuickPayTest {
         HttpClient mockHttpClient = Mockito.mock(HttpClient.class);
         QuickPay q = new QuickPay();
         q.setHttpClient(mockHttpClient);
-        q.setService(null);
         q.setTestMode(true);
         
         assertEquals(mockHttpClient, q.getHttpClient());

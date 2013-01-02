@@ -11,7 +11,6 @@ import dk.apaq.simplepay.common.ETransactionStatus;
 import dk.apaq.simplepay.model.ETokenPurpose;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.PaymentGatewayAccess;
-import dk.apaq.simplepay.gateway.AbstractPaymentGateway;
 import dk.apaq.simplepay.gateway.IHasPaymentInformation;
 import dk.apaq.simplepay.gateway.IPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentException;
@@ -34,7 +33,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author krog
  */
-public class QuickPay extends AbstractPaymentGateway implements IPaymentGateway, IHasPaymentInformation {
+public class QuickPay implements IPaymentGateway, IHasPaymentInformation {
 
     private static final Logger LOG = LoggerFactory.getLogger(QuickPay.class);
     private String apiUrl = "https://secure.quickpay.dk/api";

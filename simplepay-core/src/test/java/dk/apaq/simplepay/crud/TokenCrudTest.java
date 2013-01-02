@@ -1,5 +1,7 @@
 package dk.apaq.simplepay.crud;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import dk.apaq.framework.common.beans.finance.Card;
 import dk.apaq.simplepay.data.ITokenRepository;
 import dk.apaq.simplepay.IPayService;
@@ -12,6 +14,7 @@ import dk.apaq.simplepay.gateway.EPaymentGateway;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.ETokenPurpose;
+import org.jasypt.encryption.StringEncryptor;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -26,6 +29,12 @@ public class TokenCrudTest {
     
     @Autowired
     private IPayService service;
+    
+    @PersistenceContext
+    private EntityManager em;
+    
+    @Autowired
+    private StringEncryptor encryptor;
     
 
     private Card card = new Card("xxxxxxxxxxx", 12, 2012, "xxx");
@@ -46,10 +55,12 @@ public class TokenCrudTest {
         
         ITokenRepository crud = service.getTokens(m);
         Token token = crud.createNew(card);
+        token = em.find(Token.class, token.getId());
+        
         assertNotNull(token);
-        //assertEquals(0, token.getAuthorizedAmount());
-        //assertEquals(false, token.isAuthorized());
         assertEquals(ETokenPurpose.SinglePayment, token.getPurpose());
+        assertEquals("xxxxxxxxxxx", encryptor.decrypt(token.getData().getCardNumber()));
+        assertEquals("xxx", encryptor.decrypt(token.getData().getCvd()));
         
         assertFalse(crud.findAll().isEmpty());
         

@@ -6,7 +6,6 @@ import dk.apaq.framework.common.beans.finance.Card;
 import dk.apaq.nets.payment.Address;
 import dk.apaq.nets.payment.Merchant;
 import dk.apaq.nets.payment.NetsException;
-import dk.apaq.simplepay.gateway.AbstractPaymentGateway;
 import dk.apaq.simplepay.gateway.IPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.model.ETokenPurpose;
@@ -19,14 +18,13 @@ import org.joda.money.Money;
  *
  * @author michael
  */
-public class Nets extends AbstractPaymentGateway implements IPaymentGateway {
+public class Nets implements IPaymentGateway {
 
     private final dk.apaq.nets.payment.Nets api;
     
     
     public Nets(dk.apaq.nets.payment.Nets api) {
         this.api = api;
-        this.service = service;
     }
     
     

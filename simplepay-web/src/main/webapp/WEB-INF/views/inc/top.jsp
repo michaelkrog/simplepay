@@ -12,16 +12,13 @@
             
             <a href="/" class="brand">simple<span class="blue">pay</span></a>
             
-            <ul class="nav-button pull-right">
-                <c:if test="${requestScope['javax.servlet.forward.servlet_path'].equals('/dashboard')}">
-                    <!--li><a href="dashboard" class="btn">Indstillinger</a></li-->
-                </c:if>
+            <div class="pull-right">
                 <% if(SecurityHelper.isAnonymousUser()) { %>
-                   <li><a href="dashboard" class="btn btn-primary">Log ind</a></li>
+                   <a href="dashboard" class="btn btn-primary">Log ind</a>
                 <% } else { %>
-                   <li><a href="/logout" class="btn btn-primary">Log ud</a></li>
+                   <a href="/logout" class="btn btn-primary">Log ud</a>
                 <% } %>
-            </ul>
+            </div>
             
             <div class="nav-collapse pull-right">
 

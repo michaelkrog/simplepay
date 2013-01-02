@@ -91,7 +91,7 @@
     
     <script id="transactionRowTemplate" type="text/x-jquery-tmpl">
         <tr class="transaction-row" style="cursor:pointer;background:white;" transactionid="\${id}">
-            <td>\${orderNumber}</td>
+            <td>\${refId}</td>
             <td class="hidden-phone">\${$.format.date(new Date(dateCreated), dateTimeFormat)}</td>
             <td class="visible-phone">\${$.format.date(new Date(dateCreated), dateFormat)}</td>
             <td style="text-align: right">\${formatMoney(currency, token.authorizedAmount / 100)} </td>
@@ -165,7 +165,7 @@
             
             $('#dialog-amount').text(formatMoney(transaction.currency,amount / 100));
             $('#dialog-status').text(transaction.status);
-            $('#dialog-ordernumber').text(transaction.orderNumber);
+            $('#dialog-ordernumber').text(transaction.refId);
             $('#dialog-description').text(transaction.description);
             $('#dialog-timestamp').text($.format.date(new Date(transaction.dateCreated), dateTimeFormat));
             

@@ -30,6 +30,15 @@
 
     <context:property-placeholder ignore-resource-not-found="true" location="classpath:simplepay_default.properties,file:${user.home}/simplepay.properties" />
     
+    <bean id="strongEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+        <!--property name="algorithm">
+            <value>PBEWithMD5AndTripleDES</value>
+        </property-->
+        <property name="password">
+            <value>jasypt</value>
+        </property>
+    </bean>
+    
         <!-- Repository AND SERVICE BEANS -->
     <bean id="repository" class="dk.apaq.framework.repository.jpa.EntityManagerRepositoryForSpring" scope="prototype">
         <property name="transactionsHandledByProvider" value="false"/>
@@ -47,11 +56,19 @@
     <bean id="service" class="dk.apaq.simplepay.PayService"/>
         
     <!-- PAYMENT -->
+    <bean id="testGateway" class="dk.apaq.simplepay.gateway.test.TestGateway"/>
+    <!--bean id="netsGateway" class="dk.apaq.simplepay.gateway.nets.Nets">
+        <constructor-arg>
+            <bean class="dk.apaq.nets.payment.Nets"/>
+        </constructor-arg>
+    </bean-->
+        
+    <!-- PAYMENT -->
     <bean id="paymentGatewayManager" class="dk.apaq.simplepay.gateway.PaymentGatewayManager">
         <property name="gatewayMap">
-            <map value-type="java.lang.Class"> 
-                <entry key="QuickPay" value="dk.apaq.simplepay.gateway.quickpay.QuickPay"/>
-                <entry key="Test" value="dk.apaq.simplepay.gateway.test.TestGateway"/>
+            <map> 
+                <entry key="Test" value-ref="testGateway"/>
+                <!--entry key="Nets" value-ref="netsGateway"/-->
             </map>    
         </property>   
     </bean>    

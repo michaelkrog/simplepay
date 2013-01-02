@@ -12,8 +12,8 @@ import dk.apaq.simplepay.model.PaymentGatewayAccess;
 import org.joda.money.Money;
 
 /**
- *
- * @author krog
+ * Interface for a Stateless Payment Gateway.<br><br>
+ * The implementation must have no state as the instance i reused for all Merchants.
  */
 public interface IPaymentGateway {
 
@@ -56,5 +56,4 @@ public interface IPaymentGateway {
      */
     void renew(Merchant marchant, PaymentGatewayAccess access, String transactionId, String orderId, long amountInCents);
 
-    void setService(IPayService service);
 }
