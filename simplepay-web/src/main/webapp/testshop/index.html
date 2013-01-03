@@ -4,29 +4,26 @@
         <title>Dette er en title</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" ></script>
-        <script src="http://localhost:8080/pay.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" ></script>
+        
     </head>
     <body>
-        <input id="amount" type="text" value="1000"><button id='paybutton'>Betal</button>
+        <form action="ok.html" method="post" data-type="payment" data-key="qwerty" data-orderref="123" data-amount="9900" data-currency="DKK">
+            Card: <input type="text" name="cardno"><br>
+            Cvd: <input type="text" name="cvd"><br>
+            expMonth: <input type="text" name="expireMonth"><br>
+            expYear: <input type="text" name="expireYear"><br>
+
+            <!-- Flere input felter vedr. ordren som du vil have sendt til din server -->
+            orderid: <input type="hidden" name="orderid" value="123"><br>
+            firstname: <input type="text" name="firstname"><br>
+            surname: <input type="text" name="surname"><br>
+            <button type="submit" class="btn">Betal</button>
+        </form>
         <div id='info'></div>
+        
+    <script src="../pay.js"></script>
     </body>
 
-    <script>
-        
-        $('#paybutton').click(function(){
-            $(this).attr('disabled','disabled');
-            Pay.setPublicKey('qwerty');
-            Pay.setServiceRoot('http://localhost:8080');
-            var orderNumber = new Date().getTime();
-            Pay.createToken({"orderNumber":orderNumber, "description":'Dette er den vildeste ordre.'}, function(token) {
-                Pay.authorizeRemote(token, $('#amount').val(), 'DKK', 'http://localhost:8080/testshop/ok.html', 'http://localhost:8080/testshop/cancel.html');
-            });
-        }); 
-        
-        $('#info').ajaxError(function(event, jqXHR, ajaxSettings, thrownError) {
-            $(this).text(event + "/" + thrownError);
-        });
-    </script>
 </html>
 
