@@ -1,6 +1,7 @@
 package dk.apaq.simplepay.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  *
@@ -13,4 +14,7 @@ public interface Event extends Serializable {
 
     public void setMerchant(Merchant merchant) ;
 
+    public Date getEventDate();
+    
+    public void setEventDate(Date date);
 }
