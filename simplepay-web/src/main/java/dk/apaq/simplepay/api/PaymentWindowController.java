@@ -1,4 +1,4 @@
-package dk.apaq.simplepay.site;
+package dk.apaq.simplepay.api;
 
 import java.util.HashMap;
 import java.util.Map;

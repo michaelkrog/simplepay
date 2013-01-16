@@ -1,4 +1,4 @@
-package dk.apaq.simplepay.site;
+package dk.apaq.simplepay.api;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

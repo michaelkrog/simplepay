@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  *
@@ -57,17 +58,18 @@ public class TransactionController extends BaseController {
         return t;
     }
 
-    @RequestMapping(value = "/transactions", method = RequestMethod.GET)
+    /** METHODS FOR JSON API **/
+    @RequestMapping(value = "/transactions", method = RequestMethod.GET, headers="Accept=application/json")
     @Transactional(readOnly = true)
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
-    public List<Transaction> listTransactions(@RequestParam(required = false) String query, @RequestParam(defaultValue = "0") Integer offset,
+    public List<Transaction> listTransactionsAsJson(@RequestParam(required = false) String query, @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "1000") Integer limit) {
         Merchant m = SecurityHelper.getMerchant(service);
         return listEntities(service.getTransactions(m), query, new Sorter("dateCreated", Sorter.Direction.Descending), offset, limit);
     }
     
-    @RequestMapping(value = "/transactions", method = RequestMethod.POST)
+    @RequestMapping(value = "/transactions", method = RequestMethod.POST, headers="Accept=application/json")
     @Transactional(readOnly = true)
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
@@ -79,7 +81,7 @@ public class TransactionController extends BaseController {
         return service.getTransactions(m).createNew(tokenObject, refId, money).getId();
     }
 
-    @RequestMapping(value = "/transactions/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/transactions/{id}", method = RequestMethod.GET, headers="Accept=application/json")
     @Transactional(readOnly = true)
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
@@ -89,7 +91,7 @@ public class TransactionController extends BaseController {
         return getTransaction(m, id);
     }
 
-    @RequestMapping(value = "/transactions/{id}/refund", method = RequestMethod.POST)
+    @RequestMapping(value = "/transactions/{id}/refund", method = RequestMethod.POST, headers="Accept=application/json")
     @Transactional
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
@@ -105,7 +107,7 @@ public class TransactionController extends BaseController {
         return service.getTransactions(m).refund(t, amount);
     }
 
-    @RequestMapping(value = "/transactions/{id}/charge", method = RequestMethod.POST)
+    @RequestMapping(value = "/transactions/{id}/charge", method = RequestMethod.POST, headers="Accept=application/json")
     @Transactional
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
@@ -125,7 +127,7 @@ public class TransactionController extends BaseController {
         return service.getTransactions(m).charge(t, amount);
     }
 
-    @RequestMapping(value = "/transactions/{id}/cancel", method = RequestMethod.POST)
+    @RequestMapping(value = "/transactions/{id}/cancel", method = RequestMethod.POST, headers="Accept=application/json")
     @Transactional
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
@@ -135,4 +137,16 @@ public class TransactionController extends BaseController {
         Transaction t = getTransaction(m, id);
         return service.getTransactions(m).cancel(t);
     }
+    
+    /** METHODS FOR VIEWS **/
+    @RequestMapping(value = "/transactions", method = RequestMethod.GET)
+    @Transactional(readOnly = true)
+    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
+    @ResponseBody
+    public ModelAndView listTransactions(@RequestParam(required = false) String query, @RequestParam(defaultValue = "0") Integer offset,
+            @RequestParam(defaultValue = "1000") Integer limit) {
+        Merchant m = SecurityHelper.getMerchant(service);
+        return listEntities(service.getTransactions(m), query, new Sorter("dateCreated", Sorter.Direction.Descending), offset, limit, "transactions");
+    }
+    
 }

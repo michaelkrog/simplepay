@@ -6,6 +6,7 @@ import dk.apaq.framework.criteria.Criteria;
 import dk.apaq.framework.criteria.Limit;
 import dk.apaq.framework.criteria.Rule;
 import dk.apaq.framework.criteria.Rules;
+import dk.apaq.framework.criteria.Sorter;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.model.Event;
 import dk.apaq.simplepay.model.Merchant;
@@ -33,7 +34,8 @@ public class EventController extends BaseController {
     @RequestMapping(value = "/events", method = RequestMethod.GET)
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
-    public List listEvents(@RequestParam(required = false) String type, @RequestParam(required = false) String entityId) {
+    public List listEvents(@RequestParam(required = false) String type, @RequestParam(required = false) String entityId, 
+            @RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "1000") Integer limit) {
         Merchant m = SecurityHelper.getMerchant(service);
 
         Class clazz = null;
@@ -54,8 +56,7 @@ public class EventController extends BaseController {
             rule = Rules.equals("transaction.id", entityId);
         }
 
-        List<Event> events = service.getEvents(m, clazz).findAll(new Criteria(rule, new Limit(15)));
-        return events;
+        return listEntities(service.getEvents(m, clazz), rule, new Sorter("eventDate", Sorter.Direction.Descending), offset, limit);
 
     }
 }

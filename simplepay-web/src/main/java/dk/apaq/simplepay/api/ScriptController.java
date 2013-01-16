@@ -2,7 +2,7 @@
  * Copyright by Apaq 2011-2013
  */
 
-package dk.apaq.simplepay.site;
+package dk.apaq.simplepay.api;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -57,14 +57,20 @@ public class BaseController {
         return rep.findAllIds(c);
     }
     
+    protected List listEntities(Repository rep, Rule rule, Sorter sorter, int offset, int limit) {
+        LOG.debug("Retrieving list of entities");
+        Criteria c = new Criteria(rule, sorter, new Limit(offset, limit));
+        return rep.findAll(c);
+    }
+    
     protected List listEntities(Repository rep, String query, Sorter sorter, int offset, int limit) {
         LOG.debug("Retrieving list of entities");
         Rule rule = null;
         if (query != null) {
             rule = queryParser.parse(query);
         }
-        Criteria c = new Criteria(rule, sorter, new Limit(offset, limit));
-        return rep.findAll(c);
+        
+        return listEntities(rep, rule, sorter, offset, limit);
     }
 
     protected ModelAndView listEntities(Repository rep, Sorter sorter, int offset, int limit, String view) {
