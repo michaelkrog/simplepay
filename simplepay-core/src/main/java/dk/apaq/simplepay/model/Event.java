@@ -14,7 +14,5 @@ public interface Event extends Serializable {
 
     public void setMerchant(Merchant merchant) ;
 
-    public Date getEventDate();
-    
-    public void setEventDate(Date date);
+    public Date getTimestamp();
 }
