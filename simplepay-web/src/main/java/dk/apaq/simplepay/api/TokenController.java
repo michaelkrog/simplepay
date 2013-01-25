@@ -7,6 +7,7 @@ import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.model.*;
 import dk.apaq.simplepay.security.SecurityHelper;
+import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +46,9 @@ public class TokenController {
     @ResponseBody
     public String createToken(@RequestParam String cardNumber, @RequestParam int expireMonth, @RequestParam int expireYear,
             @RequestParam String cvd) {
-        Merchant m = SecurityHelper.getMerchant(service);
+        Merchant m = ControllerUtil.getMerchant(service);
         LOG.debug("Creating token. [merchant={}]", m);
-        Card card = new Card(cardNumber, expireMonth, expireYear, cvd);
+        Card card = new Card(cardNumber, expireYear, expireMonth, cvd);
         return service.getTokens(m).createNew(card).getId();
     }
 
@@ -56,7 +57,7 @@ public class TokenController {
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT" })
     @ResponseBody
     public List<Token> listTokens() {
-        Merchant m = SecurityHelper.getMerchant(service);
+        Merchant m = ControllerUtil.getMerchant(service);
         LOG.debug("Listing tokens. [merchant={}]", m.getId());
         return service.getTokens(m).findAll();
     }
@@ -66,7 +67,7 @@ public class TokenController {
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT" })
     @ResponseBody
     public Token getToken(@PathVariable String token) {
-        Merchant m = SecurityHelper.getMerchant(service);
+        Merchant m = ControllerUtil.getMerchant(service);
         LOG.debug("Retrieving token. [merchant={};token={}]", m.getId(), token);
         return getToken(m, token);
     }

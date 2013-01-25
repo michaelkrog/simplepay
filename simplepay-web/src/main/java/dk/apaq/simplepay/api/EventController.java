@@ -36,7 +36,7 @@ public class EventController extends BaseController {
     @ResponseBody
     public List listEvents(@RequestParam(required = false) String type, @RequestParam(required = false) String entityId, 
             @RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "1000") Integer limit) {
-        Merchant m = SecurityHelper.getMerchant(service);
+        Merchant m = ControllerUtil.getMerchant(service);
 
         Class clazz = null;
         if ("transaction".equals(type)) {

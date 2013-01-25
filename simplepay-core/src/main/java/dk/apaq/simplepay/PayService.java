@@ -19,6 +19,7 @@ import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.security.ERole;
 import dk.apaq.simplepay.util.IdGenerator;
+import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -49,6 +50,7 @@ public class PayService implements ApplicationContextAware, IPayService {
 
     @Override
     public ITransactionRepository getTransactions(Merchant merchant) {
+        Validate.notNull(merchant, "merchant is null.");
         LOG.debug("Retrieving TransactionRepository");
 
         if (merchant.getId() == null) {
@@ -63,6 +65,7 @@ public class PayService implements ApplicationContextAware, IPayService {
 
     @Override
     public ITokenRepository getTokens(Merchant merchant) {
+        Validate.notNull(merchant, "merchant is null.");
         LOG.debug("Retrieving TokenRepository");
 
         if (merchant.getId() == null) {
@@ -78,6 +81,7 @@ public class PayService implements ApplicationContextAware, IPayService {
 
     @Override
     public <T extends Event> Repository<T, String> getEvents(Merchant merchant, Class<T> type) {
+        Validate.notNull(merchant, "merchant is null.");
         LOG.debug("Retrieving TransactionRepository");
 
         if (merchant.getId() == null) {

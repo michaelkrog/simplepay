@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/defaultspringcontext.xml"})
-@Transactional
+//@Transactional
 public class TokenRepositoryTest {
     
     @Autowired

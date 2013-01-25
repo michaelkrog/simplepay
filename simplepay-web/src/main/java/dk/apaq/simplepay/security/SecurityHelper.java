@@ -3,6 +3,7 @@ package dk.apaq.simplepay.security;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**

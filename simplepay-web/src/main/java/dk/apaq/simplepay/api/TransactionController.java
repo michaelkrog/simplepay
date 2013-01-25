@@ -65,7 +65,7 @@ public class TransactionController extends BaseController {
     @ResponseBody
     public List<Transaction> listTransactionsAsJson(@RequestParam(required = false) String query, @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "1000") Integer limit) {
-        Merchant m = SecurityHelper.getMerchant(service);
+        Merchant m = ControllerUtil.getMerchant(service);
         return listEntities(service.getTransactions(m), query, new Sorter("dateCreated", Sorter.Direction.Descending), offset, limit);
     }
     
@@ -74,7 +74,7 @@ public class TransactionController extends BaseController {
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
     public String createTransaction(@RequestParam String token, @RequestParam String refId, @RequestParam String currency, @RequestParam Integer amount) {
-        Merchant m = SecurityHelper.getMerchant(service);
+        Merchant m = ControllerUtil.getMerchant(service);
         
         Token tokenObject = service.getTokens(m).findOne(token);
         Money money = Money.ofMinor(CurrencyUnit.getInstance(currency), amount);
@@ -86,7 +86,7 @@ public class TransactionController extends BaseController {
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
     public Transaction getTransaction(@PathVariable String id) {
-        Merchant m = SecurityHelper.getMerchant(service);
+        Merchant m = ControllerUtil.getMerchant(service);
         LOG.debug("Retrieving transaction. [merchant={};transaction={}]", m.getId(), id);
         return getTransaction(m, id);
     }
@@ -96,7 +96,7 @@ public class TransactionController extends BaseController {
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
     public Transaction refundTransaction(HttpServletRequest request, @PathVariable String id, @RequestParam(required = false) Long amount) {
-        Merchant m = SecurityHelper.getMerchant(service);
+        Merchant m = ControllerUtil.getMerchant(service);
         LOG.debug("Refunding transaction. [merchant={}; transaction={}; amount={}]", new Object[]{m.getId(), id, amount});
         Transaction t = getTransaction(m, id);
 
@@ -112,7 +112,7 @@ public class TransactionController extends BaseController {
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
     public Transaction chargeTransaction(HttpServletRequest request, @PathVariable String id, @RequestParam(required = false) Long amount) {
-        Merchant m = SecurityHelper.getMerchant(service);
+        Merchant m = ControllerUtil.getMerchant(service);
         LOG.debug("Charging transaction. [merchant={}; transaction={}; amount={}]", new Object[]{m.getId(), id, amount});
         Transaction t = getTransaction(m, id);
 
@@ -132,7 +132,7 @@ public class TransactionController extends BaseController {
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
     public Transaction cancelTransaction(HttpServletRequest request, @PathVariable String id) {
-        Merchant m = SecurityHelper.getMerchant(service);
+        Merchant m = ControllerUtil.getMerchant(service);
         LOG.debug("Cancelling transaction. [merchant={}; transaction={}]", m.getId(), id);
         Transaction t = getTransaction(m, id);
         return service.getTransactions(m).cancel(t);
@@ -145,7 +145,7 @@ public class TransactionController extends BaseController {
     @ResponseBody
     public ModelAndView listTransactions(@RequestParam(required = false) String query, @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "1000") Integer limit) {
-        Merchant m = SecurityHelper.getMerchant(service);
+        Merchant m = ControllerUtil.getMerchant(service);
         return listEntities(service.getTransactions(m), query, new Sorter("dateCreated", Sorter.Direction.Descending), offset, limit, "transactions");
     }
     
