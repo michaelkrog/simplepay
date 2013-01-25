@@ -5,6 +5,7 @@ import java.io.IOException;
 import dk.apaq.framework.common.beans.finance.Card;
 import dk.apaq.nets.payment.Address;
 import dk.apaq.nets.payment.Merchant;
+import dk.apaq.nets.payment.Nets;
 import dk.apaq.nets.payment.NetsException;
 import dk.apaq.simplepay.gateway.IPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentException;
@@ -18,17 +19,23 @@ import org.joda.money.Money;
  *
  * @author michael
  */
-public class Nets implements IPaymentGateway {
+public class NetsGateway implements IPaymentGateway {
 
-    private final dk.apaq.nets.payment.Nets api;
+    private final Nets api;
     
-    
-    public Nets(dk.apaq.nets.payment.Nets api) {
+    /**
+     * Constructs a new instance of the NetsGateway
+     * @param api The api instance for use by the gateway instance.
+     */
+    public NetsGateway(Nets api) {
         this.api = api;
     }
     
     
-    
+    /**
+     * @{@inheritDoc}
+     */
+    @Override
     public void authorize(dk.apaq.simplepay.model.Merchant sMerchant, PaymentGatewayAccess access, Card card, Money money, 
             String orderId, String terminalId, ETokenPurpose purpose) {
         try {
@@ -45,6 +52,10 @@ public class Nets implements IPaymentGateway {
         }
     }
 
+    /**
+     * @{@inheritDoc}
+     */
+    @Override
     public void cancel(dk.apaq.simplepay.model.Merchant sMerchant, PaymentGatewayAccess access, String transactionId, String orderId) {
         try {
             Merchant merchant = merchantFromMerchantAndAccess(sMerchant, access);
@@ -56,15 +67,30 @@ public class Nets implements IPaymentGateway {
         }
     }
 
-    public void capture(dk.apaq.simplepay.model.Merchant sMerchant, PaymentGatewayAccess access, String transactionId, String orderId, long amountInCents) {
+    /**
+     * @{@inheritDoc}
+     */
+    @Override
+    public void capture(dk.apaq.simplepay.model.Merchant sMerchant, PaymentGatewayAccess access, String transactionId, String orderId, 
+            long amountInCents) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void refund(dk.apaq.simplepay.model.Merchant sMerchant, PaymentGatewayAccess access, String transactionId, String orderId, long amountInCents) {
+    /**
+     * @{@inheritDoc}
+     */
+    @Override
+    public void refund(dk.apaq.simplepay.model.Merchant sMerchant, PaymentGatewayAccess access, String transactionId, String orderId, 
+            long amountInCents) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void renew(dk.apaq.simplepay.model.Merchant sMerchant, PaymentGatewayAccess access, String transactionId, String orderId, long amountInCents) {
+    /**
+     * @{@inheritDoc}
+     */
+    @Override
+    public void renew(dk.apaq.simplepay.model.Merchant sMerchant, PaymentGatewayAccess access, String transactionId, String orderId, 
+            long amountInCents) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     

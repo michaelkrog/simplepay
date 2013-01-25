@@ -1,4 +1,4 @@
-package dk.apaq.simplepay.crud;
+package dk.apaq.simplepay.data;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/defaultspringcontext.xml"})
 @Transactional
-public class TokenCrudTest {
+public class TokenRepositoryTest {
     
     @Autowired
     private IPayService service;

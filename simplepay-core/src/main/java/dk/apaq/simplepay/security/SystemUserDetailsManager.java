@@ -20,9 +20,14 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class SystemUserDetailsManager implements UserDetailsService {
 
-    @Autowired
-    private IPayService service;
+    private final IPayService service;
 
+    @Autowired
+    public SystemUserDetailsManager(IPayService service) {
+        this.service = service;
+    }
+
+    
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

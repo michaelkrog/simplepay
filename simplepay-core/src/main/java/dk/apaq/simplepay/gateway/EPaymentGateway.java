@@ -6,6 +6,6 @@ package dk.apaq.simplepay.gateway;
  */
 public enum EPaymentGateway {
     //CHECKSTYLE:OFF
-    Test, QuickPay, Nets
+    Test, Nets
     //CHECKSTYLE:ON
 }
