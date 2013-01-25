@@ -24,14 +24,13 @@ import org.springframework.web.bind.annotation.*;
 public class TokenController {
 
     private static final Logger LOG = LoggerFactory.getLogger(TokenController.class);
+    private final IPayService service;
+    
     @Autowired
-    private IPayService service;
-    @Autowired
-    private PaymentGatewayManager gatewayManager;
-    @Autowired
-    @Qualifier("publicUrl")
-    private String publicUrl;
-
+    public TokenController(IPayService service) {
+        this.service = service;
+    }
+    
     private Token getToken(Merchant m, String token) {
         Token t = service.getTokens(m).findOne(token);
         if (t == null) {
@@ -47,7 +46,7 @@ public class TokenController {
     public String createToken(@RequestParam String cardNumber, @RequestParam int expireMonth, @RequestParam int expireYear,
             @RequestParam String cvd) {
         Merchant m = SecurityHelper.getMerchant(service);
-        LOG.debug("Creating token. [merchant={}]", m.getId());
+        LOG.debug("Creating token. [merchant={}]", m);
         Card card = new Card(cardNumber, expireMonth, expireYear, cvd);
         return service.getTokens(m).createNew(card).getId();
     }
