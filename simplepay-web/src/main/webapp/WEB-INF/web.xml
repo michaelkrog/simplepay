@@ -50,6 +50,10 @@
         <servlet-name>api</servlet-name>
         <url-pattern>/dashboard/api/*</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>api</servlet-name>
+        <url-pattern>/index.htm</url-pattern>
+    </servlet-mapping>
     
     <!-- SITE DISPATCHER -->
     <servlet>
@@ -57,10 +61,7 @@
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>site</servlet-name>
-        <url-pattern>/index.htm</url-pattern>
-    </servlet-mapping>
+    
     <servlet-mapping>
         <servlet-name>site</servlet-name>
         <url-pattern>/dashboard</url-pattern>

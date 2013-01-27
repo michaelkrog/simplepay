@@ -1,27 +1,38 @@
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
+<!-- start: Meta -->
+<meta charset="utf-8">
+<meta name="description" content="Smart Bootstrap Theme"/>
+<meta name="keywords" content="Template, Theme, web, html5, css3, Bootstrap" />
+<meta name="author" content="Michael Krog from Apaq"/>
+<!-- end: Meta -->
 
-    <!-- Le styles -->
-    <c:set var="styles" scope='request'>bootstrap-css,styles-css,bootstrap-responsive-css,bootstrap-datepicker-css,prettify-css</c:set>
-    <c:forTokens var="style" items="${styles}" delims=",">
-        <c:set var="cssUrl"><spring:theme code='${style}'/></c:set>
-        <link href="<c:url value='${cssUrl}'/>" rel="stylesheet">
-    </c:forTokens>
+<!-- start: Mobile Specific -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<!-- end: Mobile Specific -->
 
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<!-- start: Facebook Open Graph -->
+<meta property="og:title" content="SimplePay"/>
+<meta property="og:description" content="The Payment System for Developers"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="http://www.simplepay.net"/>
+<meta property="og:image" content=""/>
+<!-- end: Facebook Open Graph -->
 
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-	<![endif]-->
+<!-- start: CSS -->
+<link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/bootstrap-responsive.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+<link href="css/parallax-slider.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
+<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid+Serif">
+<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Boogaloo">
+<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Economica:700,400italic">
+<!-- end: CSS -->
 
-    <!-- Le fav and touch icons -->
-    <!--link rel="shortcut icon" href="assets/ico/favicon.ico">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png"-->
-  </head>
-  <body>
+<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<!--[if IE 9]>
+<link href="css/styleie9.css" rel="stylesheet">
+<![endif]-->

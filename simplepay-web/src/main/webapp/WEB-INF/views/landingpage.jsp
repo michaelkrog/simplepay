@@ -1,95 +1,273 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
-<%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
-<html lang="da">
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-    <jsp:include page="inc/head.jsp" />
-  </head>  
-    <div class="container">
-            
-            <jsp:include page="inc/top.jsp" />
-            
-            <div id="contentwrapper" class="content">
-                 
-                <div id="splash" class="row">
-                    <div id="splash1" class="splash hidden-phone hidden-tablet">
-                        <div class="span6">
-                            <div style="margin:40px 0px 0px 40px;">
-                            <h1>Betaling direkte på din hjemmeside</h1>
-                            <h3 style="margin:20px 0px;color:#6f6f6f;">SimplePay gør det nemt for dig at modtage betalinger på din hjemmeside - også uden programmering!</h3>
-                            <span class="btn btn-large btn-primary">Kom igang med SimplePay</span>
+<html lang="en">
+    <head>
+        <title>SimplePay</title>
+        <%@include file="inc/head.jsp" %>
+    </head>
+    <body>
+
+        <!--start: Header -->
+        <header>
+
+            <!--start: Container -->
+            <div class="container">
+                <%@include file="inc/navigation.jsp" %>
+            </div>
+            <!--end: Container-->			
+
+        </header>
+        <!--end: Header-->
+
+        <!-- start: Slider -->
+        <div class="slider-wrapper">
+
+            <div id="da-slider" class="da-slider">
+                <div class="da-slide">
+                    <h2><spring:message code="landingpage.slider.title_1"/></h2>
+                    <p><spring:message code="landingpage.slider.description_1"/></p>
+                    <a href="#" class="da-link"><spring:message code="landingpage.slider.read_more"/></a>
+                    <div class="da-img"><img src="img/parallax-slider/macbook.png" alt="image01" /></div>
+                </div>
+                <div class="da-slide">
+                    <h2><spring:message code="landingpage.slider.title_2"/></h2>
+                    <p><spring:message code="landingpage.slider.description_2"/></p>
+                    <a href="#" class="da-link"><spring:message code="landingpage.slider.read_more"/></a>
+                    <div class="da-img"><img src="img/parallax-slider/responsive.png" alt="image02" /></div>
+                </div>
+                <nav class="da-arrows">
+                    <span class="da-arrows-prev"></span>
+                    <span class="da-arrows-next"></span>
+                </nav>
+            </div>
+
+        </div>
+        <!-- end: Slider -->
+
+        <!--start: Wrapper-->
+        <div id="wrapper">
+
+            <!--start: Container -->
+            <div class="container">
+
+                <hr>
+
+                <!-- start: Hero Unit - Main hero unit for a primary marketing message or call to action -->
+                <div class="hero-unit">
+                    <h3><spring:message code="landingpage.herounit.text"/></h3>
+                    <p><a class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+                </div>
+                <!-- end: Hero Unit -->
+
+                <hr>
+
+                <!-- start: Row -->
+                <div class="row">
+
+                    <!-- start: Icon Boxes -->
+                    <div class="icons-box-vert-container">
+
+                        <!-- start: Icon Box Start -->
+                        <div class="span4">
+                            <div class="icons-box-vert">
+                                <i class="ico-ok ico-white circle-color-full"></i>
+                                <div class="icons-box-vert-info">
+                                    <h3>Easy to use</h3>
+                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+                                </div>
+                                <div class="clear"></div>
                             </div>
                         </div>
-                        <div class="span6" align="center">
-                            <img src="img/splash1.jpg">
+                        <!-- end: Icon Box-->
+
+                        <!-- start: Icon Box Start -->
+                        <div class="span4">
+                            <div class="icons-box-vert">
+                                <i class="ico-cup  ico-white circle-color-full"></i>
+                                <div class="icons-box-vert-info">
+                                    <h3>Best choice</h3>
+                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+                        <!-- end: Icon Box -->
+
+                        <!-- start: Icon Box Start -->
+                        <div class="span4">
+                            <div class="icons-box-vert">
+                                <i class="ico-ipad ico-white circle-color-full"></i>
+                                <div class="icons-box-vert-info">
+                                    <h3>Fully Responsive</h3>
+                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+                        <!-- end: Icon Box -->
+
+                    </div>
+                    <!-- end: Icon Boxes -->
+                    <div class="clear"></div>
+                </div>
+                <!-- end: Row -->
+
+                <hr>
+
+                <!-- start: Row -->
+                <div class="row">
+
+                    <div class="span9">
+
+                        <div class="title"><h3>Latest Works</h3></div>
+
+                        <!-- start: Row -->
+                        <div class="row">
+
+                            <div class="span3">
+
+                                <div class="picture">
+                                    <a href="img/car.jpg" rel="image" title="mobile app">
+                                        <img src="img/car.jpg" >
+                                        <div class="image-overlay-zoom"></div>
+                                    </a>
+                                </div>
+                                <div class="item-description">
+                                    <h4><a href="#">Mobile App</a></h4>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam</p>
+                                </div>
+
+                            </div>
+
+                            <div class="span3">
+
+                                <div class="picture">
+                                    <a href="project.html">
+                                        <img src="img/web_app1.jpg">
+                                        <div class="image-overlay-link"></div>
+                                    </a>
+                                </div>
+                                <div class="item-description">
+                                    <h4><a href="#">Mobile App</a></h4>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam</p>
+                                </div>
+
+                            </div>
+
+                            <div class="span3">
+
+                                <div class="picture">
+                                    <a href="img/mobile_app1.jpg" rel="image" title="mobile app">
+                                        <img src="img/mobile_app1.jpg">
+                                        <div class="image-overlay-zoom"></div>
+                                    </a>
+                                </div>
+                                <div class="item-description">
+                                    <h4><a href="#">Mobile App</a></h4>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam</p>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <!-- end: Row -->
+
+                    </div>
+
+                    <div class="span3">
+
+                        <!-- start: Testimonials-->
+
+                        <div class="testimonial-container">
+
+                            <div class="title"><h3>What Client’s Say</h3></div>
+
+                            <div class="testimonials-carousel" data-autorotate="3000">
+
+                                <ul class="carousel">
+
+                                    <li class="testimonial">
+                                        <div class="testimonials">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</div>
+                                        <div class="testimonials-bg"></div>
+                                        <div class="testimonials-author">Lucas Luck, <span>CEO</span></div>
+                                    </li>
+
+                                    <li class="testimonial">
+                                        <div class="testimonials">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </div>
+                                        <div class="testimonials-bg"></div>
+                                        <div class="testimonials-author">Lucas Luck, <span>CTO</span></div>
+                                    </li>
+
+                                    <li class="testimonial">
+                                        <div class="testimonials">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</div>
+                                        <div class="testimonials-bg"></div>
+                                        <div class="testimonials-author">Lucas Luck, <span>COO</span></div>
+                                    </li>
+
+                                    <li class="testimonial">
+                                        <div class="testimonials">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</div>
+                                        <div class="testimonials-bg"></div>
+                                        <div class="testimonials-author">Lucas Luck, <span>CMO</span></div>
+                                    </li>
+
+                                </ul>
+
+                            </div>
+
                         </div>
 
+                        <!-- end: Testimonials-->
+
                     </div>
-                    <div  class="splash hidden-desktop">
-                        <div class="span12" style="margin:40px 0px 0px 40px;">
-                            <h1>Betaling direkte på din hjemmeside</h1>
-                            <h3 style="margin:20px 0px;color:#6f6f6f;">SimplePay gør det nemt for dig at modtage betalinger på din hjemmeside - også uden programmering!</h3>
-                            <span class="btn btn-large btn-primary">Kom igang med SimplePay</span>
-                        </div>
-                    </div>
-                    <div id="splash2" class="span12 splash hidden"></div>
-                    <div id="splash3" class="span12 splash hidden"></div>
-                    <div id="splash4" class="span12 splash hidden"></div>
+
                 </div>
+                <!-- end: Row -->
 
-                <div id="teaserwrapper1" class="row teaserwrapper">
-                    <div id="teaser1" class="span5">
-                        <div style="margin:40px 0px 0px 40px;">
-                            <h3>Nemt at implementere</h3>
-                            <p>
-                            SimplePay er s&aring; nemt at implementere at man n&aelig;sten ikke tror det. Af samme grund har vi valgt
-                            at vise her p&aring; forsiden alt hvad der skal s&aelig;ttes ind som <code>html</code> p&aring; din side for at 
-                            tage imod kreditkort betalinger. Du er igang med at teste det i l&oslash;bet af ingen tid. 
-                            </p>
-                            <p>
-                                Ja. Det er virkelig <strong>så enkelt!</strong> <a href="#">Læs mere...</a>
-                            </p>
-                        </div>    
-                    </div>
-                    <div id="teaser2" class="span7">
-                        <div style="margin:40px 40px 0px 20px;">
-                            <pre class="prettyprint linenums">
-&lt;form action="http://dinserver.dk/confirm_order" <b>data-type="payment" data-key="[ID]" 
-    data-orderref="[ORDRE_NR]" data-amount="9900" data-currency="DKK"</b>&gt;
-	&lt;input type="text" name="cardno"&gt;
-	&lt;input type="text" name="cvd"&gt;
-	&lt;input type="text" name="expireMonth"&gt;
-	&lt;input type="text" name="expireYear"&gt;
+                <hr>
 
-        &lt;!-- Flere input felter vedr. ordren som du vil have sendt til din server --&gt;
-        &lt;input type="hidden" name="orderid" value="[ORDRE_NR]"&gt;
-        &lt;input type="text" name="firstname"&gt;
-        &lt;input type="text" name="surname"&gt;
-&lt;/form&gt;
+                <!-- start Clients List -->	
+                <div class="clients-carousel">
 
-&lt;script src="http://simplepay.dk/pay.js"&gt;&lt;/script&gt;
-</pre>
-                        </div>
-                    </div>
+                    <ul class="slides clients">
+                        <li><img src="img/logos/1.png" alt=""/></li>
+                        <li><img src="img/logos/2.png" alt=""/></li>	
+                        <li><img src="img/logos/3.png" alt=""/></li>
+                        <li><img src="img/logos/4.png" alt=""/></li>
+                        <li><img src="img/logos/5.png" alt=""/></li>
+                        <li><img src="img/logos/6.png" alt=""/></li>
+                        <li><img src="img/logos/7.png" alt=""/></li>
+                        <li><img src="img/logos/8.png" alt=""/></li>
+                        <li><img src="img/logos/9.png" alt=""/></li>
+                        <li><img src="img/logos/10.png" alt=""/></li>
+                        <li><img src="img/logos/1.png" alt=""/></li>
+                        <li><img src="img/logos/2.png" alt=""/></li>	
+                        <li><img src="img/logos/3.png" alt=""/></li>
+                        <li><img src="img/logos/4.png" alt=""/></li>
+                        <li><img src="img/logos/5.png" alt=""/></li>
+                        <li><img src="img/logos/6.png" alt=""/></li>
+                        <li><img src="img/logos/7.png" alt=""/></li>
+                        <li><img src="img/logos/8.png" alt=""/></li>
+                        <li><img src="img/logos/9.png" alt=""/></li>
+                        <li><img src="img/logos/10.png" alt=""/></li>	
+                    </ul>
+
                 </div>
+                <!-- end Clients List -->
 
-                <!--div id="teaserwrapper2" class="row teaserwrapper">
-                    <div id="teaser3" class="span6">This is a teaser</div>
-                    <div id="teaser4" class="span6">This is a teaser</div>
-                </div>
-                
-                <div id="teaserwrapper3" class="row teaserwrapper">
-                    <div id="teaser5" class="span6">This is a teaser</div>
-                    <div id="teaser6" class="span6">This is a teaser</div>
-                </div-->
-                
-                <jsp:include page="inc/footer.jsp" />
+                <hr>
+
             </div>
-	</div>
-        <jsp:include page="inc/scripts.jsp" />
+            <!--end: Container-->
+
+        </div>
+        <!-- end: Wrapper  -->			
+
+        <%@include file="inc/footer_menu.jsp" %>
+        <%@include file="inc/footer.jsp" %>
         
-</body>
+        <%@include file="inc/post_body.jsp" %>
+
+    </body>
 </html>
+<!-- Localized -->
