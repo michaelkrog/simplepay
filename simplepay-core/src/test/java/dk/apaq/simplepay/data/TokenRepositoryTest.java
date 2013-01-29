@@ -37,7 +37,7 @@ public class TokenRepositoryTest {
     private StringEncryptor encryptor;
     
 
-    private Card card = new Card("xxxxxxxxxxx", 12, 2012, "xxx");
+    private Card card = new Card("xxxxxxxxxxx", 2012, 12, "xxx");
     
     /**
      * Test of createNew method, of class TokenCrud.

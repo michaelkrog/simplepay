@@ -41,14 +41,13 @@ import org.springframework.web.servlet.ModelAndView;
 public class TransactionController extends BaseController {
 
     private static final Logger LOG = LoggerFactory.getLogger(TransactionController.class);
-
     private final IPayService service;
 
     @Autowired
     public TransactionController(IPayService service) {
         this.service = service;
     }
-    
+
     private Transaction getTransaction(Merchant m, String token) {
         Transaction t = service.getTransactions(m).findOne(token);
         if (t == null) {
@@ -57,8 +56,9 @@ public class TransactionController extends BaseController {
         return t;
     }
 
-    /** METHODS FOR JSON API **/
-    @RequestMapping(value = "/transactions", method = RequestMethod.GET, headers="Accept=application/json")
+    /* METHODS FOR JSON API. */
+    
+    @RequestMapping(value = "/transactions", method = RequestMethod.GET, headers = "Accept=application/json")
     @Transactional(readOnly = true)
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
@@ -67,23 +67,23 @@ public class TransactionController extends BaseController {
         Merchant m = ControllerUtil.getMerchant(service);
         return listEntities(service.getTransactions(m), query, new Sorter("dateCreated", Sorter.Direction.Descending), offset, limit);
     }
-    
-    @RequestMapping(value = "/transactions", method = RequestMethod.POST, headers="Accept=application/json")
+
+    @RequestMapping(value = "/transactions", method = RequestMethod.POST, headers = "Accept=application/json")
     @Transactional(readOnly = true)
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
     public String createTransaction(@RequestParam String token, @RequestParam String refId, @RequestParam String currency, @RequestParam Integer amount) {
         Merchant m = ControllerUtil.getMerchant(service);
-        
+
         Token tokenObject = service.getTokens(m).findOne(token);
-        if(token == null) {
+        if (tokenObject == null) {
             throw new ResourceNotFoundException("Token not found. ");
         }
         Money money = Money.ofMinor(CurrencyUnit.getInstance(currency), amount);
         return service.getTransactions(m).createNew(tokenObject, refId, money).getId();
     }
 
-    @RequestMapping(value = "/transactions/{id}", method = RequestMethod.GET, headers="Accept=application/json")
+    @RequestMapping(value = "/transactions/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @Transactional(readOnly = true)
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
@@ -93,7 +93,7 @@ public class TransactionController extends BaseController {
         return getTransaction(m, id);
     }
 
-    @RequestMapping(value = "/transactions/{id}/refund", method = RequestMethod.POST, headers="Accept=application/json")
+    @RequestMapping(value = "/transactions/{id}/refund", method = RequestMethod.POST, headers = "Accept=application/json")
     @Transactional
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
@@ -109,7 +109,7 @@ public class TransactionController extends BaseController {
         return service.getTransactions(m).refund(t, amount);
     }
 
-    @RequestMapping(value = "/transactions/{id}/charge", method = RequestMethod.POST, headers="Accept=application/json")
+    @RequestMapping(value = "/transactions/{id}/charge", method = RequestMethod.POST, headers = "Accept=application/json")
     @Transactional
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
@@ -129,7 +129,7 @@ public class TransactionController extends BaseController {
         return service.getTransactions(m).charge(t, amount);
     }
 
-    @RequestMapping(value = "/transactions/{id}/cancel", method = RequestMethod.POST, headers="Accept=application/json")
+    @RequestMapping(value = "/transactions/{id}/cancel", method = RequestMethod.POST, headers = "Accept=application/json")
     @Transactional
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
@@ -139,8 +139,10 @@ public class TransactionController extends BaseController {
         Transaction t = getTransaction(m, id);
         return service.getTransactions(m).cancel(t);
     }
-    
-    /** METHODS FOR VIEWS **/
+
+    /**
+     * METHODS FOR VIEWS *
+     */
     @RequestMapping(value = "/transactions", method = RequestMethod.GET)
     @Transactional(readOnly = true)
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
@@ -150,5 +152,4 @@ public class TransactionController extends BaseController {
         Merchant m = ControllerUtil.getMerchant(service);
         return listEntities(service.getTransactions(m), query, new Sorter("dateCreated", Sorter.Direction.Descending), offset, limit, "transactions");
     }
-    
 }

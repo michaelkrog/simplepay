@@ -4,14 +4,10 @@ import java.util.List;
 
 import dk.apaq.framework.common.beans.finance.Card;
 import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.model.*;
-import dk.apaq.simplepay.security.SecurityHelper;
-import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;

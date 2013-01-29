@@ -37,7 +37,7 @@ public class PayServiceTest {
     @Autowired
     private IPayService service;
     
-    private Card card = new Card("xxxxxxxxxxxx",12, 2012, "xxx");
+    private Card card = new Card("xxxxxxxxxxxx",12, 12, "xxx");
     
     private void login(SystemUser user) {
         List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();

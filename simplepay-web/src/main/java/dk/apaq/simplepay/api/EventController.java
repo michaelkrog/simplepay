@@ -2,8 +2,6 @@ package dk.apaq.simplepay.api;
 
 import java.util.List;
 
-import dk.apaq.framework.criteria.Criteria;
-import dk.apaq.framework.criteria.Limit;
 import dk.apaq.framework.criteria.Rule;
 import dk.apaq.framework.criteria.Rules;
 import dk.apaq.framework.criteria.Sorter;
@@ -12,7 +10,6 @@ import dk.apaq.simplepay.model.Event;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.TokenEvent;
 import dk.apaq.simplepay.model.TransactionEvent;
-import dk.apaq.simplepay.security.SecurityHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;

@@ -180,6 +180,25 @@ public class TransactionControllerTest {
         assertEquals("DKK", t.getCurrency());
         assertEquals(10000, t.getAmount());
     }
+    
+    @Test
+    public void testCreateTransactionInvalidToken() {
+        System.out.println("createTransaction");
+
+        String refId = "refid";
+        String currency = "DKK";
+        Integer amount = 10000;
+        String token = "blabla";
+        TransactionController instance = new TransactionController(service);
+        
+        try {
+            String result = instance.createTransaction(token, refId, currency, amount);
+            fail("Should have failed");
+        } catch(ResourceNotFoundException ex) {
+            
+        }
+        
+    }
 
     /**
      * Test of getTransaction method, of class TransactionController.
