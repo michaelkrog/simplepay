@@ -42,14 +42,13 @@ public class TransactionController extends BaseController {
 
     private static final Logger LOG = LoggerFactory.getLogger(TransactionController.class);
 
-    @Autowired
-    private IPayService service;
-    @Autowired
-    private PaymentGatewayManager gatewayManager;
-    @Autowired
-    @Qualifier("publicUrl")
-    private String publicUrl;
+    private final IPayService service;
 
+    @Autowired
+    public TransactionController(IPayService service) {
+        this.service = service;
+    }
+    
     private Transaction getTransaction(Merchant m, String token) {
         Transaction t = service.getTransactions(m).findOne(token);
         if (t == null) {
@@ -77,6 +76,9 @@ public class TransactionController extends BaseController {
         Merchant m = ControllerUtil.getMerchant(service);
         
         Token tokenObject = service.getTokens(m).findOne(token);
+        if(token == null) {
+            throw new ResourceNotFoundException("Token not found. ");
+        }
         Money money = Money.ofMinor(CurrencyUnit.getInstance(currency), amount);
         return service.getTransactions(m).createNew(tokenObject, refId, money).getId();
     }
