@@ -3,7 +3,11 @@ package dk.apaq.simplepay.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 import dk.apaq.framework.common.beans.finance.PaymentIntrument;
 import dk.apaq.simplepay.gateway.EPaymentGateway;
@@ -17,6 +21,9 @@ public class PaymentGatewayAccess extends BaseEntity {
 
     private EPaymentGateway paymentGatewayType;
     private String acquirerRefId;
+    
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
     private List<PaymentIntrument> specificValidInstruments = new ArrayList<PaymentIntrument>();
 
     protected PaymentGatewayAccess() {
