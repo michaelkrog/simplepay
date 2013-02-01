@@ -51,14 +51,14 @@ public class PayServiceTest {
     @Test
     public void testWorkWithMerchant() {
         Merchant m = new Merchant();
-        m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null, null));
+        m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null));
         
         m = service.getMerchants().save(m);
         
         SystemUser user = service.getUsers().save(new SystemUser(m, "john", "doe"));
         
         Merchant m2 = new Merchant();
-        m2.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null, null));
+        m2.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null));
         m2 = service.getMerchants().save(m2);
         
         SystemUser user2 = service.getUsers().save(new SystemUser(m, "jane", "doe"));
@@ -107,7 +107,7 @@ public class PayServiceTest {
     @Test
     public void testValidTestPayment() {
         Merchant m = new Merchant();
-        m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null, null));
+        m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null));
         m = service.getMerchants().save(m);
         
         Token token = service.getTokens(m).createNew(card);
@@ -129,7 +129,7 @@ public class PayServiceTest {
     @Test
     public void testInvalidTestPayment() {
         Merchant m = new Merchant();
-        m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null, null));
+        m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null));
         m = service.getMerchants().save(m);
         
         Token token = service.getTokens(m).createNew(card);

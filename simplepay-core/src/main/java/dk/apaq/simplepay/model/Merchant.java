@@ -9,6 +9,7 @@ import javax.persistence.OneToMany;
 
 import dk.apaq.framework.common.beans.finance.Card;
 import dk.apaq.simplepay.gateway.EPaymentGateway;
+import org.apache.commons.lang.Validate;
 import org.joda.money.Money;
 
 /**
@@ -97,9 +98,12 @@ public class Merchant extends BaseEntity {
     }
 
     public PaymentGatewayAccess getPaymentGatewayAccessPreferred(Card card, Money money) {
+        Validate.notNull(card, "The card specified is null.");
+        Validate.notNull(money, "The money specified is null.");
         for (PaymentGatewayAccess pga : paymentGatewayAccesses) {
-            //TODO Create som clever rule handling
-            return pga;
+            if(pga.getSpecificValidInstruments().isEmpty() || pga.getSpecificValidInstruments().contains(card.getResolvedInstrument())) {
+                return pga;
+            }
         }
         return null;
     }
@@ -115,3 +119,4 @@ public class Merchant extends BaseEntity {
     
     
 }
+

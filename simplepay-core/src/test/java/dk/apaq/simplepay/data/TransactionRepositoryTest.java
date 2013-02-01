@@ -48,7 +48,7 @@ public class TransactionRepositoryTest {
         System.out.println("createNew");
         
         Merchant m = new Merchant();
-        m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null, null));
+        m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null));
         m = service.getMerchants().save(m);
         
         EPaymentGateway gatewayType = EPaymentGateway.Test;
@@ -88,7 +88,7 @@ public class TransactionRepositoryTest {
         System.out.println("createNew");
         
         Merchant m = new Merchant();
-        m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null, null));
+        m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null));
         m = service.getMerchants().save(m);
         
         EPaymentGateway gatewayType = EPaymentGateway.Test;

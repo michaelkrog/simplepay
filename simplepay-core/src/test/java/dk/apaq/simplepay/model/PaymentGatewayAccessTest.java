@@ -18,11 +18,9 @@ public class PaymentGatewayAccessTest {
     public void testBeanPattern() {
         System.out.println("getPaymentGatewayType");
         PaymentGatewayAccess instance = new PaymentGatewayAccess();
-        instance.setAcquirerApiKey("key");
         instance.setAcquirerRefId("refId");
         instance.setPaymentGatewayType(EPaymentGateway.Test);
         
-        assertEquals("key", instance.getAcquirerApiKey());
         assertEquals("refId", instance.getAcquirerRefId());
         assertEquals(EPaymentGateway.Test, instance.getPaymentGatewayType());
     }
