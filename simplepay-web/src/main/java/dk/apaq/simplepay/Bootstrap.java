@@ -22,7 +22,7 @@ public class Bootstrap {
     public void doBootstrap() {
         if (payService.getMerchants().findAllIds().isEmpty()) {
             Merchant m = new Merchant();
-            PaymentGatewayAccess aa = new PaymentGatewayAccess(EPaymentGateway.Test, "89898978", "29p61DveBZ79c3144LW61lVz1qrwk2gfAFCxPyi5sn49m3Y3IRK5M6SN5d8a68u7");
+            PaymentGatewayAccess aa = new PaymentGatewayAccess(EPaymentGateway.Test, "89898978");
             m.getPaymentGatewayAccesses().add(aa);
             m = payService.getMerchants().save(m);
 
