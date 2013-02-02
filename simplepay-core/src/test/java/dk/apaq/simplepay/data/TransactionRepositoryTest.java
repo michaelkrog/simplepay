@@ -41,7 +41,7 @@ public class TransactionRepositoryTest {
     private StringEncryptor encryptor;
     
 
-    private Card card = new Card("xxxxxxxxxxx", 12, 12, "xxx");
+    private Card card = new Card("4111111111111111", 12, 12, "xxx");
     
     @Test
     public void testFullChargeAndRefund() {
@@ -60,7 +60,7 @@ public class TransactionRepositoryTest {
         Token token = tokens.createNew(card);
         
         ITransactionRepository transactions = service.getTransactions(m);
-        Transaction t = transactions.createNew(token, orderNumber, money);
+        Transaction t = transactions.createNew(token.getMerchant(), token.getId(), orderNumber, money);
         
         assertNotNull(t);
         assertEquals(12345, t.getAmount());
@@ -100,7 +100,7 @@ public class TransactionRepositoryTest {
         Token token = tokens.createNew(card);
         
         ITransactionRepository transactions = service.getTransactions(m);
-        Transaction t = transactions.createNew(token, orderNumber, money);
+        Transaction t = transactions.createNew(token.getMerchant(), token.getId(), orderNumber, money);
         
         assertNotNull(t);
         assertEquals(12345, t.getAmount());

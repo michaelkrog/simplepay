@@ -20,6 +20,7 @@ public interface ITokenRepository extends Repository<Token, String> {
     /**
      * Marks a token as expired.
      * @param token The token to mark as expired.
+     * @return The token after marked expired.
      */
-    void markExpired(Token token);
+    Token markExpired(String token);
 }

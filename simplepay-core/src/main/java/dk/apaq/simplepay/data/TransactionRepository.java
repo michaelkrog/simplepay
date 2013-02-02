@@ -2,6 +2,7 @@ package dk.apaq.simplepay.data;
 
 import javax.persistence.EntityManager;
 
+import com.sun.org.apache.xerces.internal.impl.dv.ValidatedInfo;
 import dk.apaq.framework.repository.jpa.EntityManagerRepositoryForSpring;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.common.ETransactionStatus;
@@ -11,6 +12,7 @@ import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.model.*;
 import dk.apaq.simplepay.util.RequestInformationHelper;
+import org.apache.commons.lang.Validate;
 import org.joda.money.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +39,13 @@ public class TransactionRepository extends EntityManagerRepositoryForSpring<Tran
 
     @Transactional
     @Override
-    public Transaction createNew(Token token, String refId, Money money) {
+    public Transaction createNew(Merchant merchant, String tokenId, String refId, Money money) {
+        Validate.notNull(merchant, "merchant is null.");
+        Validate.notNull(tokenId, "token is null.");
+        
+        Token token = service.getTokens(merchant).findOne(tokenId);
+        Validate.notNull(token, "token given but could not be found in database.");
+        
         //Get preferred gateway
         PaymentGatewayAccess access = token.getMerchant().getPaymentGatewayAccessPreferred(token.getData(), money);
         if (access == null) {
@@ -58,7 +66,7 @@ public class TransactionRepository extends EntityManagerRepositoryForSpring<Tran
 
         //if token only for single usage then mark it expired
         if (token.getPurpose() == ETokenPurpose.SinglePayment) {
-            service.getTokens(token.getMerchant()).markExpired(token);
+            token = service.getTokens(token.getMerchant()).markExpired(token.getId());
         }
 
         TransactionEvent evt = new TransactionEvent(transaction, service.getCurrentUsername(), ETransactionStatus.Authorized,

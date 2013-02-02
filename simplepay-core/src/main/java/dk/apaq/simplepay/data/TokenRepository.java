@@ -43,22 +43,27 @@ public class TokenRepository extends EntityManagerRepositoryForSpring<Token, Str
         TokenEvent evt = new TokenEvent(token, "Token created.", service.getCurrentUsername(), RequestInformationHelper.getRemoteAddress());
         service.getEvents(token.getMerchant(), TokenEvent.class).save(evt);
 
+        em.detach(token);
         return token;
     }
 
     @Override
-    public void markExpired(Token token) {
-        token.setExpired(true);
-        save(token);
+    public Token markExpired(String token) {
+        Token t = findOne(token);
+        t.setExpired(true);
+        return save(t); 
     }
 
     @Override
     public Token findOne(String id) {
         Token t = super.findOne(id);
-        
-        //We need to detach before decrypting
-        em.detach(t);
-        return decryptToken(t);
+        if (t == null) {
+            return null;
+        } else {
+            t = decryptToken(t);
+            em.detach(t);
+            return t;
+        }
     }
 
     @Override
@@ -70,19 +75,24 @@ public class TokenRepository extends EntityManagerRepositoryForSpring<Token, Str
     @Override
     public List<Token> findAll(Criteria criteria) {
         List<Token> tokens = super.findAll(criteria);
-        for(Token token : tokens) {
+        for (Token token : tokens) {
             decryptToken(token);
         }
         return tokens;
     }
-    
+
     private Token encryptToken(Token token) {
-        encryptObjectField(token.getData(), "cardNumber");
-        encryptObjectField(token.getData(), "cvd");
+        Card clone = new Card(token.getData());
+        encryptObjectField(clone, "cardNumber");
+        encryptObjectField(clone, "cvd");
+        token.setData(clone);
         return token;
     }
 
     private Token decryptToken(Token token) {
+        //We need to detach before decrypting
+        em.detach(token);
+
         decryptObjectField(token.getData(), "cardNumber");
         decryptObjectField(token.getData(), "cvd");
         return token;

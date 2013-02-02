@@ -1,28 +1,23 @@
-package dk.apaq.simplepay.api;
+package dk.apaq.simplepay.controllers.api;
 
-import java.text.NumberFormat;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import dk.apaq.framework.criteria.Criteria;
-import dk.apaq.framework.criteria.Rules;
 import dk.apaq.framework.criteria.Sorter;
-import dk.apaq.framework.criteria.rules.AndRule;
 import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.common.ETransactionStatus;
-import dk.apaq.simplepay.gateway.PaymentGatewayManager;
+import dk.apaq.simplepay.controllers.BaseController;
+import dk.apaq.simplepay.controllers.ControllerUtil;
+import dk.apaq.simplepay.controllers.exceptions.ResourceNotFoundException;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Transaction;
-import dk.apaq.simplepay.security.SecurityHelper;
+import org.apache.commons.lang.Validate;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
  *
@@ -56,36 +50,52 @@ public class TransactionController extends BaseController {
         return t;
     }
 
-    /* METHODS FOR JSON API. */
-    
+    /**
+     * List transactions for the current merchant.
+     * @param query The query in Simple Query Format
+     * @param offset Offset in the result.
+     * @param limit Max numbers of results.
+     * @return The transactions.
+     */
     @RequestMapping(value = "/transactions", method = RequestMethod.GET, headers = "Accept=application/json")
     @Transactional(readOnly = true)
-    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
+    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT" })
     @ResponseBody
-    public List<Transaction> listTransactionsAsJson(@RequestParam(required = false) String query, @RequestParam(defaultValue = "0") Integer offset,
+    public List<Transaction> listTransactions(@RequestParam(required = false) String query, @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "1000") Integer limit) {
         Merchant m = ControllerUtil.getMerchant(service);
         return listEntities(service.getTransactions(m), query, new Sorter("dateCreated", Sorter.Direction.Descending), offset, limit);
     }
 
+    /**
+     * Creates a new transaction for the current merchant. 
+     * The new transaction will only be created if it can be authorized by a backing merchant gateway.
+     * @param token The token to use for the transaction.
+     * @param refId The reference id, fx. order id
+     * @param currency The current as 3-letter currencycode
+     * @param amount The amount in minors. (Fx. 100.00 would be 10000)
+     * @return The id of the new transaction
+     */
     @RequestMapping(value = "/transactions", method = RequestMethod.POST, headers = "Accept=application/json")
     @Transactional(readOnly = true)
-    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
+    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT" })
     @ResponseBody
-    public String createTransaction(@RequestParam String token, @RequestParam String refId, @RequestParam String currency, @RequestParam Integer amount) {
+    public String createTransaction(@RequestParam String token, @RequestParam String refId, @RequestParam String currency, 
+                                    @RequestParam Integer amount) {
+        Validate.isTrue(amount > 0, "Amount cannot be '0'.");
         Merchant m = ControllerUtil.getMerchant(service);
-
-        Token tokenObject = service.getTokens(m).findOne(token);
-        if (tokenObject == null) {
-            throw new ResourceNotFoundException("Token not found. ");
-        }
         Money money = Money.ofMinor(CurrencyUnit.getInstance(currency), amount);
-        return service.getTransactions(m).createNew(tokenObject, refId, money).getId();
+        return service.getTransactions(m).createNew(m, token, refId, money).getId();
     }
 
+    /**
+     * Gets a specific transaction.
+     * @param id The id of the transaction.
+     * @return The transaction
+     */
     @RequestMapping(value = "/transactions/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @Transactional(readOnly = true)
-    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
+    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT" })
     @ResponseBody
     public Transaction getTransaction(@PathVariable String id) {
         Merchant m = ControllerUtil.getMerchant(service);
@@ -93,11 +103,17 @@ public class TransactionController extends BaseController {
         return getTransaction(m, id);
     }
 
+    /**
+     * Refunds a charged transaction.
+     * @param id The id of the transaction.
+     * @param amount The amount to refund in minors (Fx. 100.00 would be 10000. )
+     * @return The transaction.
+     */
     @RequestMapping(value = "/transactions/{id}/refund", method = RequestMethod.POST, headers = "Accept=application/json")
     @Transactional
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
-    public Transaction refundTransaction(HttpServletRequest request, @PathVariable String id, @RequestParam(required = false) Long amount) {
+    public Transaction refundTransaction(@PathVariable String id, @RequestParam(required = false) Long amount) {
         Merchant m = ControllerUtil.getMerchant(service);
         LOG.debug("Refunding transaction. [merchant={}; transaction={}; amount={}]", new Object[]{m.getId(), id, amount});
         Transaction t = getTransaction(m, id);
@@ -109,11 +125,17 @@ public class TransactionController extends BaseController {
         return service.getTransactions(m).refund(t, amount);
     }
 
+    /**
+     * Charges an authorized transaction.
+     * @param id The id of the transaction.
+     * @param amount The amount to charge in minors (Fx. 100.00 would be 10000. )
+     * @return The transaction.
+     */
     @RequestMapping(value = "/transactions/{id}/charge", method = RequestMethod.POST, headers = "Accept=application/json")
     @Transactional
-    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
+    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT" })
     @ResponseBody
-    public Transaction chargeTransaction(HttpServletRequest request, @PathVariable String id, @RequestParam(required = false) Long amount) {
+    public Transaction chargeTransaction(@PathVariable String id, @RequestParam(required = false) Long amount) {
         Merchant m = ControllerUtil.getMerchant(service);
         LOG.debug("Charging transaction. [merchant={}; transaction={}; amount={}]", new Object[]{m.getId(), id, amount});
         Transaction t = getTransaction(m, id);
@@ -129,27 +151,21 @@ public class TransactionController extends BaseController {
         return service.getTransactions(m).charge(t, amount);
     }
 
+    /**
+     * Cancels an authorized transaction.
+     * @param id The id of the transaction.
+     * @return The transaction.
+     */
     @RequestMapping(value = "/transactions/{id}/cancel", method = RequestMethod.POST, headers = "Accept=application/json")
     @Transactional
-    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
+    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT" })
     @ResponseBody
-    public Transaction cancelTransaction(HttpServletRequest request, @PathVariable String id) {
+    public Transaction cancelTransaction(@PathVariable String id) {
         Merchant m = ControllerUtil.getMerchant(service);
         LOG.debug("Cancelling transaction. [merchant={}; transaction={}]", m.getId(), id);
         Transaction t = getTransaction(m, id);
         return service.getTransactions(m).cancel(t);
     }
 
-    /**
-     * METHODS FOR VIEWS *
-     */
-    @RequestMapping(value = "/transactions", method = RequestMethod.GET)
-    @Transactional(readOnly = true)
-    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
-    @ResponseBody
-    public ModelAndView listTransactions(@RequestParam(required = false) String query, @RequestParam(defaultValue = "0") Integer offset,
-            @RequestParam(defaultValue = "1000") Integer limit) {
-        Merchant m = ControllerUtil.getMerchant(service);
-        return listEntities(service.getTransactions(m), query, new Sorter("dateCreated", Sorter.Direction.Descending), offset, limit, "transactions");
-    }
+
 }

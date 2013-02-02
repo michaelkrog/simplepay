@@ -39,7 +39,7 @@ public class PayServiceTest {
     @Autowired
     private IPayService service;
     
-    private Card dankort = new Card("4571xxxxxxxx",12, 12, "xxx");
+    private Card dankort = new Card("4111111111111111",12, 12, "xxx");
     
     private void login(SystemUser user) {
         List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
@@ -86,10 +86,10 @@ public class PayServiceTest {
         Token token2 = service.getTokens(m2).createNew(dankort);
         
         //Create transaction for m
-        Transaction t = service.getTransactions(m).createNew(token1, "T_123", Money.of(CurrencyUnit.USD, 123));
+        Transaction t = service.getTransactions(m).createNew(token1.getMerchant(), token1.getId(), "T_123", Money.of(CurrencyUnit.USD, 123));
         
         //Create transaction for m2
-        Transaction t2 = service.getTransactions(m2).createNew(token2, "T_321", Money.of(CurrencyUnit.USD, 123));
+        Transaction t2 = service.getTransactions(m2).createNew(token2.getMerchant(), token2.getId(), "T_321", Money.of(CurrencyUnit.USD, 123));
         
         //Make sure the right data has been set
         assertEquals(m.getId(), t.getMerchant().getId());
@@ -116,7 +116,7 @@ public class PayServiceTest {
         assertFalse(token.isExpired());
         
         //Create transaction for m
-        Transaction t = service.getTransactions(m).createNew(token, "T_123", Money.of(CurrencyUnit.USD, 123));
+        Transaction t = service.getTransactions(m).createNew(token.getMerchant(), token.getId(), "T_123", Money.of(CurrencyUnit.USD, 123));
         assertEquals(t.getToken(), token.getId());
         assertEquals(ETransactionStatus.Authorized, t.getStatus());
         
@@ -138,10 +138,10 @@ public class PayServiceTest {
         assertFalse(token.isExpired());
         
         //Create transaction for m
-        Transaction t = service.getTransactions(m).createNew(token, "T_123", Money.of(CurrencyUnit.USD, 123));
+        Transaction t = service.getTransactions(m).createNew(token.getMerchant(), token.getId(), "T_123", Money.of(CurrencyUnit.USD, 123));
         
         try {
-            service.getTransactions(m).createNew(token, "T_321", Money.of(CurrencyUnit.USD, 123));
+            service.getTransactions(m).createNew(token.getMerchant(), token.getId(), "T_321", Money.of(CurrencyUnit.USD, 123));
             fail("Should not allow same token twice.");
         } catch(SecurityException ex) { }
     }
@@ -149,14 +149,14 @@ public class PayServiceTest {
     @Test
     public void testMissingGatewayAccess() {
         Merchant m = new Merchant();
-        m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null, PaymentIntrument.Visa));
+        m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null, PaymentIntrument.Mastercard));
         m = service.getMerchants().save(m);
         
         Token token = service.getTokens(m).createNew(dankort);
         assertFalse(token.isExpired());
         
         try {
-            Transaction t = service.getTransactions(m).createNew(token, "T_123", Money.of(CurrencyUnit.USD, 123));
+            Transaction t = service.getTransactions(m).createNew(token.getMerchant(), token.getId(), "T_123", Money.of(CurrencyUnit.USD, 123));
             fail("Should have failed");
         } catch(PaymentException ex) {
             

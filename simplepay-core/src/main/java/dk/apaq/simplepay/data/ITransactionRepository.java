@@ -1,6 +1,7 @@
 package dk.apaq.simplepay.data;
 
 import dk.apaq.framework.repository.Repository;
+import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Transaction;
 import org.joda.money.Money;
@@ -18,7 +19,7 @@ public interface ITransactionRepository extends Repository<Transaction, String> 
      * @param money The amount and currency the transaction should be authorized to handle.
      * @return The new transaction.
      */
-    Transaction createNew(Token token, String refId, Money money);
+    Transaction createNew(Merchant merchant, String token, String refId, Money money);
     
     /**
      * Charges an existing transaction.

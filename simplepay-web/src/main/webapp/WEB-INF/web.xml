@@ -56,7 +56,7 @@
     </servlet-mapping>
     
     <!-- SITE DISPATCHER -->
-    <servlet>
+    <!--servlet>
         <servlet-name>site</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
@@ -89,7 +89,7 @@
     <servlet-mapping>
         <servlet-name>site</servlet-name>
         <url-pattern>/pay.js</url-pattern>
-    </servlet-mapping>
+    </servlet-mapping-->
 
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>

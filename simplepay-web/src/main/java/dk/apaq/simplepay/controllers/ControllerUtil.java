@@ -1,8 +1,9 @@
 /*
  * Copyright by Apaq 2011-2013
  */
-package dk.apaq.simplepay.api;
+package dk.apaq.simplepay.controllers;
 
+import dk.apaq.simplepay.controllers.exceptions.ForbiddenException;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.security.SecurityHelper;

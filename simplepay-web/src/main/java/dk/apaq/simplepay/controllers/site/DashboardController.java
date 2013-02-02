@@ -1,4 +1,4 @@
-package dk.apaq.simplepay.site;
+package dk.apaq.simplepay.controllers.site;
 
 import java.util.HashMap;
 import java.util.List;

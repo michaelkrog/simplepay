@@ -19,6 +19,10 @@ public class TestGateway implements IPaymentGateway {
         if (money.getAmountMinorLong() > 1000000) {
             throw new PaymentException("Amount to large");
         }
+        
+        if(!card.isValid()) {
+            throw new PaymentException("Card is not valid.");
+        }
     }
     
     @Override

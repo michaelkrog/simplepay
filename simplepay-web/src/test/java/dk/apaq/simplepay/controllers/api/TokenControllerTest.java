@@ -1,10 +1,12 @@
-package dk.apaq.simplepay.api;
+package dk.apaq.simplepay.controllers.api;
 
+import dk.apaq.simplepay.controllers.api.TokenController;
 import java.util.ArrayList;
 import java.util.List;
 
 import dk.apaq.framework.common.beans.finance.PaymentIntrument;
 import dk.apaq.simplepay.IPayService;
+import dk.apaq.simplepay.controllers.exceptions.ResourceNotFoundException;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Token;
@@ -37,16 +39,6 @@ public class TokenControllerTest {
     @Autowired
     private IPayService service;
     
-    public TokenControllerTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
     
     @Before
     public void setUp() {
@@ -130,5 +122,54 @@ public class TokenControllerTest {
         assertTrue(tokenObj.getData().isValid());
         assertEquals(PaymentIntrument.Visa, tokenObj.getData().getResolvedInstrument());
         
+    }
+        
+    @Test
+    public void testGetToken_InvalidCard() {
+        System.out.println("getToken");
+        String cardNumber = "345345";
+        int expireMonth = 11;
+        int expireYear = 16;
+        String cvd = "qwerty";
+        TokenController instance = new TokenController(service);
+        String token = instance.createToken(cardNumber, expireMonth, expireYear, cvd);
+        assertNotNull(token);
+        
+        Token tokenObj = instance.getToken(token);
+        assertEquals("345345", tokenObj.getData().getCardNumber());
+        assertEquals(2016, tokenObj.getData().getExpireYear());
+        assertFalse(tokenObj.getData().isValid());
+        assertEquals(PaymentIntrument.Unknown, tokenObj.getData().getResolvedInstrument());
+        
+    }
+        
+    @Test
+    public void testGetToken_IllegalArguments() {
+        System.out.println("getToken");
+        String cardNumber = "ubuntu";
+        int expireMonth = 43;
+        int expireYear = 316;
+        String cvd = "wwer";
+        TokenController instance = new TokenController(service);
+        
+        try {
+            String token = instance.createToken(cardNumber, expireMonth, expireYear, cvd);
+            fail("Should have failed.");
+        } catch(IllegalArgumentException ex) {
+            System.out.println(ex.getMessage());
+        }
+        
+    }
+    
+    @Test
+    public void testGetToken_NotFound() {
+        TokenController instance = new TokenController(service);
+        
+        try {
+            Token tokenObj = instance.getToken("234re");
+            fail("Should have failed");
+        } catch(ResourceNotFoundException ex) {
+            
+        }
     }
 }

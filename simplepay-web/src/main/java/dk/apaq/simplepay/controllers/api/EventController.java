@@ -1,5 +1,7 @@
-package dk.apaq.simplepay.api;
+package dk.apaq.simplepay.controllers.api;
 
+import dk.apaq.simplepay.controllers.ControllerUtil;
+import dk.apaq.simplepay.controllers.BaseController;
 import java.util.List;
 
 import dk.apaq.framework.criteria.Rule;

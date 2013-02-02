@@ -37,7 +37,7 @@ public class TokenRepositoryTest {
     private StringEncryptor encryptor;
     
 
-    private Card card = new Card("xxxxxxxxxxx", 2012, 12, "xxx");
+    private Card card = new Card("4111111111111111", 2012, 12, "xxx");
     
     /**
      * Test of createNew method, of class TokenCrud.
@@ -57,7 +57,7 @@ public class TokenRepositoryTest {
         Token token = rep.createNew(card);
         
         //The one we get back from the repository has been decrypted.
-        assertEquals("xxxxxxxxxxx", token.getData().getCardNumber());
+        assertEquals("4111111111111111", token.getData().getCardNumber());
         assertEquals("xxx", token.getData().getCvd());
         
         
@@ -66,7 +66,7 @@ public class TokenRepositoryTest {
         //The one we read directly via the entitymanager is encrypted.
         assertNotNull(token);
         assertEquals(ETokenPurpose.SinglePayment, token.getPurpose());
-        assertEquals("xxxxxxxxxxx", encryptor.decrypt(token.getData().getCardNumber()));
+        assertEquals("4111111111111111", encryptor.decrypt(token.getData().getCardNumber()));
         assertEquals("xxx", encryptor.decrypt(token.getData().getCvd()));
         
         assertFalse(rep.findAll().isEmpty());

@@ -521,7 +521,7 @@ html[xmlns] .slides {display: block;}
 =================================================================== */
 .slide-caption {
 	width: auto;
-	max-width: 30%;
+	max-width: 45%;
 	padding: 10px 20px;
 	margin: 0 0 0px 0px;
 	position: absolute;

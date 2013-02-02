@@ -72,4 +72,10 @@ public class Token extends BaseEntity {
     public Card getData() {
         return tokenData;
     }
+
+    public void setData(Card tokenData) {
+        this.tokenData = tokenData;
+    }
+    
+    
 }

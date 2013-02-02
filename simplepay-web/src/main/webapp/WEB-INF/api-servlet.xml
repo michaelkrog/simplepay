@@ -39,7 +39,7 @@
     </bean>
 
     <context:annotation-config />
-    <context:component-scan base-package="dk.apaq.simplepay.api"/>
+    <context:component-scan base-package="dk.apaq.simplepay.controllers"/>
     <context:property-placeholder ignore-resource-not-found="true" location="classpath:simplepay_default.properties,file:${user.home}/simplepay.properties" />
     <mvc:annotation-driven />
 </beans>

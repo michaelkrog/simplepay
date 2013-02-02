@@ -1,15 +1,14 @@
-package dk.apaq.simplepay.api;
+package dk.apaq.simplepay.controllers.api;
 
 import java.util.List;
 import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
 
 import dk.apaq.framework.common.beans.finance.Card;
 import dk.apaq.framework.repository.CollectionRepository;
 import dk.apaq.framework.repository.Repository;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.common.ETransactionStatus;
+import dk.apaq.simplepay.controllers.exceptions.ResourceNotFoundException;
 import dk.apaq.simplepay.data.ITokenRepository;
 import dk.apaq.simplepay.data.ITransactionRepository;
 import dk.apaq.simplepay.gateway.EPaymentGateway;
@@ -18,18 +17,16 @@ import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.security.ERole;
+import org.apache.commons.lang.Validate;
 import org.joda.money.Money;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.servlet.ModelAndView;
+
+import static org.junit.Assert.*;
 
 /**
  *
@@ -54,9 +51,10 @@ public class TransactionControllerTest {
         }
 
         @Override
-        public void markExpired(Token token) {
-            token.setExpired(true);
-            save(token);
+        public Token markExpired(String token) {
+            Token t = findOne(token);
+            t.setExpired(true);
+            return save(t);
         }
 
         @Override
@@ -78,9 +76,9 @@ public class TransactionControllerTest {
         }
 
         @Override
-        public Transaction createNew(Token token, String refId, Money money) {
-            System.out.println(token);
-            return save(new Transaction(token.getId(), refId, money, EPaymentGateway.Test));
+        public Transaction createNew(Merchant merchant, String tokenId, String refId, Money money) {
+            Validate.notNull(tokenRep.findOne(tokenId), "token not found");
+            return save(new Transaction(tokenId, refId, money, EPaymentGateway.Test));
         }
 
         @Override
@@ -114,11 +112,13 @@ public class TransactionControllerTest {
 
     @Before
     public void init() {
+        merchant = new Merchant();
+        Token token = tokenRep.createNew(card);
+        
         for (int i = 0; i < 20; i++) {
-            transactionRep.createNew(new Token(new Card("1234123412341234", 2016, 11, "123")), "#" + i, Money.parse("USD 123.00"));
+            transactionRep.createNew(merchant, token.getId(), "#" + i, Money.parse("USD 123.00"));
         }
         
-        merchant = new Merchant();
         
         //Prepare for security check
         SystemUser user = userRep.save(new SystemUser(merchant, "john", "doe", ERole.Merchant));
@@ -139,6 +139,7 @@ public class TransactionControllerTest {
     private ITokenRepository tokenRep = new MockTokenRepository();
     private ITransactionRepository transactionRep = new MockTransactionRepository();
     private IPayService service;
+    private Card card = new Card("1234123412341234", 2016, 11, "123");
 
     /**
      * Test of listTransactionsAsJson method, of class TransactionController.
@@ -150,7 +151,7 @@ public class TransactionControllerTest {
         Integer offset = 0;
         Integer limit = 5;
         TransactionController instance = new TransactionController(service);
-        List<Transaction> result = instance.listTransactionsAsJson(query, offset, limit);
+        List<Transaction> result = instance.listTransactions(query, offset, limit);
 
         assertTrue(result.size() == 5);
         assertTrue(result.get(0).getRefId().startsWith("#1"));
@@ -166,7 +167,7 @@ public class TransactionControllerTest {
         String refId = "refid";
         String currency = "DKK";
         Integer amount = 10000;
-        String token = service.getTokens(merchant).createNew(new Card("1234123412341234", 2016, 11, "123")).getId();
+        String token = service.getTokens(merchant).createNew(card).getId();
         TransactionController instance = new TransactionController(service);
         
         String result = instance.createTransaction(token, refId, currency, amount);
@@ -194,7 +195,7 @@ public class TransactionControllerTest {
         try {
             String result = instance.createTransaction(token, refId, currency, amount);
             fail("Should have failed");
-        } catch(ResourceNotFoundException ex) {
+        } catch(IllegalArgumentException ex) {
             
         }
         
@@ -223,12 +224,11 @@ public class TransactionControllerTest {
     @Ignore
     public void testRefundTransaction() {
         System.out.println("refundTransaction");
-        HttpServletRequest request = null;
         String id = "";
         Long amount = null;
         TransactionController instance = new TransactionController(service);
         Transaction expResult = null;
-        Transaction result = instance.refundTransaction(request, id, amount);
+        Transaction result = instance.refundTransaction(id, amount);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
@@ -241,12 +241,11 @@ public class TransactionControllerTest {
     @Ignore
     public void testChargeTransaction() {
         System.out.println("chargeTransaction");
-        HttpServletRequest request = null;
         String id = "";
         Long amount = null;
         TransactionController instance = new TransactionController(service);
         Transaction expResult = null;
-        Transaction result = instance.chargeTransaction(request, id, amount);
+        Transaction result = instance.chargeTransaction(id, amount);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
@@ -259,31 +258,14 @@ public class TransactionControllerTest {
     @Ignore
     public void testCancelTransaction() {
         System.out.println("cancelTransaction");
-        HttpServletRequest request = null;
         String id = "";
         TransactionController instance = new TransactionController(service);
         Transaction expResult = null;
-        Transaction result = instance.cancelTransaction(request, id);
+        Transaction result = instance.cancelTransaction(id);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
-    /**
-     * Test of listTransactions method, of class TransactionController.
-     */
-    @Test
-    @Ignore
-    public void testListTransactions() {
-        System.out.println("listTransactions");
-        String query = "";
-        Integer offset = null;
-        Integer limit = null;
-        TransactionController instance = new TransactionController(service);
-        ModelAndView expResult = null;
-        ModelAndView result = instance.listTransactions(query, offset, limit);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+
 }

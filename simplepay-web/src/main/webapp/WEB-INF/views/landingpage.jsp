@@ -20,38 +20,56 @@
         </header>
         <!--end: Header-->
 
+        <!-- start: Page Title -->
+        <div id="page-title">
+
+            <div id="page-title-inner">
+
+                <!-- start: Container -->
+                <div class="container">
+                    <div class="slider">
+
+                        <div id="flex1" class="flexslider" style="background: transparent">
+                            <ul class="slides">
+
+                                <li style="width: 100%; float: left; margin-right: -100%; position: relative; display: list-item;" class="flex-active-slide">
+                                    <img src="img/slider/slider-logo.png" alt="">
+                                    <div class="slide-caption n hidden-phone">
+                                        <h3><spring:message code="landingpage.slider.title_1"/></h3>
+                                        <p><spring:message code="landingpage.slider.description_1"/></p>
+                                        <br/>
+                                        <button class="btn btn-primary"><spring:message code="landingpage.slider.read_more"/></button>
+                                    </div>
+                                </li>
+
+                                <li style="width: 100%; float: left; margin-right: -100%; position: relative; display: none;" class="">
+                                    <img src="img/slider/slider-mobile.png" alt="">
+                                    <div class="slide-caption hidden-phone">
+                                        <h3><spring:message code="landingpage.slider.title_2"/></h3>
+                                        <p><spring:message code="landingpage.slider.description_2"/></p>
+                                        <br/>
+                                        <button class="btn btn-primary"><spring:message code="landingpage.slider.read_more"/></button>
+                                    </div>
+                                </li>
+
+                            </ul>
+                            <ul class="flex-direction-nav"><li><a class="flex-prev" href="#">Previous</a></li><li><a class="flex-next" href="#">Next</a></li></ul></div>
+
+                    </div>
+                </div>
+                <!-- end: Container  -->
+
+            </div>	
+
+        </div>
+        <!-- end: Page Title -->
+
         <!--start: Wrapper-->
         <div id="wrapper">
 
             <!--start: Container -->
             <div class="container">
-                <div class="slider">
 
-                    <div id="flex1" class="flexslider">
-                        <ul class="slides">
-
-                            <li style="width: 100%; float: left; margin-right: -100%; position: relative; display: list-item;" class="flex-active-slide">
-                                <img src="img/slider/slider1.jpg" alt="">
-                                <div class="slide-caption n hidden-phone">
-                                    <h3><spring:message code="landingpage.slider.title_1"/></h3>
-                                    <p><spring:message code="landingpage.slider.description_1"/></p>
-                                    <button class="btn btn-large btn-primary"><spring:message code="landingpage.slider.read_more"/></button>
-                                </div>
-                            </li>
-
-                            <li style="width: 100%; float: left; margin-right: -100%; position: relative; display: none;" class="">
-                                <img src="img/slider/slider2.jpg" alt="">
-                                <div class="slide-caption hidden-phone">
-                                    <h3><spring:message code="landingpage.slider.title_2"/></h3>
-                                    <p><spring:message code="landingpage.slider.description_2"/></p>
-                                    <button class="btn btn-large btn-primary"><spring:message code="landingpage.slider.read_more"/></button>
-                                </div>
-                            </li>
-
-                        </ul>
-                        <ul class="flex-direction-nav"><li><a class="flex-prev" href="#">Previous</a></li><li><a class="flex-next" href="#">Next</a></li></ul></div>
-
-                </div>
                 <!--hr-->
 
                 <!-- start: Hero Unit - Main hero unit for a primary marketing message or call to action -->
@@ -75,7 +93,7 @@
                                 <i class="ico-ok ico-white circle-color-full"></i>
                                 <div class="icons-box-vert-info">
                                     <h3><spring:message code="landingpage.iconboxes.title_1"/></h3>
-                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+                                    <p><spring:message code="landingpage.iconboxes.text_1"/></p>
                                 </div>
                                 <div class="clear"></div>
                             </div>
@@ -85,10 +103,10 @@
                         <!-- start: Icon Box Start -->
                         <div class="span4">
                             <div class="icons-box-vert">
-                                <i class="ico-cup ico-white circle-color-full"></i>
+                                <i class="ico-shield ico-white circle-color-full"></i>
                                 <div class="icons-box-vert-info">
                                     <h3><spring:message code="landingpage.iconboxes.title_2"/></h3>
-                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+                                    <p><spring:message code="landingpage.iconboxes.text_2"/></p>
                                 </div>
                                 <div class="clear"></div>
                             </div>
@@ -101,7 +119,7 @@
                                 <i class="ico-ipad ico-white circle-color-full"></i>
                                 <div class="icons-box-vert-info">
                                     <h3><spring:message code="landingpage.iconboxes.title_3"/></h3>
-                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+                                    <p><spring:message code="landingpage.iconboxes.text_3"/></p>
                                 </div>
                                 <div class="clear"></div>
                             </div>
