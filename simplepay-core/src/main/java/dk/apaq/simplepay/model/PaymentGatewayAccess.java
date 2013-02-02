@@ -1,6 +1,7 @@
 package dk.apaq.simplepay.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,16 +25,26 @@ public class PaymentGatewayAccess extends BaseEntity {
     
     @ElementCollection
     @Enumerated(EnumType.STRING)
-    private List<PaymentIntrument> specificValidInstruments = new ArrayList<PaymentIntrument>();
+    private List<PaymentIntrument> specificValidInstruments;
 
     protected PaymentGatewayAccess() {
     }
 
     public PaymentGatewayAccess(EPaymentGateway paymentGatewayType, String acquirerRefId) {
-        this.paymentGatewayType = paymentGatewayType;
-        this.acquirerRefId = acquirerRefId;
+        this(paymentGatewayType, acquirerRefId, (List)null);
     }
 
+    public PaymentGatewayAccess(EPaymentGateway paymentGatewayType, String acquirerRefId, List<PaymentIntrument> specificValidInstruments) {
+        this.paymentGatewayType = paymentGatewayType;
+        this.acquirerRefId = acquirerRefId;
+        this.specificValidInstruments = specificValidInstruments == null ? new ArrayList<PaymentIntrument>() : specificValidInstruments;
+    }
+    
+    public PaymentGatewayAccess(EPaymentGateway paymentGatewayType, String acquirerRefId, PaymentIntrument ... specificValidInstruments) {
+        this(paymentGatewayType, acquirerRefId, Arrays.asList(specificValidInstruments));
+    }
+    
+    
     public EPaymentGateway getPaymentGatewayType() {
         return paymentGatewayType;
     }

@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dk.apaq.framework.common.beans.finance.Card;
+import dk.apaq.framework.common.beans.finance.PaymentIntrument;
 import dk.apaq.framework.repository.RepositoryNotifier;
+import dk.apaq.simplepay.gateway.PaymentException;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.junit.Test;
@@ -37,7 +39,7 @@ public class PayServiceTest {
     @Autowired
     private IPayService service;
     
-    private Card card = new Card("xxxxxxxxxxxx",12, 12, "xxx");
+    private Card dankort = new Card("4571xxxxxxxx",12, 12, "xxx");
     
     private void login(SystemUser user) {
         List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
@@ -80,8 +82,8 @@ public class PayServiceTest {
             fail("Should not be able to update merchant.");
         } catch(Exception ex) { }
         
-        Token token1 = service.getTokens(m).createNew(card);
-        Token token2 = service.getTokens(m2).createNew(card);
+        Token token1 = service.getTokens(m).createNew(dankort);
+        Token token2 = service.getTokens(m2).createNew(dankort);
         
         //Create transaction for m
         Transaction t = service.getTransactions(m).createNew(token1, "T_123", Money.of(CurrencyUnit.USD, 123));
@@ -110,7 +112,7 @@ public class PayServiceTest {
         m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null));
         m = service.getMerchants().save(m);
         
-        Token token = service.getTokens(m).createNew(card);
+        Token token = service.getTokens(m).createNew(dankort);
         assertFalse(token.isExpired());
         
         //Create transaction for m
@@ -132,7 +134,7 @@ public class PayServiceTest {
         m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null));
         m = service.getMerchants().save(m);
         
-        Token token = service.getTokens(m).createNew(card);
+        Token token = service.getTokens(m).createNew(dankort);
         assertFalse(token.isExpired());
         
         //Create transaction for m
@@ -142,8 +144,24 @@ public class PayServiceTest {
             service.getTransactions(m).createNew(token, "T_321", Money.of(CurrencyUnit.USD, 123));
             fail("Should not allow same token twice.");
         } catch(SecurityException ex) { }
+    }
+    
+    @Test
+    public void testMissingGatewayAccess() {
+        Merchant m = new Merchant();
+        m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null, PaymentIntrument.Visa));
+        m = service.getMerchants().save(m);
         
-
+        Token token = service.getTokens(m).createNew(dankort);
+        assertFalse(token.isExpired());
+        
+        try {
+            Transaction t = service.getTransactions(m).createNew(token, "T_123", Money.of(CurrencyUnit.USD, 123));
+            fail("Should have failed");
+        } catch(PaymentException ex) {
+            
+        }
+        
     }
     
     @Test
@@ -187,7 +205,7 @@ public class PayServiceTest {
         List<TokenEvent> evts = service.getEvents(merchant, TokenEvent.class).findAll();
         assertTrue(evts.isEmpty());
         
-        Token token = service.getTokens(merchant).createNew(card);
+        Token token = service.getTokens(merchant).createNew(dankort);
         
         evts = service.getEvents(merchant, TokenEvent.class).findAll();
         assertFalse(evts.isEmpty());
