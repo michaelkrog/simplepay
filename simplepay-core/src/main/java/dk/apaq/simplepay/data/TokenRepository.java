@@ -63,7 +63,8 @@ public class TokenRepository extends EntityManagerRepositoryForSpring<Token, Str
 
     @Override
     public Token save(Token entity) {
-        return encryptToken(super.save(entity));
+        entity = super.save(encryptToken(entity));
+        return findOne(entity.getId());
     }
 
     @Override

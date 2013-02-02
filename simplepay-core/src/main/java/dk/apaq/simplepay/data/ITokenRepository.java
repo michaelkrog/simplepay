@@ -12,7 +12,7 @@ public interface ITokenRepository extends Repository<Token, String> {
 
     /**
      * Creates a new token.
-     * @param card The card to as payment data for this token.
+     * @param card The card to use as payment data for this token.
      * @return The new token.
      */
     Token createNew(Card card);
