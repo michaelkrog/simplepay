@@ -32,13 +32,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author krog
  */
 @Controller
-public class TransactionController extends BaseController {
+public class TransactionApiController extends BaseController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TransactionController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TransactionApiController.class);
     private final IPayService service;
 
     @Autowired
-    public TransactionController(IPayService service) {
+    public TransactionApiController(IPayService service) {
         this.service = service;
     }
 

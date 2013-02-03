@@ -23,13 +23,13 @@ import org.springframework.web.servlet.ModelAndView;
  * @author krog
  */
 @Controller
-public class TransactionController extends BaseController {
+public class TransactionViewController extends BaseController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TransactionController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TransactionViewController.class);
     private final IPayService service;
 
     @Autowired
-    public TransactionController(IPayService service) {
+    public TransactionViewController(IPayService service) {
         this.service = service;
     }
 
@@ -42,9 +42,8 @@ public class TransactionController extends BaseController {
     }
 
    
-    /**
-     * METHODS FOR VIEWS *
-     */
+    /*
+     
     @RequestMapping(value = "/transactions", method = RequestMethod.GET)
     @Transactional(readOnly = true)
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
@@ -53,4 +52,5 @@ public class TransactionController extends BaseController {
         Merchant m = ControllerUtil.getMerchant(service);
         return listEntities(service.getTransactions(m), query, new Sorter("dateCreated", Sorter.Direction.Descending), offset, limit, "transactions");
     }
+    * */
 }

@@ -164,6 +164,20 @@ header {
 	padding: 22px 15px \9;
 }
 
+.navbar .nav > li.divider-vertical {
+    border-right-color: #dfdfdf;;
+    border-left-color: #29a9df;
+    border-left: 0px;
+    height:68px;
+    margin:0px 0px;
+	/*color: #666;
+	border-top:4px solid #fff;
+	text-shadow: none;
+	font-size: 16px;
+	padding: 22px;
+	padding: 22px 15px \9;*/
+}
+
 .navbar .nav > li > a:focus,
 .navbar .nav > li > a:hover {
 	border-top:4px solid #29a9df !important;	

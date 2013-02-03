@@ -11,18 +11,16 @@
         <div class="row">
 
             <!-- start: About -->
-            <div class="span3">
+            <!--div class="span3">
 
-                <h3>About Us</h3>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
-                </p>
+                <h3><spring:message code="footer.aboutus.title"/></h3>
+                <p><spring:message code="footer.aboutus.text"/></p>
 
-            </div>
+            </div-->
             <!-- end: About -->
 
             <!-- start: Photo Stream -->
-            <div class="span3">
+            <!--div class="span3">
 
                 <h3>Photo Stream</h3>
                 <div class="flickr-widget">
@@ -30,13 +28,13 @@
                     <div class="clear"></div>
                 </div>
 
-            </div>
+            </div-->
             <!-- end: Photo Stream -->
 
-            <div class="span6">
+            <!--div class="span6"-->
 
                 <!-- start: Follow Us -->
-                <h3>Follow Us!</h3>
+                <!--h3>Follow Us!</h3>
                 <ul class="social-grid">
                     <li>
                         <div class="social-item">				
@@ -94,17 +92,17 @@
                             </div>
                         </div>
                     </li>
-                </ul>
+                </ul-->
                 <!-- end: Follow Us -->
 
                 <!-- start: Newsletter -->
-                <form id="newsletter">
+                <!--form id="newsletter">
                     <h3>Newsletter</h3>
                     <p>Please leave us your email</p>
                     <label for="newsletter_input">@:</label>
                     <input type="text" id="newsletter_input"/>
                     <input type="submit" id="newsletter_submit" value="submit">
-                </form>
+                </form-->
                 <!-- end: Newsletter -->
 
             </div>

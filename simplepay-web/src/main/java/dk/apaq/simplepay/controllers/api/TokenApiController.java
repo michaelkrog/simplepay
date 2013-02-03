@@ -25,13 +25,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author krog
  */
 @Controller
-public class TokenController {
+public class TokenApiController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TokenController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TokenApiController.class);
     private final IPayService service;
     
     @Autowired
-    public TokenController(IPayService service) {
+    public TokenApiController(IPayService service) {
         this.service = service;
     }
     

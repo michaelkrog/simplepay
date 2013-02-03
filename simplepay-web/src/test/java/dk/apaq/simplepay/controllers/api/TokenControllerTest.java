@@ -1,6 +1,6 @@
 package dk.apaq.simplepay.controllers.api;
 
-import dk.apaq.simplepay.controllers.api.TokenController;
+import dk.apaq.simplepay.controllers.api.TokenApiController;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,7 +67,7 @@ public class TokenControllerTest {
         int expireMonth = 11;
         int expireYear = 2016;
         String cvd = "123";
-        TokenController instance = new TokenController(service);
+        TokenApiController instance = new TokenApiController(service);
         String result = instance.createToken(cardNumber, expireMonth, expireYear, cvd);
         assertNotNull(result);
     }
@@ -78,7 +78,7 @@ public class TokenControllerTest {
     @Test
     public void testListTokens() {
         System.out.println("listTokens");
-        TokenController instance = new TokenController(service);
+        TokenApiController instance = new TokenApiController(service);
         List<Token> result = instance.listTokens();
         assertNotNull(result);
     }
@@ -93,7 +93,7 @@ public class TokenControllerTest {
         int expireMonth = 11;
         int expireYear = 2016;
         String cvd = "123";
-        TokenController instance = new TokenController(service);
+        TokenApiController instance = new TokenApiController(service);
         String token = instance.createToken(cardNumber, expireMonth, expireYear, cvd);
         assertNotNull(token);
         
@@ -112,7 +112,7 @@ public class TokenControllerTest {
         int expireMonth = 11;
         int expireYear = 16;
         String cvd = "123";
-        TokenController instance = new TokenController(service);
+        TokenApiController instance = new TokenApiController(service);
         String token = instance.createToken(cardNumber, expireMonth, expireYear, cvd);
         assertNotNull(token);
         
@@ -131,7 +131,7 @@ public class TokenControllerTest {
         int expireMonth = 11;
         int expireYear = 16;
         String cvd = "qwerty";
-        TokenController instance = new TokenController(service);
+        TokenApiController instance = new TokenApiController(service);
         String token = instance.createToken(cardNumber, expireMonth, expireYear, cvd);
         assertNotNull(token);
         
@@ -150,7 +150,7 @@ public class TokenControllerTest {
         int expireMonth = 43;
         int expireYear = 316;
         String cvd = "wwer";
-        TokenController instance = new TokenController(service);
+        TokenApiController instance = new TokenApiController(service);
         
         try {
             String token = instance.createToken(cardNumber, expireMonth, expireYear, cvd);
@@ -163,7 +163,7 @@ public class TokenControllerTest {
     
     @Test
     public void testGetToken_NotFound() {
-        TokenController instance = new TokenController(service);
+        TokenApiController instance = new TokenApiController(service);
         
         try {
             Token tokenObj = instance.getToken("234re");

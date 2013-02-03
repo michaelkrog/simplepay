@@ -54,6 +54,14 @@
         <servlet-name>api</servlet-name>
         <url-pattern>/index.htm</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>api</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>api</servlet-name>
+        <url-pattern>/signup</url-pattern>
+    </servlet-mapping>
     
     <!-- SITE DISPATCHER -->
     <!--servlet>

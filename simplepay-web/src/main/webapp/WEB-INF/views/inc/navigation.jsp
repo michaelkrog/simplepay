@@ -1,4 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <!--start: Navbar -->
 <div class="navbar navbar-inverse">
@@ -35,7 +36,8 @@
                 <li><a href="pricing.html"><spring:message code="navigation.prices"/></a></li>
                 <!--li><a href="blog.html">Blog</a></li-->
                 <li><a href="contact.html"><spring:message code="navigation.contact"/></a></li>
-                <li><a href="contact.html"><spring:message code="navigation.log_in"/></a></li>
+                <li class="divider-vertical"></li>
+                <li><a href="<c:url value="/login"/>"><spring:message code="navigation.log_in"/></a></li>
             </ul>
         </div>
     </div>

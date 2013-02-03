@@ -150,7 +150,7 @@ public class TransactionControllerTest {
         String query = "refId like '#1*'";
         Integer offset = 0;
         Integer limit = 5;
-        TransactionController instance = new TransactionController(service);
+        TransactionApiController instance = new TransactionApiController(service);
         List<Transaction> result = instance.listTransactions(query, offset, limit);
 
         assertTrue(result.size() == 5);
@@ -168,7 +168,7 @@ public class TransactionControllerTest {
         String currency = "DKK";
         Integer amount = 10000;
         String token = service.getTokens(merchant).createNew(card).getId();
-        TransactionController instance = new TransactionController(service);
+        TransactionApiController instance = new TransactionApiController(service);
         
         String result = instance.createTransaction(token, refId, currency, amount);
 
@@ -190,7 +190,7 @@ public class TransactionControllerTest {
         String currency = "DKK";
         Integer amount = 10000;
         String token = "blabla";
-        TransactionController instance = new TransactionController(service);
+        TransactionApiController instance = new TransactionApiController(service);
         
         try {
             String result = instance.createTransaction(token, refId, currency, amount);
@@ -209,7 +209,7 @@ public class TransactionControllerTest {
     public void testGetTransaction() {
         System.out.println("getTransaction");
         String id = "";
-        TransactionController instance = new TransactionController(service);
+        TransactionApiController instance = new TransactionApiController(service);
         Transaction expResult = null;
         Transaction result = instance.getTransaction(id);
         assertEquals(expResult, result);
@@ -226,7 +226,7 @@ public class TransactionControllerTest {
         System.out.println("refundTransaction");
         String id = "";
         Long amount = null;
-        TransactionController instance = new TransactionController(service);
+        TransactionApiController instance = new TransactionApiController(service);
         Transaction expResult = null;
         Transaction result = instance.refundTransaction(id, amount);
         assertEquals(expResult, result);
@@ -243,7 +243,7 @@ public class TransactionControllerTest {
         System.out.println("chargeTransaction");
         String id = "";
         Long amount = null;
-        TransactionController instance = new TransactionController(service);
+        TransactionApiController instance = new TransactionApiController(service);
         Transaction expResult = null;
         Transaction result = instance.chargeTransaction(id, amount);
         assertEquals(expResult, result);
@@ -259,7 +259,7 @@ public class TransactionControllerTest {
     public void testCancelTransaction() {
         System.out.println("cancelTransaction");
         String id = "";
-        TransactionController instance = new TransactionController(service);
+        TransactionApiController instance = new TransactionApiController(service);
         Transaction expResult = null;
         Transaction result = instance.cancelTransaction(id);
         assertEquals(expResult, result);

@@ -14,4 +14,9 @@ public class LoginController {
     public String handleLogin() {
         return "login";
     }
+    
+    @RequestMapping("/signup")
+    public String handleSignup() {
+        return "signup";
+    }
 }
