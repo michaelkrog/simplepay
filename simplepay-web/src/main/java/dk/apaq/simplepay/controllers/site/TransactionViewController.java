@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,7 +43,7 @@ public class TransactionViewController extends BaseController {
     }
 
    
-    /*
+    
      
     @RequestMapping(value = "/transactions", method = RequestMethod.GET)
     @Transactional(readOnly = true)
@@ -52,5 +53,14 @@ public class TransactionViewController extends BaseController {
         Merchant m = ControllerUtil.getMerchant(service);
         return listEntities(service.getTransactions(m), query, new Sorter("dateCreated", Sorter.Direction.Descending), offset, limit, "transactions");
     }
-    * */
+    
+    @RequestMapping(value = "/transactions/{id}", method = RequestMethod.GET)
+    @Transactional(readOnly = true)
+    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
+    public ModelAndView editTransaction(@PathVariable String id) {
+        Merchant m = ControllerUtil.getMerchant(service);
+        Transaction transaction = getTransaction(m, id);
+        return new ModelAndView("transaction_edit", "entity", transaction);
+    }
+    
 }
