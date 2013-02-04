@@ -11,8 +11,15 @@
             <div class="modal-header">
                 <h3 style="text-align:center;">Welcome Back!</h3>
             </div>
-            <div class="modal-body">
-                <form style="margin:0px" class="form-horizontal">
+            <form style="margin:0px" class="form-horizontal" action="<c:url value="/j_spring_security_check"/>" method="POST">
+                <c:set var="error" value="${sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message}"/>
+                <div class="modal-body">
+                    <c:if test="${not empty error}">
+                        <div class="alert alert-error">
+                            Your login attempt was not successful, try again.<br /> Caused : ${error}
+                        </div>
+                    </c:if>
+
                     <div class="control-group">
                         <label class="control-label" for="inputEmail">Email</label>
                         <div class="controls">
@@ -21,7 +28,7 @@
                     </div>                    <div class="control-group">
                         <label class="control-label" for="inputEmail">Password</label>
                         <div class="controls">
-                            <input type="text" name="j_password" class="input-large" placeholder="Password">
+                            <input type="password" name="j_password" class="input-large" placeholder="Password">
                         </div>
                     </div>
 
@@ -33,13 +40,14 @@
 
                         </div>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
 
-                <a href="<c:url value="signup"/>" class="btn pull-left">No account? Sign up!</a>
-                <a href="#" class="btn btn-primary">Sign In!</a>
-            </div>
+                </div>
+                <div class="modal-footer">
+
+                    <a href="<c:url value="signup"/>" class="btn pull-left">No account? Sign up!</a>
+                    <button type="submit" class="btn btn-primary">Sign In!</button>
+                </div>
+            </form>
         </div>
     </body>
 </html>

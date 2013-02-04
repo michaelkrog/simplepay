@@ -29,13 +29,13 @@
                 <!-- start: Container -->
                 <div class="container">
                     <div class="container" style="height: 180px;">
-                        <div class="pull-left" style="top: 50%;position: absolute;margin-top: -70px;padding-left:5%;">
+                        <div class="pull-left" style="top: 50%;position: absolute;margin-top: -70px;padding-left:3%;">
                             <h2 style="text-shadow: 0px 1px 3px #3f3f3f;"><spring:message code="landingpage.teaser.title"/></h2>
                             <h3 style="color: whitesmoke;padding-left: 20px;margin-bottom: 10px;text-shadow: 0px 1px 3px #3f3f3f;"><spring:message code="landingpage.teaser.text"/></h3>
 
                             <a href="<c:url value="/signup"/>" class="btn" style="margin-left: 20px;"><spring:message code="landingpage.teaser.button"/></a>
                         </div>
-                        <div class="pull-right visible-desktop" style="padding-right:5%">
+                        <div class="pull-right visible-desktop" style="padding-right:3%">
                             <img src="<c:url value="/img/cardcloud.png"/>"  height="160px">
                         </div>
    
@@ -139,8 +139,9 @@
                             <div class="icons-box-vert">
                                 <i class="ico-euro ico-white circle-color-full"></i>
                                 <div class="icons-box-vert-info">
+                                    <c:url var="acquirerUrl" value="/acquirers"/>
                                     <h3><spring:message code="landingpage.iconboxes.title_5"/></h3>
-                                    <p><spring:message code="landingpage.iconboxes.text_5"/></p>
+                                    <p><spring:message arguments="${acquirerUrl}" code="landingpage.iconboxes.text_5"/></p>
                                 </div>
                                 <div class="clear"></div>
                             </div>

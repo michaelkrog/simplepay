@@ -1,6 +1,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
+
 <!--start: Navbar -->
 <div class="navbar navbar-inverse">
     <div class="navbar-inner">
@@ -37,7 +39,19 @@
                 <!--li><a href="blog.html">Blog</a></li-->
                 <li><a href="contact.html"><spring:message code="navigation.contact"/></a></li>
                 <li class="divider-vertical"></li>
+                <sec:authorize ifNotGranted="ROLE_MERCHANT">
                 <li><a href="<c:url value="/login"/>"><spring:message code="navigation.log_in"/></a></li>
+                </sec:authorize>
+                <sec:authorize ifAnyGranted="ROLE_MERCHANT">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Mit SimplePay<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="<c:url value="/account"/>">Min konto</a></li>
+                        <li><a href="<c:url value="/data/transactions"/>">Oversigt</a></li>
+                        <li><a href="<c:url value="/logout"/>">Log ud</a></li>
+                    </ul>
+                </li>
+                </sec:authorize>
             </ul>
         </div>
     </div>

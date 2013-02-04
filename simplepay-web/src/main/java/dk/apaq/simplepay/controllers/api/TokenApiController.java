@@ -51,7 +51,7 @@ public class TokenApiController {
      * @param cvd The cvd code.
      * @return The token id.
      */
-    @RequestMapping(value = "/tokens", method = RequestMethod.POST)
+    //@RequestMapping(value = "/tokens", method = RequestMethod.POST, headers = "Accept=application/json")
     @Transactional()
     @Secured({"ROLE_PUBLICAPIACCESSOR", "ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT" }) 
     @ResponseBody
@@ -67,7 +67,7 @@ public class TokenApiController {
      * List tokens for the current merchant.
      * @return The tokens.
      */
-    @RequestMapping(value = "/tokens", method = RequestMethod.GET)
+    //@RequestMapping(value = "/tokens", method = RequestMethod.GET, headers = "Accept=application/json")
     @Transactional(readOnly = true)
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT" })
     @ResponseBody
@@ -82,7 +82,7 @@ public class TokenApiController {
      * @param token The token id.
      * @return The token.
      */
-    @RequestMapping(value = "/tokens/{token}", method = RequestMethod.GET)
+    //@RequestMapping(value = "/tokens/{token}", method = RequestMethod.GET, headers = "Accept=application/json")
     @Transactional(readOnly = true)
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT" })
     @ResponseBody

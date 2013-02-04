@@ -8,20 +8,21 @@
            http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
            <!-- Admin, PrivateApiAccessor, PublicApiAccessor, Merchant -->
-    <http pattern="/api/**" create-session="stateless">
-        <intercept-url pattern="/api/callback/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/api/**" access="ROLE_PUBLICAPIACCESSOR,ROLE_PRIVATEAPIACCESSOR, ROLE_MERCHANT" />
+           
+    <http disable-url-rewriting="true" request-matcher-ref="jsonMatcher" create-session="stateless">
+        <intercept-url method="POST" pattern="/data/tokens" access="ROLE_PUBLICAPIACCESSOR,ROLE_PRIVATEAPIACCESSOR,ROLE_MERCHANT" />
+        <intercept-url method="GET" pattern="/data/**" access="ROLE_PRIVATEAPIACCESSOR,ROLE_MERCHANT" />
+        <intercept-url method="POST" pattern="/data/**" access="ROLE_PRIVATEAPIACCESSOR,ROLE_MERCHANT" />
+        <intercept-url method="DELETE" pattern="/data/**" access="ROLE_PRIVATEAPIACCESSOR,ROLE_MERCHANT" />
         <http-basic />
     </http>
     
-    <http>
-        <intercept-url pattern="/dashboard/**" access="ROLE_MERCHANT" />
-        <intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        
+    <http disable-url-rewriting="true"> <!--use-expressions="true">-->
+        <intercept-url method="GET" pattern="/data/**" access="ROLE_MERCHANT" />
+        <intercept-url method="POST" pattern="/data/**" access="ROLE_MERCHANT" />
+        <intercept-url method="DELETE" pattern="/data/**" access="ROLE_MERCHANT" />
         <form-login login-page="/login" />
-        <logout logout-url="/logout" invalidate-session="true"/>
     </http>
-
     
     <authentication-manager alias="authenticationManager">
         <authentication-provider user-service-ref="userDetailsManager" />
@@ -29,4 +30,7 @@
 
     <beans:bean id="userDetailsManager" class="dk.apaq.simplepay.security.SystemUserDetailsManager" />
 
+    <beans:bean id="jsonMatcher" class="org.springframework.security.web.util.ELRequestMatcher">
+        <beans:constructor-arg value="hasHeader('Accept','application/json')"/>
+    </beans:bean>  
 </beans:beans>

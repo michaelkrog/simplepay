@@ -45,7 +45,9 @@
             <!--start: Container -->
             <div class="container">
 
-                
+                <c:forEach var="e" items="${entities}">
+                    ${e.id}
+                </c:forEach>
 
             </div>
             <!--end: Container-->

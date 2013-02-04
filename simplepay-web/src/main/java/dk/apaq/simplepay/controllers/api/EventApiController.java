@@ -30,7 +30,7 @@ public class EventApiController extends BaseController {
     @Autowired
     private IPayService service;
 
-    @RequestMapping(value = "/events", method = RequestMethod.GET)
+    //@RequestMapping(value = "/events", method = RequestMethod.GET, headers = "Accept=application/json")
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
     public List listEvents(@RequestParam(required = false) String type, @RequestParam(required = false) String entityId, 

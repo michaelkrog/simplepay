@@ -1,3 +1,4 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!-- start: Meta -->
 <meta charset="utf-8">
 <meta name="description" content="Smart Bootstrap Theme"/>
@@ -18,10 +19,10 @@
 <!-- end: Facebook Open Graph -->
 
 <!-- start: CSS -->
-<link href="css/bootstrap.css" rel="stylesheet">
-<link href="css/bootstrap-responsive.css" rel="stylesheet">
-<link href="css/style.css" rel="stylesheet">
-<link href="css/parallax-slider.css" rel="stylesheet">
+<link href="<c:url value="/css/bootstrap.css"/>" rel="stylesheet">
+<link href="<c:url value="/css/bootstrap-responsive.css"/>" rel="stylesheet">
+<link href="<c:url value="/css/style.css"/>" rel="stylesheet">
+<link href="<c:url value="/css/parallax-slider.css"/>" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid+Sans:400,700">
 <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid+Serif">
 <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Boogaloo">
@@ -34,5 +35,5 @@
 <![endif]-->
 
 <!--[if IE 9]>
-<link href="css/styleie9.css" rel="stylesheet">
+<link href="<c:url value="/css/styleie9.css"/>" rel="stylesheet">
 <![endif]-->
