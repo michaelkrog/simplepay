@@ -2,7 +2,6 @@ package dk.apaq.simplepay.data;
 
 import javax.persistence.EntityManager;
 
-import com.sun.org.apache.xerces.internal.impl.dv.ValidatedInfo;
 import dk.apaq.framework.repository.jpa.EntityManagerRepositoryForSpring;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.common.ETransactionStatus;
