@@ -11,6 +11,7 @@ import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.TokenEvent;
+import dk.apaq.simplepay.util.IdGenerator;
 import dk.apaq.simplepay.util.RequestInformationHelper;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,9 @@ public class TokenRepository extends EntityManagerRepositoryForSpring<Token, Str
     @Override
     @Transactional
     public Token createNew(Card card) {
-        Token token = save(new Token(card));
+        Token token = new Token(card);
+        token.setId(IdGenerator.generateUniqueId("t"));
+        token = save(token);
 
         TokenEvent evt = new TokenEvent(token, "Token created.", service.getCurrentUsername(), RequestInformationHelper.getRemoteAddress());
         service.getEvents(token.getMerchant(), TokenEvent.class).save(evt);

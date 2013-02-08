@@ -2,11 +2,14 @@ package dk.apaq.simplepay.model;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import dk.apaq.framework.common.beans.finance.Card;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  *
@@ -15,6 +18,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 @Entity
 public class Token extends BaseEntity {
 
+    
     @NotNull
     private ETokenPurpose purpose = ETokenPurpose.SinglePayment;
     private boolean expired = false;

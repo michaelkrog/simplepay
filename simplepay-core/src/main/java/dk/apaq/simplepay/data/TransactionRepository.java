@@ -10,6 +10,7 @@ import dk.apaq.simplepay.gateway.IPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.model.*;
+import dk.apaq.simplepay.util.IdGenerator;
 import dk.apaq.simplepay.util.RequestInformationHelper;
 import org.apache.commons.lang.Validate;
 import org.joda.money.Money;
@@ -52,7 +53,7 @@ public class TransactionRepository extends EntityManagerRepositoryForSpring<Tran
         }
 
         Transaction transaction = new Transaction(token.getId(), refId, money, access.getPaymentGatewayType());
-
+        transaction.setId(IdGenerator.generateUniqueId("p"));
 
         //Create gateway
         IPaymentGateway gateway = gatewayManager.getPaymentGateway(access.getPaymentGatewayType());

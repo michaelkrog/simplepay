@@ -18,7 +18,7 @@ import dk.apaq.simplepay.gateway.EPaymentGateway;
  * @author krog
  */
 @Entity
-public class PaymentGatewayAccess extends BaseEntity {
+public class PaymentGatewayAccess extends BaseEntityWithGeneratedId {
 
     private EPaymentGateway paymentGatewayType;
     private String acquirerRefId;

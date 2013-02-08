@@ -51,9 +51,8 @@ public class TokenApiController {
      * @param cvd The cvd code.
      * @return The token id.
      */
-    //@RequestMapping(value = "/tokens", method = RequestMethod.POST, headers = "Accept=application/json")
+    @RequestMapping(value = "/tokens", method = RequestMethod.POST, headers = "Accept=application/json")
     @Transactional()
-    @Secured({"ROLE_PUBLICAPIACCESSOR", "ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT" }) 
     @ResponseBody
     public String createToken(@RequestParam String cardNumber, @RequestParam int expireMonth, @RequestParam int expireYear,
             @RequestParam String cvd) {
@@ -67,9 +66,8 @@ public class TokenApiController {
      * List tokens for the current merchant.
      * @return The tokens.
      */
-    //@RequestMapping(value = "/tokens", method = RequestMethod.GET, headers = "Accept=application/json")
+    @RequestMapping(value = "/tokens", method = RequestMethod.GET, headers = "Accept=application/json")
     @Transactional(readOnly = true)
-    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT" })
     @ResponseBody
     public List<Token> listTokens() {
         Merchant m = ControllerUtil.getMerchant(service);
@@ -82,9 +80,8 @@ public class TokenApiController {
      * @param token The token id.
      * @return The token.
      */
-    //@RequestMapping(value = "/tokens/{token}", method = RequestMethod.GET, headers = "Accept=application/json")
+    @RequestMapping(value = "/tokens/{token}", method = RequestMethod.GET, headers = "Accept=application/json")
     @Transactional(readOnly = true)
-    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT" })
     @ResponseBody
     public Token getToken(@PathVariable String token) {
         Merchant m = ControllerUtil.getMerchant(service);

@@ -25,7 +25,7 @@ public class IdGeneratorTest {
             @Override
             public void run() {
                 List<String> list = new ArrayList<String>();
-                for (int i = 0; i < 5000; i++) {
+                for (int i = 0; i < 10000; i++) {
                     list.add(IdGenerator.generateUniqueId());
                     Thread.yield();
                 }
@@ -43,19 +43,19 @@ public class IdGeneratorTest {
         t3.start();
         t4.start();
 
+        Thread.sleep(100);
+        
         t1.join();
         t2.join();
         t3.join();
         t4.join();
         
+        Thread.sleep(100);
+        
         List<String> dups = getDuplicate(ids);
         System.out.println(ids.get(0));
         System.out.println(ids.get(ids.size()-1));
-        /*for(String id : ids) {
-            System.out.println(id);
-        }*/
         assertTrue(dups.isEmpty());
-        //assertFalse(result.endsWith("="));
     }
 
     private <T> List getDuplicate(Collection<T> list) {

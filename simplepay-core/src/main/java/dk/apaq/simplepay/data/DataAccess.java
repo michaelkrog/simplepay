@@ -6,6 +6,7 @@ import dk.apaq.framework.criteria.Criteria;
 import dk.apaq.framework.criteria.Rule;
 import dk.apaq.framework.criteria.Rules;
 import dk.apaq.framework.repository.BaseRepositoryListener;
+import dk.apaq.framework.repository.Repository;
 import dk.apaq.framework.repository.RepositoryEvent.List;
 import dk.apaq.framework.repository.RepositoryEvent.WithEntity;
 import dk.apaq.framework.repository.RepositoryEvent.WithIdAndEntity;
@@ -104,7 +105,7 @@ public class DataAccess {
             }
 
             checkStatus(event.getEntity());
-            checkToken(event.getEntity());
+            checkToken(event.getRepository(), event.getEntity());
 
             event.getEntity().setDateChanged(new Date());
 
@@ -117,13 +118,13 @@ public class DataAccess {
             }
 
             checkStatus(event.getEntity());
-            checkToken(event.getEntity());
-
+            checkToken(event.getRepository(), event.getEntity());
+            
             event.getEntity().setMerchant(getOwner());
             event.getEntity().setDateChanged(new Date());
         }
 
-        private void checkToken(Transaction t) {
+        private void checkToken(Repository rep, Transaction t) {
             String token = t.getToken();
 
             if (token == null) {
@@ -132,7 +133,7 @@ public class DataAccess {
 
             Token existingToken = service.getTokens(getOwner()).findOne(token);
 
-            if (t.getId() == null) { //new transaction
+            if (t.getId() == null || rep.findOne(t.getId()) == null) { //new transaction
                 if (existingToken.isExpired()) {
                     throw new SecurityException("Cannot use a token that has already been used.");
                 }
@@ -218,9 +219,11 @@ public class DataAccess {
 
         @Override
         public void onBeforeEntityUpdate(WithIdAndEntity<Token, String> event) {
-            if (!event.getEntity().getMerchant().getId().equals(owner.getId())) {
+            if (event.getEntity().getMerchant() != null && !event.getEntity().getMerchant().getId().equals(owner.getId())) {
                 throw new SecurityException("Unable to change owner of token.");
             }
+            
+            event.getEntity().setMerchant(owner);
 
             Token existingToken = service.getTokens(owner).findOne(event.getEntityId());
             if (existingToken == null) {

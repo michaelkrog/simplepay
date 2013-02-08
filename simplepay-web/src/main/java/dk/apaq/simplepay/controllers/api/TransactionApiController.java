@@ -57,9 +57,8 @@ public class TransactionApiController extends BaseController {
      * @param limit Max numbers of results.
      * @return The transactions.
      */
-    //@RequestMapping(value = "/transactions", method = RequestMethod.GET, headers = "Accept=application/json")
+    @RequestMapping(value = "/transactions", method = RequestMethod.GET, headers = "Accept=application/json")
     @Transactional(readOnly = true)
-    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT" })
     @ResponseBody
     public List<Transaction> listTransactions(@RequestParam(required = false) String query, @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "1000") Integer limit) {
@@ -76,9 +75,8 @@ public class TransactionApiController extends BaseController {
      * @param amount The amount in minors. (Fx. 100.00 would be 10000)
      * @return The id of the new transaction
      */
-    //@RequestMapping(value = "/transactions", method = RequestMethod.POST, headers = "Accept=application/json")
+    @RequestMapping(value = "/transactions", method = RequestMethod.POST, headers = "Accept=application/json")
     @Transactional(readOnly = true)
-    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT" })
     @ResponseBody
     public String createTransaction(@RequestParam String token, @RequestParam String refId, @RequestParam String currency, 
                                     @RequestParam Integer amount) {
@@ -109,9 +107,8 @@ public class TransactionApiController extends BaseController {
      * @param amount The amount to refund in minors (Fx. 100.00 would be 10000. )
      * @return The transaction.
      */
-    //@RequestMapping(value = "/transactions/{id}/refund", method = RequestMethod.POST, headers = "Accept=application/json")
+    @RequestMapping(value = "/transactions/{id}/refund", method = RequestMethod.POST, headers = "Accept=application/json")
     @Transactional
-    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
     public Transaction refundTransaction(@PathVariable String id, @RequestParam(required = false) Long amount) {
         Merchant m = ControllerUtil.getMerchant(service);
@@ -131,9 +128,8 @@ public class TransactionApiController extends BaseController {
      * @param amount The amount to charge in minors (Fx. 100.00 would be 10000. )
      * @return The transaction.
      */
-    //@RequestMapping(value = "/transactions/{id}/charge", method = RequestMethod.POST, headers = "Accept=application/json")
+    @RequestMapping(value = "/transactions/{id}/charge", method = RequestMethod.POST, headers = "Accept=application/json")
     @Transactional
-    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT" })
     @ResponseBody
     public Transaction chargeTransaction(@PathVariable String id, @RequestParam(required = false) Long amount) {
         Merchant m = ControllerUtil.getMerchant(service);
@@ -156,9 +152,8 @@ public class TransactionApiController extends BaseController {
      * @param id The id of the transaction.
      * @return The transaction.
      */
-    //@RequestMapping(value = "/transactions/{id}/cancel", method = RequestMethod.POST, headers = "Accept=application/json")
+    @RequestMapping(value = "/transactions/{id}/cancel", method = RequestMethod.POST, headers = "Accept=application/json")
     @Transactional
-    @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT" })
     @ResponseBody
     public Transaction cancelTransaction(@PathVariable String id) {
         Merchant m = ControllerUtil.getMerchant(service);

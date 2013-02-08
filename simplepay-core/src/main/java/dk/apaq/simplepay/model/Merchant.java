@@ -17,7 +17,7 @@ import org.joda.money.Money;
  * @author krog
  */
 @Entity
-public class Merchant extends BaseEntity {
+public class Merchant extends BaseEntityWithGeneratedId {
 
     private String name;
     private String email;

@@ -1,3 +1,7 @@
+/*
+ * Copyright by Apaq 2011-2013
+ */
+
 package dk.apaq.simplepay.model;
 
 import java.io.Serializable;
@@ -8,21 +12,18 @@ import javax.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
- *
- * @author krog
+ * Javadoc
  */
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class BaseEntity implements Serializable {
-
     @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
     private String _id;
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date dateCreated;
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date dateChanged;
+    
+    @Temporal(value = TemporalType.TIMESTAMP)
+    protected Date dateChanged;
+    @Temporal(value = TemporalType.TIMESTAMP)
+    protected Date dateCreated;
 
     public String getId() {
         return _id;
@@ -36,15 +37,16 @@ public abstract class BaseEntity implements Serializable {
         return dateChanged;
     }
 
-    public void setDateChanged(Date dateChanged) {
-        this.dateChanged = dateChanged;
-    }
-
     public Date getDateCreated() {
         return dateCreated;
+    }
+
+    public void setDateChanged(Date dateChanged) {
+        this.dateChanged = dateChanged;
     }
 
     public void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;
     }
+
 }

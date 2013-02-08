@@ -44,7 +44,7 @@
                 </sec:authorize>
                 <sec:authorize ifAnyGranted="ROLE_MERCHANT">
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Mit SimplePay<b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Mit SimplePay&nbsp;<b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="<c:url value="/account"/>">Min konto</a></li>
                         <li><a href="<c:url value="/data/transactions"/>">Oversigt</a></li>

@@ -45,7 +45,7 @@ public class TransactionViewController extends BaseController {
    
     
      
-    @RequestMapping(value = "/transactions", method = RequestMethod.GET)
+    @RequestMapping(value = "/transactions.html", method = RequestMethod.GET)
     @Transactional(readOnly = true)
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     public ModelAndView listTransactions(@RequestParam(required = false) String query, @RequestParam(defaultValue = "0") Integer offset,
@@ -54,7 +54,7 @@ public class TransactionViewController extends BaseController {
         return listEntities(service.getTransactions(m), query, new Sorter("dateCreated", Sorter.Direction.Descending), offset, limit, "transactions");
     }
     
-    @RequestMapping(value = "/transactions/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/transactions/{id}.html", method = RequestMethod.GET)
     @Transactional(readOnly = true)
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     public ModelAndView editTransaction(@PathVariable String id) {
