@@ -19,6 +19,7 @@ import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Transaction;
 import org.apache.commons.lang.Validate;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
@@ -35,7 +36,7 @@ public class DataAccess {
             if (owner.getId() == null) {
                 throw new IllegalArgumentException("Merchant has never been persisted.");
             }
-            
+
             this.owner = owner;
         }
 
@@ -57,7 +58,6 @@ public class DataAccess {
         public Merchant getOwner() {
             return owner;
         }
-        
     }
 
     public static class MerchantSecurity extends BaseRepositoryListener<Merchant, String> {
@@ -69,12 +69,18 @@ public class DataAccess {
         }
 
         @Override
-        public void onBeforeEntityUpdate(WithIdAndEntity<Merchant, String> event) {
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            SystemUser user = service.getUser(username);
-            Merchant usersMerchant = user.getMerchant();
-            if (!usersMerchant.getId().equals(event.getEntity().getId())) {
-                throw new SecurityException("Not allowed to change other merchants.");
+        public void onBeforeEntitySave(WithIdAndEntity<Merchant, String> event) {
+            if (event.getEntity().getId() != null) {
+                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+                if (auth == null) {
+                    throw new IllegalStateException("No authenticated user available.");
+                }
+                String username = auth.getName();
+                SystemUser user = service.getUser(username);
+                Merchant usersMerchant = user.getMerchant();
+                if (!usersMerchant.getId().equals(event.getEntity().getId())) {
+                    throw new SecurityException("Not allowed to change other merchants.");
+                }
             }
         }
     }
@@ -82,21 +88,20 @@ public class DataAccess {
     public static class TransactionSecurity extends GeneralSecurity<Transaction> {
 
         private final IPayService service;
-        
+
         public TransactionSecurity(PayService service, Merchant owner) {
             super(owner);
             this.service = service;
         }
 
         @Override
-        public void onBeforeEntityUpdate(WithIdAndEntity<Transaction, String> event) {
+        public void onBeforeEntitySave(WithIdAndEntity<Transaction, String> event) {
             Transaction stale = service.getTransactions(getOwner()).findOne(event.getEntityId());
             if (stale != null && !stale.getId().equals(event.getEntityId())) {
                 throw new IllegalArgumentException("Ordernumber already used.");
             }
 
-            stale = event.getRepository().findOne(event.getEntityId());
-            if (stale.getMerchant() != null && stale.getMerchant().getId() != null) {
+            if (stale != null && stale.getMerchant() != null && stale.getMerchant().getId() != null) {
                 if (!stale.getMerchant().getId().equals(event.getEntity().getMerchant().getId())) {
                     throw new SecurityException("Not allowed to take other merchants transactions.");
                 }
@@ -109,19 +114,6 @@ public class DataAccess {
 
             event.getEntity().setDateChanged(new Date());
 
-        }
-
-        @Override
-        public void onBeforeEntityCreate(WithEntity<Transaction, String> event) {
-            if (service.getTransactionByRefId(getOwner(), event.getEntity().getRefId()) != null) {
-                throw new SecurityException("Ordernumber already used. [Merchant=" + getOwner().getId() + ";orderNumber=" + event.getEntity().getRefId() + "]");
-            }
-
-            checkStatus(event.getEntity());
-            checkToken(event.getRepository(), event.getEntity());
-            
-            event.getEntity().setMerchant(getOwner());
-            event.getEntity().setDateChanged(new Date());
         }
 
         private void checkToken(Repository rep, Transaction t) {
@@ -192,13 +184,7 @@ public class DataAccess {
         }
 
         @Override
-        public void onBeforeEntityUpdate(WithIdAndEntity<Event, String> event) {
-            throw new SecurityException("Events cannot be changed.");
-
-        }
-
-        @Override
-        public void onBeforeEntityCreate(WithEntity<Event, String> event) {
+        public void onBeforeEntitySave(WithIdAndEntity<Event, String> event) {
             event.getEntity().setMerchant(owner);
         }
     }
@@ -218,26 +204,21 @@ public class DataAccess {
         }
 
         @Override
-        public void onBeforeEntityUpdate(WithIdAndEntity<Token, String> event) {
+        public void onBeforeEntitySave(WithIdAndEntity<Token, String> event) {
             if (event.getEntity().getMerchant() != null && !event.getEntity().getMerchant().getId().equals(owner.getId())) {
                 throw new SecurityException("Unable to change owner of token.");
             }
-            
+
             event.getEntity().setMerchant(owner);
 
             Token existingToken = service.getTokens(owner).findOne(event.getEntityId());
             if (existingToken == null) {
-                throw new IllegalArgumentException("No token for merchant with specified entityid[id=" + event.getEntityId() + "]");
+                /*if(existingToken.isUsed()) {
+                 throw new SecurityException("Cannot change token that has been used.");
+                 }*/
             }
 
-            /*if(existingToken.isUsed()) {
-             throw new SecurityException("Cannot change token that has been used.");
-             }*/
-        }
 
-        @Override
-        public void onBeforeEntityCreate(WithEntity<Token, String> token) {
-            token.getEntity().setMerchant(owner);
         }
     }
 }
