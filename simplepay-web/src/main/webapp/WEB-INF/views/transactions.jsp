@@ -65,19 +65,20 @@
                         </p>
                         <div>
                             <ul class="nav nav-tabs nav-stacked">
-                            <c:forEach var="e" items="${entities}">
-                                <li>
-                                <a href="<c:url value="/data/transactions/${e.id}.html"/>">
-                                    <div class="pull-left" style="width:35%;white-space:nowrap;overflow:hidden;text-overflow: ellipsis;padding-right: 15px">adsasd asd asd asd sad asd as d ad asd as das${e.refId}</div>
-                                    <span>${e.status}</span>
-                                    <span class="pull-right hidden-phone" style="padding-left:15px"><fmt:formatDate type="both" dateStyle="medium" timeStyle="medium" value="${e.dateChanged}" />&nbsp;<i class="mini-ico-circle-arrow-right mini-color"></i></span>
-                                    <span class="pull-right visible-phone" style="padding-left:15px"><fmt:formatDate type="date" dateStyle="medium" value="${e.dateChanged}" />&nbsp;<i class="mini-ico-circle-arrow-right mini-color"></i></span>
-                                    <span class="pull-right" style="text-align:right"><fmt:formatNumber currencyCode="${e.currency}" value="${e.amount/100}" type="currency"/></span>
-                                    
-                                </a>
-                                </li>
+                                <c:forEach var="e" items="${entities}">
+                                    <li>
+                                        <a href="<c:url value="/data/transactions/${e.id}.html"/>">
+                                            <div class="pull-left" style="width:50%;white-space:nowrap;overflow:hidden;text-overflow: ellipsis;padding-right: 15px"><fmt:formatNumber currencyCode="${e.currency}" value="${e.amount/100}" type="currency"/> — ${e.id}</div>
+                                            <span>${e.status}</span>
+                                            
+                                            <span class="pull-right">&nbsp;<i class="mini-ico-ok mini-color"></i></span>
+                                            <span class="pull-right hidden-phone" style="padding-left:15px"><fmt:formatDate type="both" dateStyle="medium" timeStyle="medium" value="${e.dateChanged}" />&nbsp;<i class="mini-ico-circle-arrow-right mini-color"></i></span>
+                                            <span class="pull-right visible-phone" style="padding-left:15px"><fmt:formatDate type="date" dateStyle="medium" value="${e.dateChanged}" />&nbsp;<i class="mini-ico-circle-arrow-right mini-color"></i></span>
+
+                                        </a>
+                                    </li>
                                 </c:forEach>
-                                </ul>
+                            </ul>
                         </div>
                     </div>
                 </div>

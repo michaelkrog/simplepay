@@ -47,7 +47,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Mit SimplePay&nbsp;<b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="<c:url value="/account"/>">Min konto</a></li>
-                        <li><a href="<c:url value="/data/transactions"/>">Oversigt</a></li>
+                        <li><a href="<c:url value="/data/transactions.html"/>">Oversigt</a></li>
                         <li><a href="<c:url value="/logout"/>">Log ud</a></li>
                     </ul>
                 </li>
