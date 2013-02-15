@@ -69,7 +69,7 @@ public class TokenRepositoryTest {
         assertEquals("4111111111111111", encryptor.decrypt(token.getData().getCardNumber()));
         assertEquals("xxx", encryptor.decrypt(token.getData().getCvd()));
         
-        assertFalse(rep.findAll().isEmpty());
+        assertTrue(rep.findAll().iterator().hasNext());
         
     }
 

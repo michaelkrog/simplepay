@@ -96,12 +96,12 @@ public class PayServiceTest {
         assertEquals(ETransactionStatus.Authorized, t.getStatus());
         
         //Make sure that transactions are only available throught he right merchants
-        List<Transaction> tlist = service.getTransactions(m).findAll();
-        List<Transaction> tlist2 = service.getTransactions(m2).findAll();
-        assertEquals(1, tlist.size());
-        assertEquals(1, tlist2.size());
-        assertEquals("T_123", tlist.get(0).getRefId());
-        assertEquals("T_321", tlist2.get(0).getRefId());
+        Iterable<Transaction> tlist = service.getTransactions(m).findAll();
+        Iterable<Transaction> tlist2 = service.getTransactions(m2).findAll();
+        assertTrue(tlist.iterator().hasNext());
+        assertTrue(tlist2.iterator().hasNext());
+        assertEquals("T_123", tlist.iterator().next().getRefId());
+        assertEquals("T_321", tlist2.iterator().next().getRefId());
         
     }
 
@@ -202,13 +202,13 @@ public class PayServiceTest {
     @Test
     public void testEvents() {
         Merchant merchant = service.getMerchants().save(new Merchant());
-        List<TokenEvent> evts = service.getEvents(merchant, TokenEvent.class).findAll();
-        assertTrue(evts.isEmpty());
+        Iterable<TokenEvent> evts = service.getEvents(merchant, TokenEvent.class).findAll();
+        assertFalse(evts.iterator().hasNext());
         
         Token token = service.getTokens(merchant).createNew(dankort);
         
         evts = service.getEvents(merchant, TokenEvent.class).findAll();
-        assertFalse(evts.isEmpty());
+        assertTrue(evts.iterator().hasNext());
         
     }
 }

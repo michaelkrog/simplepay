@@ -2,7 +2,7 @@ package dk.apaq.simplepay.data;
 
 import javax.persistence.EntityManager;
 
-import dk.apaq.framework.repository.jpa.EntityManagerRepositoryForSpring;
+import dk.apaq.framework.repository.jpa.EntityManagerRepository;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.common.ETransactionStatus;
 import dk.apaq.simplepay.gateway.EPaymentGateway;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author michael
  */
-public class TransactionRepository extends EntityManagerRepositoryForSpring<Transaction, String> implements ITransactionRepository {
+public class TransactionRepository extends EntityManagerRepository<Transaction, String> implements ITransactionRepository {
 
     @Autowired
     private PaymentGatewayManager gatewayManager;

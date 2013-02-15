@@ -38,16 +38,16 @@
     
         
     <!-- CRUD AND SERVICE BEANS -->
-    <bean id="repository" class="dk.apaq.framework.repository.jpa.EntityManagerRepositoryForSpring" scope="prototype">
-        <property name="transactionsHandledByProvider" value="false"/>
+    <bean id="repository" class="dk.apaq.framework.repository.jpa.EntityManagerRepository" scope="prototype">
+        <property name="transactionsHandled" value="false"/>
     </bean>
 
     <bean id="tokenRepository" class="dk.apaq.simplepay.data.TokenRepository" scope="prototype">
-        <property name="transactionsHandledByProvider" value="false"/>
+        <property name="transactionsHandled" value="false"/>
     </bean>
     
     <bean id="transactionRepository" class="dk.apaq.simplepay.data.TransactionRepository" scope="prototype">
-        <property name="transactionsHandledByProvider" value="false"/>
+        <property name="transactionsHandled" value="false"/>
     </bean>
 
     

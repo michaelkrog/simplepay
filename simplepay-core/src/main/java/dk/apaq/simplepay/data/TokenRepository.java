@@ -6,7 +6,7 @@ import javax.persistence.EntityManager;
 
 import dk.apaq.framework.common.beans.finance.Card;
 import dk.apaq.framework.criteria.Criteria;
-import dk.apaq.framework.repository.jpa.EntityManagerRepositoryForSpring;
+import dk.apaq.framework.repository.jpa.EntityManagerRepository;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.model.Token;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author michael
  */
-public class TokenRepository extends EntityManagerRepositoryForSpring<Token, String> implements ITokenRepository {
+public class TokenRepository extends EntityManagerRepository<Token, String> implements ITokenRepository {
 
     @Autowired
     private PaymentGatewayManager gatewayManager;
