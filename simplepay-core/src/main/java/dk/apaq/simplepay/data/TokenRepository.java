@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author michael
  */
+@Transactional(readOnly = true)    
 public class TokenRepository extends EntityManagerRepository<Token, String> implements ITokenRepository {
 
     @Autowired
@@ -55,6 +56,7 @@ public class TokenRepository extends EntityManagerRepository<Token, String> impl
     }
 
     @Override
+    @Transactional
     public Token markExpired(String token) {
         Token t = findOne(token);
         t.setExpired(true);
@@ -74,6 +76,7 @@ public class TokenRepository extends EntityManagerRepository<Token, String> impl
     }
 
     @Override
+    @Transactional
     public Token save(Token entity) {
         entity = super.save(encryptToken(entity));
         return findOne(entity.getId());
