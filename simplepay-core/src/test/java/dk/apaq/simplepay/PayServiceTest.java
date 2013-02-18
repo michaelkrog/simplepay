@@ -12,7 +12,6 @@ import java.util.List;
 
 import dk.apaq.framework.common.beans.finance.Card;
 import dk.apaq.framework.common.beans.finance.PaymentIntrument;
-import dk.apaq.framework.repository.RepositoryNotifier;
 import dk.apaq.simplepay.gateway.PaymentException;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;

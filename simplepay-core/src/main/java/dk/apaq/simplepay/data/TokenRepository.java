@@ -9,6 +9,7 @@ import dk.apaq.framework.criteria.Criteria;
 import dk.apaq.framework.repository.jpa.EntityManagerRepository;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
+import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.TokenEvent;
 import dk.apaq.simplepay.util.IdGenerator;
@@ -30,10 +31,12 @@ public class TokenRepository extends EntityManagerRepository<Token, String> impl
     @Autowired
     private StringEncryptor encryptor;
     private final EntityManager em;
+    private Merchant merchant;
 
-    public TokenRepository(EntityManager em) {
+    public TokenRepository(EntityManager em, Merchant merchant) {
         super(em, Token.class);
         this.em = em;
+        this.merchant = merchant;
     }
 
     @Override
@@ -41,6 +44,7 @@ public class TokenRepository extends EntityManagerRepository<Token, String> impl
     public Token createNew(Card card) {
         Token token = new Token(card);
         token.setId(IdGenerator.generateUniqueId("t"));
+        token.setMerchant(merchant);
         token = save(token);
 
         TokenEvent evt = new TokenEvent(token, "Token created.", service.getCurrentUsername(), RequestInformationHelper.getRemoteAddress());
