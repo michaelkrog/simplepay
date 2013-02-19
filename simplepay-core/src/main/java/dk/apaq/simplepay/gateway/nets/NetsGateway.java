@@ -3,10 +3,12 @@ package dk.apaq.simplepay.gateway.nets;
 import java.io.IOException;
 
 import dk.apaq.framework.common.beans.finance.Card;
+import dk.apaq.nets.payment.ActionCode;
 import dk.apaq.nets.payment.Address;
 import dk.apaq.nets.payment.Merchant;
 import dk.apaq.nets.payment.Nets;
 import dk.apaq.nets.payment.NetsException;
+import dk.apaq.nets.payment.NetsResponse;
 import dk.apaq.simplepay.gateway.IPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentException;
 import dk.apaq.simplepay.model.ETokenPurpose;
@@ -43,8 +45,8 @@ public class NetsGateway implements IPaymentGateway {
             Validate.notNull(money, "money is null");
             
             Merchant merchant = merchantFromMerchantAndAccess(sMerchant, access);
-            api.authorize(merchant, card, money, orderId, purpose == ETokenPurpose.RecurringPayment, false, false, false);
-            
+            NetsResponse response = api.authorize(merchant, card, money, orderId, purpose == ETokenPurpose.RecurringPayment, false, false, false);
+            //TODO Store response data
         } catch (IOException ex) {
             throw new PaymentException("Error communicating with Nets.", ex);
         } catch (NetsException ex) {
@@ -59,7 +61,15 @@ public class NetsGateway implements IPaymentGateway {
     public void cancel(dk.apaq.simplepay.model.Merchant sMerchant, PaymentGatewayAccess access, String transactionId, String orderId) {
         try {
             Merchant merchant = merchantFromMerchantAndAccess(sMerchant, access);
-            api.reverse(merchant, orderId);
+            
+            //TODO Load data from somewhere
+            String ode=null;
+            ActionCode actionCode=null;
+            String approvalCode=null;
+            String processingCode=null;
+            Card card=null;
+            Money money=null;
+            NetsResponse response = api.reverse(merchant, money, orderId, card, actionCode, ode, processingCode, approvalCode);
         } catch (IOException ex) {
             throw new PaymentException("Error communicating with Nets.", ex);
         } catch (NetsException ex) {
