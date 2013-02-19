@@ -2,6 +2,8 @@ package dk.apaq.simplepay.model;
 
 import dk.apaq.framework.common.beans.finance.Card;
 import dk.apaq.nets.payment.ActionCode;
+import org.jasypt.encryption.StringEncryptor;
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.joda.money.Money;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -18,7 +20,10 @@ public class NetsTransactionDataTest {
 
     @Test
     public void testBeanPattern() {
-        Card card = new Card("1234567812345678", 2012, 11, "123");
+        StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
+        encryptor.setPassword("qwerty");
+        
+        Card card = new Card("1234567812345678", 2012, 11, "123", encryptor);
         Money money = Money.parse("USD 123.45");
         
         NetsTransactionData instance = new NetsTransactionData();

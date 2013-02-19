@@ -21,6 +21,7 @@ import org.jasypt.encryption.StringEncryptor;
 import org.joda.money.Money;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
 
 /**
  *
@@ -41,7 +42,12 @@ public class TransactionRepositoryTest {
     private StringEncryptor encryptor;
     
 
-    private Card card = new Card("4111111111111111", 12, 12, "xxx");
+    @Before
+    public void init() {
+        card = new Card("4111111111111111", 12, 12, "xxx", encryptor);
+    }
+    
+    private Card card;
     
     @Test
     public void testFullChargeAndRefund() {

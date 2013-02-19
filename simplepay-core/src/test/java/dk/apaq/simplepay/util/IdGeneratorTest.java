@@ -55,7 +55,7 @@ public class IdGeneratorTest {
         List<String> dups = getDuplicate(ids);
         System.out.println(ids.get(0));
         System.out.println(ids.get(ids.size()-1));
-        assertTrue(dups.isEmpty());
+        assertTrue("Duplicates of id found", dups.isEmpty());
     }
 
     private <T> List getDuplicate(Collection<T> list) {

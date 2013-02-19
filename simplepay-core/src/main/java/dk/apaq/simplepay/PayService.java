@@ -68,15 +68,15 @@ public class PayService implements ApplicationContextAware, IPayService {
     @Override
     public <T extends Event> Repository<T, String> getEvents(Merchant merchant, Class<T> type) {
         DataAccess.checkMerchant(merchant);
-        LOG.debug("Retrieving TransactionRepository");
-        return (Repository<T, String>) context.getBean("repository", em, type);
+        LOG.debug("Retrieving EventRepository for class {}", type);
+        return (Repository<T, String>) context.getBean("eventRepository", em, merchant, type);
     }
 
     @Override
     public Repository<Merchant, String> getMerchants() {
         LOG.debug("Retrieving MerchantRepository");
         if (merchantRep == null) {
-            merchantRep = (Repository<Merchant, String>) context.getBean("repository", em, Merchant.class);
+            merchantRep = (Repository<Merchant, String>) context.getBean("merchantRepository", em, this);
         }
         return merchantRep;
     }

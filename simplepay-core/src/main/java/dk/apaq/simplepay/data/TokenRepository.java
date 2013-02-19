@@ -12,6 +12,7 @@ import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.TokenEvent;
+import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.util.IdGenerator;
 import dk.apaq.simplepay.util.RequestInformationHelper;
 import org.jasypt.encryption.StringEncryptor;
@@ -29,8 +30,6 @@ public class TokenRepository extends EntityManagerRepository<Token, String> impl
     private PaymentGatewayManager gatewayManager;
     @Autowired
     private IPayService service;
-    @Autowired
-    private StringEncryptor encryptor;
     private final EntityManager em;
     private Merchant merchant;
 
@@ -46,91 +45,34 @@ public class TokenRepository extends EntityManagerRepository<Token, String> impl
         Token token = new Token(card);
         token.setId(IdGenerator.generateUniqueId("t"));
         token.setMerchant(merchant);
-        token = save(token);
+        token = super.save(token);
 
         TokenEvent evt = new TokenEvent(token, "Token created.", service.getCurrentUsername(), RequestInformationHelper.getRemoteAddress());
         service.getEvents(token.getMerchant(), TokenEvent.class).save(evt);
-
-        em.detach(token);
         return token;
     }
 
+    @Override
+    public List<Token> findAll() {
+        return findAll(DataAccess.appendMerchantCriteria(null, merchant));
+    }
+
+    @Override
+    public List<Token> findAll(Criteria criteria) {
+        return super.findAll(DataAccess.appendMerchantCriteria(criteria, merchant));
+    }
+    
     @Override
     @Transactional
     public Token markExpired(String token) {
         Token t = findOne(token);
         t.setExpired(true);
-        return save(t); 
+        return super.save(t); 
     }
 
     @Override
-    public Token findOne(String id) {
-        Token t = super.findOne(id);
-        if (t == null) {
-            return null;
-        } else {
-            t = decryptToken(t);
-            em.detach(t);
-            return t;
-        }
+    public <S extends Token> S save(S entity) {
+        throw new UnsupportedOperationException("Use markExpired.");
     }
 
-    @Override
-    @Transactional
-    public Token save(Token entity) {
-        entity = super.save(encryptToken(entity));
-        return findOne(entity.getId());
-    }
-
-    @Override
-    public List<Token> findAll(Criteria criteria) {
-        List<Token> tokens = super.findAll(criteria);
-        for (Token token : tokens) {
-            decryptToken(token);
-        }
-        return tokens;
-    }
-
-    private Token encryptToken(Token token) {
-        Card clone = new Card(token.getData());
-        encryptObjectField(clone, "cardNumber");
-        encryptObjectField(clone, "cvd");
-        token.setData(clone);
-        return token;
-    }
-
-    private Token decryptToken(Token token) {
-        //We need to detach before decrypting
-        em.detach(token);
-
-        decryptObjectField(token.getData(), "cardNumber");
-        decryptObjectField(token.getData(), "cvd");
-        return token;
-    }
-
-    private void decryptObjectField(Object object, String fieldName) {
-        try {
-            Field field = object.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            String value = (String) field.get(object);
-            field.set(object, encryptor.decrypt(value));
-        } catch (NoSuchFieldException ex) {
-            throw new UnknownError("Field '" + fieldName + "' should have existed.");
-        } catch (IllegalAccessException ex) {
-            throw new UnknownError("Field '" + fieldName + "' should have been accessible.");
-        }
-    }
-
-    private void encryptObjectField(Object object, String fieldName) {
-        try {
-            Field field = object.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            String value = (String) field.get(object);
-            field.set(object, encryptor.encrypt(value));
-        } catch (NoSuchFieldException ex) {
-            throw new UnknownError("Field '" + fieldName + "' should have existed.");
-        } catch (IllegalAccessException ex) {
-            throw new UnknownError("Field '" + fieldName + "' should have been accessible.");
-        }
-    }
 }

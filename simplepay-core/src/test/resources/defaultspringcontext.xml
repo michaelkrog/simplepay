@@ -49,7 +49,14 @@
     <bean id="transactionRepository" class="dk.apaq.simplepay.data.TransactionRepository" scope="prototype">
         <property name="transactionsHandled" value="false"/>
     </bean>
+    
+    <bean id="merchantRepository" class="dk.apaq.simplepay.data.MerchantRepository" scope="prototype">
+        <property name="transactionsHandled" value="false"/>
+    </bean>
 
+    <bean id="eventRepository" class="dk.apaq.simplepay.data.EventRepository" scope="prototype">
+        <property name="transactionsHandled" value="false"/>
+    </bean>
     
     <bean id="service" class="dk.apaq.simplepay.PayService"/>
     

@@ -5,6 +5,8 @@ import java.util.Date;
 
 import dk.apaq.framework.common.beans.finance.Card;
 import dk.apaq.simplepay.gateway.EPaymentGateway;
+import org.jasypt.encryption.StringEncryptor;
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.joda.money.Money;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -18,9 +20,12 @@ public class TransactionTest {
     
     @Test
     public void testBeanPattern() {
+        StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
+        encryptor.setPassword("qwerty");
+        
         Date now = new Date();
         Merchant m = new Merchant();
-        Card card = new Card("1234567812345678", 2016, 11, "123");
+        Card card = new Card("1234567812345678", 2016, 11, "123", encryptor);
         Money money = Money.parse("USD 100");
         
         Transaction instance = new Transaction("token", "refId", money, EPaymentGateway.Nets);

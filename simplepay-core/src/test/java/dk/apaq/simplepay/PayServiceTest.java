@@ -13,6 +13,7 @@ import java.util.List;
 import dk.apaq.framework.common.beans.finance.Card;
 import dk.apaq.framework.common.beans.finance.PaymentIntrument;
 import dk.apaq.simplepay.gateway.PaymentException;
+import org.jasypt.encryption.StringEncryptor;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.junit.Test;
@@ -26,6 +27,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import static org.junit.Assert.*;
+import org.junit.Before;
 /**
  *
  * @author krog
@@ -38,7 +40,15 @@ public class PayServiceTest {
     @Autowired
     private IPayService service;
     
-    private Card dankort = new Card("4111111111111111",12, 12, "xxx");
+    @Autowired
+    private StringEncryptor encryptor;
+    
+    @Before
+    public void init() {
+        dankort = new Card("4111111111111111",12, 12, "xxx", encryptor);
+    }
+    
+    private Card dankort;
     
     private void login(SystemUser user) {
         List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>();
@@ -142,7 +152,7 @@ public class PayServiceTest {
         try {
             service.getTransactions(m).createNew(token.getMerchant(), token.getId(), "T_321", Money.of(CurrencyUnit.USD, 123));
             fail("Should not allow same token twice.");
-        } catch(SecurityException ex) { }
+        } catch(IllegalArgumentException ex) { }
     }
     
     @Test
