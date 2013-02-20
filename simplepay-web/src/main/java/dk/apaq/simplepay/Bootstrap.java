@@ -20,7 +20,7 @@ public class Bootstrap {
 
     @PostConstruct
     public void doBootstrap() {
-        if (payService.getMerchants().findAllIds().isEmpty()) {
+        if (!payService.getMerchants().findAll().iterator().hasNext()) {
             Merchant m = new Merchant();
             PaymentGatewayAccess aa = new PaymentGatewayAccess(EPaymentGateway.Test, "89898978");
             m.getPaymentGatewayAccesses().add(aa);

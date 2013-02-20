@@ -11,6 +11,8 @@ import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.security.ERole;
+import org.jasypt.encryption.StringEncryptor;
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -42,6 +44,7 @@ public class TokenControllerTest {
     
     @Before
     public void setUp() {
+        ((StandardPBEStringEncryptor)encryptor).setPassword("qwerty");
         merchant = service.getMerchants().save(new Merchant());
         user = service.getUsers().save(new SystemUser(merchant, "john", "doe", ERole.Merchant));
         
@@ -56,6 +59,7 @@ public class TokenControllerTest {
     
     private SystemUser user;
     private Merchant merchant;
+    private StringEncryptor encryptor = new StandardPBEStringEncryptor();
 
     /**
      * Test of createToken method, of class TokenController.
@@ -67,7 +71,7 @@ public class TokenControllerTest {
         int expireMonth = 11;
         int expireYear = 2016;
         String cvd = "123";
-        TokenApiController instance = new TokenApiController(service);
+        TokenApiController instance = new TokenApiController(service, encryptor);
         String result = instance.createToken(cardNumber, expireMonth, expireYear, cvd);
         assertNotNull(result);
     }
@@ -78,8 +82,8 @@ public class TokenControllerTest {
     @Test
     public void testListTokens() {
         System.out.println("listTokens");
-        TokenApiController instance = new TokenApiController(service);
-        List<Token> result = instance.listTokens();
+        TokenApiController instance = new TokenApiController(service, encryptor);
+        Iterable<Token> result = instance.listTokens();
         assertNotNull(result);
     }
 
@@ -93,15 +97,15 @@ public class TokenControllerTest {
         int expireMonth = 11;
         int expireYear = 2016;
         String cvd = "123";
-        TokenApiController instance = new TokenApiController(service);
+        TokenApiController instance = new TokenApiController(service, encryptor);
         String token = instance.createToken(cardNumber, expireMonth, expireYear, cvd);
         assertNotNull(token);
         
         Token tokenObj = instance.getToken(token);
-        assertEquals("4485538169160095", tokenObj.getData().getCardNumber());
+        assertEquals("4485538169160095", tokenObj.getData().getCardNumber(encryptor));
         assertEquals(2016, tokenObj.getData().getExpireYear());
         assertTrue(tokenObj.getData().isValid());
-        assertEquals(PaymentIntrument.Visa, tokenObj.getData().getResolvedInstrument());
+        assertEquals(PaymentIntrument.Visa, tokenObj.getData().getPaymentIntrument());
         
     }
     
@@ -112,15 +116,15 @@ public class TokenControllerTest {
         int expireMonth = 11;
         int expireYear = 16;
         String cvd = "123";
-        TokenApiController instance = new TokenApiController(service);
+        TokenApiController instance = new TokenApiController(service, encryptor);
         String token = instance.createToken(cardNumber, expireMonth, expireYear, cvd);
         assertNotNull(token);
         
         Token tokenObj = instance.getToken(token);
-        assertEquals("4485538169160095", tokenObj.getData().getCardNumber());
+        assertEquals("4485538169160095", tokenObj.getData().getCardNumber(encryptor));
         assertEquals(2016, tokenObj.getData().getExpireYear());
         assertTrue(tokenObj.getData().isValid());
-        assertEquals(PaymentIntrument.Visa, tokenObj.getData().getResolvedInstrument());
+        assertEquals(PaymentIntrument.Visa, tokenObj.getData().getPaymentIntrument());
         
     }
         
@@ -131,15 +135,15 @@ public class TokenControllerTest {
         int expireMonth = 11;
         int expireYear = 16;
         String cvd = "qwerty";
-        TokenApiController instance = new TokenApiController(service);
+        TokenApiController instance = new TokenApiController(service, encryptor);
         String token = instance.createToken(cardNumber, expireMonth, expireYear, cvd);
         assertNotNull(token);
         
         Token tokenObj = instance.getToken(token);
-        assertEquals("345345", tokenObj.getData().getCardNumber());
+        assertEquals("345345", tokenObj.getData().getCardNumber(encryptor));
         assertEquals(2016, tokenObj.getData().getExpireYear());
         assertFalse(tokenObj.getData().isValid());
-        assertEquals(PaymentIntrument.Unknown, tokenObj.getData().getResolvedInstrument());
+        assertEquals(PaymentIntrument.Unknown, tokenObj.getData().getPaymentIntrument());
         
     }
         
@@ -150,7 +154,7 @@ public class TokenControllerTest {
         int expireMonth = 43;
         int expireYear = 316;
         String cvd = "wwer";
-        TokenApiController instance = new TokenApiController(service);
+        TokenApiController instance = new TokenApiController(service, encryptor);
         
         try {
             String token = instance.createToken(cardNumber, expireMonth, expireYear, cvd);
@@ -163,7 +167,7 @@ public class TokenControllerTest {
     
     @Test
     public void testGetToken_NotFound() {
-        TokenApiController instance = new TokenApiController(service);
+        TokenApiController instance = new TokenApiController(service, encryptor);
         
         try {
             Token tokenObj = instance.getToken("234re");

@@ -1,5 +1,6 @@
 package dk.apaq.simplepay.controllers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,21 +43,11 @@ public class BaseController {
         Criteria criteriaWithoutLimit = new Criteria(c.getRule());
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("entities", entities);
-        model.put("totalEntities", rep.findAllIds(criteriaWithoutLimit).size());
+        model.put("totalEntities", rep.count(/*criteriaWithoutLimit*/));
         model.put("offset", c.getLimit().getOffset());
         return model;
     }
 
-    protected List listEntityIds(Repository rep, String query, Sorter sorter, int offset, int limit) {
-        LOG.debug("Retrieving list of entities");
-        Rule rule = null;
-        if (query != null) {
-            rule = queryParser.parse(query);
-        }
-        Criteria c = new Criteria(rule, sorter, new Limit(offset, limit));
-        return rep.findAllIds(c);
-    }
-    
     protected List listEntities(Repository rep, Rule rule, Sorter sorter, int offset, int limit) {
         LOG.debug("Retrieving list of entities");
         Criteria c = new Criteria(rule, sorter, new Limit(offset, limit));
@@ -100,7 +91,7 @@ public class BaseController {
 
     protected String deleteEntity(Repository rep, String id, String redirect) {
         LOG.debug("Deleting entity followed by a redirect to '{}'.", redirect);
-        rep.deleteById(id);
+        rep.delete(id);
         return "redirect:" + redirect;
     }
 

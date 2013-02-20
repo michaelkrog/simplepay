@@ -18,6 +18,8 @@ import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.security.ERole;
 import org.apache.commons.lang.Validate;
+import org.jasypt.encryption.StringEncryptor;
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.joda.money.Money;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -112,6 +114,8 @@ public class TransactionControllerTest {
 
     @Before
     public void init() {
+        ((StandardPBEStringEncryptor)encryptor).setPassword("qwerty");
+        card = new Card("1234123412341234", 2016, 11, "123", encryptor);
         merchant = new Merchant();
         Token token = tokenRep.createNew(card);
         
@@ -139,7 +143,8 @@ public class TransactionControllerTest {
     private ITokenRepository tokenRep = new MockTokenRepository();
     private ITransactionRepository transactionRep = new MockTransactionRepository();
     private IPayService service;
-    private Card card = new Card("1234123412341234", 2016, 11, "123");
+    private StringEncryptor encryptor = new StandardPBEStringEncryptor();
+    private Card card;
 
     /**
      * Test of listTransactionsAsJson method, of class TransactionController.

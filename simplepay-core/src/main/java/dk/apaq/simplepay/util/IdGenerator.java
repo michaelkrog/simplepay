@@ -28,7 +28,7 @@ public class IdGenerator {
     private static final SecureRandom random = new SecureRandom(INSTANCE_ADDRESS_BYTES);
     private static final long YEAR_2010 = new Date(100, 0, 1).getTime();
     private static final long MILLISPERDAY = 86400000;
-    private static short primaryCounter;
+    private static int primaryCounter;
     
     private static Inet4Address getFirstRealAddress() {
         try {
@@ -50,9 +50,9 @@ public class IdGenerator {
         }
     }
 
-    private static synchronized short getCounter() {
+    private static synchronized int getCounter() {
+        //System.out.println("count:" + primaryCounter);
         return primaryCounter++;
-
     }
 
     public static String generateUniqueId() {
@@ -62,7 +62,7 @@ public class IdGenerator {
     public static String generateUniqueId(String prefix) {
         long timestamp = (System.currentTimeMillis() - YEAR_2010) / 1000;
         byte[] timebuffer = new byte[8];
-        short count = getCounter();
+        int count = getCounter();
 
         //CHECKSTYLE:OFF
         timebuffer[0] = (byte) (timestamp >>> 56);
@@ -87,7 +87,7 @@ public class IdGenerator {
         random.nextBytes(randombuffer);
 
         int index = 0;
-        byte[] buffer = new byte[randombuffer.length + usedTimebufferBytes + 3];
+        byte[] buffer = new byte[randombuffer.length + usedTimebufferBytes + 5];
         int offset = 8 - usedTimebufferBytes;
         for (int i = 0; i < usedTimebufferBytes; i++) {
             buffer[index++] = timebuffer[offset + i];
@@ -98,6 +98,8 @@ public class IdGenerator {
         }
         
         buffer[index++] = INSTANCE_ADDRESS_BYTES[3];
+        buffer[index++] = (byte) (count >> 24);
+        buffer[index++] = (byte) (count >> 16);
         buffer[index++] = (byte) (count >> 8);
         buffer[index++] = (byte) (count >> 0);
 

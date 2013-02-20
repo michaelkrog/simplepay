@@ -8,10 +8,10 @@ import dk.apaq.simplepay.controllers.ControllerUtil;
 import dk.apaq.simplepay.controllers.exceptions.ResourceNotFoundException;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
+import org.jasypt.encryption.StringEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,10 +29,12 @@ public class TokenApiController {
 
     private static final Logger LOG = LoggerFactory.getLogger(TokenApiController.class);
     private final IPayService service;
+    private final StringEncryptor encryptor;
     
     @Autowired
-    public TokenApiController(IPayService service) {
+    public TokenApiController(IPayService service, StringEncryptor encryptor) {
         this.service = service;
+        this.encryptor = encryptor;
     }
     
     private Token getToken(Merchant m, String token) {
@@ -58,7 +60,7 @@ public class TokenApiController {
             @RequestParam String cvd) {
         Merchant m = ControllerUtil.getMerchant(service);
         LOG.debug("Creating token. [merchant={}]", m);
-        Card card = new Card(cardNumber, expireYear, expireMonth, cvd);
+        Card card = new Card(cardNumber, expireYear, expireMonth, cvd, encryptor);
         return service.getTokens(m).createNew(card).getId();
     }
 
@@ -69,7 +71,7 @@ public class TokenApiController {
     @RequestMapping(value = "/tokens", method = RequestMethod.GET, headers = "Accept=application/json")
     @Transactional(readOnly = true)
     @ResponseBody
-    public List<Token> listTokens() {
+    public Iterable<Token> listTokens() {
         Merchant m = ControllerUtil.getMerchant(service);
         LOG.debug("Listing tokens. [merchant={}]", m.getId());
         return service.getTokens(m).findAll();
