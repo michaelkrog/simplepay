@@ -12,7 +12,7 @@ import dk.apaq.framework.repository.Repository;
 import dk.apaq.simplepay.data.DataAccess;
 import dk.apaq.simplepay.data.ITokenRepository;
 import dk.apaq.simplepay.data.ITransactionRepository;
-import dk.apaq.simplepay.model.Event;
+import dk.apaq.simplepay.model.BaseEvent;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
@@ -66,7 +66,7 @@ public class PayService implements ApplicationContextAware, IPayService {
     }
 
     @Override
-    public <T extends Event> Repository<T, String> getEvents(Merchant merchant, Class<T> type) {
+    public <T extends BaseEvent> Repository<T, String> getEvents(Merchant merchant, Class<T> type) {
         DataAccess.checkMerchant(merchant);
         LOG.debug("Retrieving EventRepository for class {}", type);
         return (Repository<T, String>) context.getBean("eventRepository", em, merchant, type);

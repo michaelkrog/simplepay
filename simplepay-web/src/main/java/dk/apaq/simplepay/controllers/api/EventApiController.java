@@ -8,7 +8,7 @@ import dk.apaq.framework.criteria.Rule;
 import dk.apaq.framework.criteria.Rules;
 import dk.apaq.framework.criteria.Sorter;
 import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.model.Event;
+import dk.apaq.simplepay.model.BaseEvent;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.TokenEvent;
 import dk.apaq.simplepay.model.TransactionEvent;
@@ -30,7 +30,7 @@ public class EventApiController extends BaseController {
     @Autowired
     private IPayService service;
 
-    //@RequestMapping(value = "/events", method = RequestMethod.GET, headers = "Accept=application/json")
+    @RequestMapping(value = "/events", method = RequestMethod.GET, headers = "Accept=application/json")
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     @ResponseBody
     public List listEvents(@RequestParam(required = false) String type, @RequestParam(required = false) String entityId, 
@@ -47,12 +47,12 @@ public class EventApiController extends BaseController {
         }
 
         if (clazz == null) {
-            clazz = Event.class;
+            clazz = BaseEvent.class;
         }
 
         Rule rule = null;
         if (entityId != null) {
-            rule = Rules.equals("transaction.id", entityId);
+            rule = Rules.equals("id", entityId);
         }
 
         return listEntities(service.getEvents(m, clazz), rule, new Sorter("eventDate", Sorter.Direction.Descending), offset, limit);

@@ -3,7 +3,7 @@ package dk.apaq.simplepay;
 import dk.apaq.framework.repository.Repository;
 import dk.apaq.simplepay.data.ITokenRepository;
 import dk.apaq.simplepay.data.ITransactionRepository;
-import dk.apaq.simplepay.model.Event;
+import dk.apaq.simplepay.model.BaseEvent;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
@@ -87,5 +87,5 @@ public interface IPayService {
      * @param type The type of event.
      * @return The Repository of events.
      */
-    <T extends Event> Repository<T, String> getEvents(Merchant merchant, Class<T> type);
+    <T extends BaseEvent> Repository<T, String> getEvents(Merchant merchant, Class<T> type);
 }

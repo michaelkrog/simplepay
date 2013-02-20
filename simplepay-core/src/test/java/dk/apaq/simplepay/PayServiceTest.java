@@ -177,7 +177,7 @@ public class PayServiceTest {
     public void testGetEvents() {
         Transaction t = new Transaction("123", "T_123", Money.of(CurrencyUnit.USD, 123), EPaymentGateway.Test);
         Merchant merchant = service.getMerchants().save(new Merchant());
-        Repository<TransactionEvent, String> events = service.getEvents(merchant, TransactionEvent.class);
+        Repository<BaseEvent, String> events = service.getEvents(merchant, BaseEvent.class);
         TransactionEvent event = events.save(new TransactionEvent(t, "user", ETransactionStatus.Authorized, "129.129.129.912"));
         assertNotNull(event);
     }

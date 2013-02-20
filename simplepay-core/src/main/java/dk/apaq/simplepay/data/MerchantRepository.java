@@ -1,6 +1,7 @@
 package dk.apaq.simplepay.data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.EntityManager;
 import dk.apaq.framework.repository.jpa.EntityManagerRepository;
@@ -26,6 +27,8 @@ public class MerchantRepository extends EntityManagerRepository<Merchant, String
     @Override
     @Transactional
     public <S extends Merchant> S save(S entity) {
+        Date now = new Date();
+        
         if (entity.getId() != null) {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (auth == null) {
@@ -34,10 +37,15 @@ public class MerchantRepository extends EntityManagerRepository<Merchant, String
             String username = auth.getName();
             SystemUser user = service.getUser(username);
             Merchant usersMerchant = user.getMerchant();
+            entity.setDateCreated(usersMerchant.getDateCreated());
             if (!usersMerchant.getId().equals(entity.getId())) {
                 throw new SecurityException("Not allowed to change other merchants.");
             }
+        } else {
+            entity.setDateCreated(now);
         }
+        
+        entity.setDateChanged(now);
         return super.save(entity);
     }
 }

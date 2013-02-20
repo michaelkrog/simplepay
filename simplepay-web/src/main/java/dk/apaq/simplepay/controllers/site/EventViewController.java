@@ -7,7 +7,7 @@ import dk.apaq.framework.criteria.Rule;
 import dk.apaq.framework.criteria.Rules;
 import dk.apaq.framework.criteria.Sorter;
 import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.model.Event;
+import dk.apaq.simplepay.model.BaseEvent;
 import dk.apaq.simplepay.model.Merchant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -27,7 +27,7 @@ public class EventViewController extends BaseController {
     @Autowired
     private IPayService service;
 
-    @RequestMapping(value = "/events", method = RequestMethod.GET)
+    @RequestMapping(value = "/events.html", method = RequestMethod.GET)
     @Secured("ROLE_MERCHANT")
     public ModelAndView listEvents(@RequestParam(required = false) String type, @RequestParam(required = false) String entityId, 
             @RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "1000") Integer limit) {
@@ -38,7 +38,7 @@ public class EventViewController extends BaseController {
             rule = Rules.equals("transaction.id", entityId);
         }
 
-        return listEntities(service.getEvents(m, Event.class), rule, new Sorter("eventDate", Sorter.Direction.Descending), offset, limit, "events");
+        return listEntities(service.getEvents(m, BaseEvent.class), rule, new Sorter("eventDate", Sorter.Direction.Descending), offset, limit, "events");
 
     }
 }

@@ -64,9 +64,12 @@ public class TransactionRepository extends EntityManagerRepository<Transaction, 
             throw new PaymentException("Unable to retrieve preferred payment type for merchant. [Merchant=" + token.getMerchant().getId() + "]");
         }
 
+        Date now = new Date();
         Transaction transaction = new Transaction(token.getId(), refId, money, access.getPaymentGatewayType());
         transaction.setId(IdGenerator.generateUniqueId("p"));
         transaction.setMerchant(merchant);
+        transaction.setDateCreated(now);
+        transaction.setDateChanged(now);
 
         //Create gateway
         IPaymentGateway gateway = gatewayManager.getPaymentGateway(access.getPaymentGatewayType());
@@ -98,6 +101,7 @@ public class TransactionRepository extends EntityManagerRepository<Transaction, 
 
         transaction.setAmountCharged(amount);
         transaction.setStatus(ETransactionStatus.Charged);
+        transaction.setDateChanged(new Date());
 
         IPaymentGateway gateway = gatewayManager.getPaymentGateway(transaction.getGatewayType());
         gateway.capture(token.getMerchant(), access, transaction.getGatewayTransactionId(), transaction.getRefId(), amount);
@@ -119,6 +123,7 @@ public class TransactionRepository extends EntityManagerRepository<Transaction, 
         PaymentGatewayAccess access = getGatewayAccess(token.getMerchant(), transaction.getGatewayType());
 
         transaction.setStatus(ETransactionStatus.Cancelled);
+        transaction.setDateChanged(new Date());
 
         IPaymentGateway gateway = gatewayManager.getPaymentGateway(transaction.getGatewayType());
         gateway.cancel(token.getMerchant(), access, transaction.getGatewayTransactionId(), transaction.getRefId());
@@ -141,6 +146,7 @@ public class TransactionRepository extends EntityManagerRepository<Transaction, 
 
         transaction.setAmountRefunded(amount);
         transaction.setStatus(ETransactionStatus.Refunded);
+        transaction.setDateChanged(new Date());
 
         IPaymentGateway gateway = gatewayManager.getPaymentGateway(transaction.getGatewayType());
         gateway.refund(token.getMerchant(), access, transaction.getGatewayTransactionId(), transaction.getRefId(), amount);

@@ -18,23 +18,13 @@ import org.hibernate.annotations.GenericGenerator;
  * @author michael
  */
 @Entity
-public class TransactionEvent implements Event {
+public class TransactionEvent extends BaseEvent {
 
-    @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
-    private String id;
     private String username;
-    @Temporal(javax.persistence.TemporalType.DATE)
-    @NotNull
-    private Date eventDate = new Date();
     @NotNull
     private ETransactionStatus newStatus;
     @NotNull
     private String remoteAddress;
-    @ManyToOne
-    @JsonIgnore
-    private Merchant merchant;
     private String entityId;
 
     protected TransactionEvent() {
@@ -50,8 +40,10 @@ public class TransactionEvent implements Event {
         this.remoteAddress = remoteAddress;
     }
 
-    public String getId() {
-        return id;
+
+    @Override
+    public String getType() {
+        return "transactionEvent";
     }
 
     public ETransactionStatus getNewStatus() {
@@ -62,20 +54,8 @@ public class TransactionEvent implements Event {
         return remoteAddress;
     }
 
-    public Date getTimestamp() {
-        return eventDate;
-    }
-
     public String getUser() {
         return username;
-    }
-
-    public Merchant getMerchant() {
-        return merchant;
-    }
-
-    public void setMerchant(Merchant merchant) {
-        this.merchant = merchant;
     }
 
     public String getEntityId() {

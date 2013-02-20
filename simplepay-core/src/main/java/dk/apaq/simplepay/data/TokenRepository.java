@@ -1,6 +1,6 @@
 package dk.apaq.simplepay.data;
 
-import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 
@@ -12,10 +12,8 @@ import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.TokenEvent;
-import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.util.IdGenerator;
 import dk.apaq.simplepay.util.RequestInformationHelper;
-import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,9 +40,12 @@ public class TokenRepository extends EntityManagerRepository<Token, String> impl
     @Override
     @Transactional
     public Token createNew(Card card) {
+        Date now = new Date();
         Token token = new Token(card);
         token.setId(IdGenerator.generateUniqueId("t"));
         token.setMerchant(merchant);
+        token.setDateCreated(now);
+        token.setDateChanged(now);
         token = super.save(token);
 
         TokenEvent evt = new TokenEvent(token, "Token created.", service.getCurrentUsername(), RequestInformationHelper.getRemoteAddress());
