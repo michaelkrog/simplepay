@@ -1,7 +1,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -62,15 +63,20 @@
                             <button class="btn btn-mini btn-primary">Recent Payments</button>
                             <button class="btn btn-mini">All Payments</button>
                         </div>
+                        <div class="pull-right"><a href="#paymentModal" role="button" data-toggle="modal">Create payment</a></div>
                         </p>
                         <div>
-                            <ul class="nav nav-tabs nav-stacked">
+
+                            <ul class="nav nav-tabs nav-stacked clear">
+                                <c:if test="${empty entities}">
+                                    <li><a href="#">No payments</a></li>
+                                </c:if>
                                 <c:forEach var="e" items="${entities}">
                                     <li>
                                         <a href="<c:url value="/data/transactions/${e.id}.html"/>">
                                             <div class="pull-left" style="width:50%;white-space:nowrap;overflow:hidden;text-overflow: ellipsis;padding-right: 15px"><fmt:formatNumber currencyCode="${e.currency}" value="${e.amount/100}" type="currency"/> — ${e.id}</div>
                                             <span>${e.status}</span>
-                                            
+
                                             <span class="pull-right">&nbsp;<i class="mini-ico-ok mini-color"></i></span>
                                             <span class="pull-right hidden-phone" style="padding-left:15px"><fmt:formatDate type="both" dateStyle="medium" timeStyle="medium" value="${e.dateChanged}" />&nbsp;<i class="mini-ico-circle-arrow-right mini-color"></i></span>
                                             <span class="pull-right visible-phone" style="padding-left:15px"><fmt:formatDate type="date" dateStyle="medium" value="${e.dateChanged}" />&nbsp;<i class="mini-ico-circle-arrow-right mini-color"></i></span>
@@ -88,10 +94,73 @@
         </div>
         <!-- end: Wrapper  -->			
 
+        <!-- Modal -->
+        <div id="paymentModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">New Payment</h3>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="control-group">
+                        <label class="control-label" for="inputAmount">Amount</label>
+                        <div class="controls">
+                            <div class="input-append ">
+                                <input type="text" pattern="\d+(\.\d{2})?" class="span2" id="inputAmount" placeholder="<fmt:formatNumber value="9.99"/>" required>
+                                <span class="add-on">DKK</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="inputCard">Card Number</label>
+                        <div class="controls">
+                            <input type="text" pattern="^[0-9\s]{13,16}?$" class="span2" id="inputCard" placeholder="**** **** **** ****" required>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="inputDescription">Description</label>
+                        <div class="controls">
+                            <input type="text" class="span2" id="inputDescription" placeholder="">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="inputCard">Expires</label>
+                        <div class="controls">
+                            <select class="span1">
+                                <c:forEach var="currentMonth" begin="${1}" end="${12}">
+                                    <option>${currentMonth}</option>
+                                </c:forEach>
+
+                            </select>
+
+                            <jsp:useBean id="now" class="java.util.Date" scope="request" />
+                            <fmt:formatDate var="year" value="${now}" pattern="yyyy" />
+                            <select class="span1">
+                                <c:forEach var="currentYear" begin="${year}" end="${year+11}">
+                                    <option>${currentYear}</option>
+                                </c:forEach>
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="inputCvd">CVC</label>
+                        <div class="controls">
+                            <input type="number" class="span1" id="inputCvd" placeholder="***" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                <button class="btn btn-primary">Create payment</button>
+            </div>
+        </div>
         <%@include file="inc/footer_menu.jsp" %>
         <%@include file="inc/footer.jsp" %>
 
         <%@include file="inc/post_body.jsp" %>
+
 
     </body>
 </html>
