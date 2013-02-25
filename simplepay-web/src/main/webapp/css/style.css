@@ -165,7 +165,7 @@ header {
 }
 
 .navbar .nav > li.divider-vertical {
-    border-right-color: #dfdfdf;;
+    border-right-color: #f6f6f6;
     border-left-color: #29a9df;
     border-left: 0px;
     height:68px;
