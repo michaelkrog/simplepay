@@ -59,8 +59,8 @@
                     <div class="span9">
                         <p>
                         <div class="btn-group">
-                            <button class="btn btn-primary">Recent Payments</button>
-                            <button class="btn">All Payments</button>
+                            <button class="btn btn-mini btn-primary">Recent Payments</button>
+                            <button class="btn btn-mini">All Payments</button>
                         </div>
                         </p>
                         <div>

@@ -40,7 +40,7 @@
                 <li><a href="contact.html"><spring:message code="navigation.contact"/></a></li>
                 <li class="divider-vertical"></li>
                 <sec:authorize ifNotGranted="ROLE_MERCHANT">
-                <li><a href="<c:url value="/login"/>"><spring:message code="navigation.log_in"/></a></li>
+                <li><a href="<c:url value="/login.html"/>"><spring:message code="navigation.log_in"/></a></li>
                 </sec:authorize>
                 <sec:authorize ifAnyGranted="ROLE_MERCHANT">
                 <li class="dropdown">

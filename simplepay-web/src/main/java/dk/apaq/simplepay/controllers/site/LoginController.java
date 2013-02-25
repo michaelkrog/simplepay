@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class LoginController {
     
-    @RequestMapping("/login")
+    @RequestMapping("/login.html")
     public String handleLogin() {
         return "login";
     }
     
-    @RequestMapping("/signup")
+    @RequestMapping("/signup.html")
     public String handleSignup() {
         return "signup";
     }

@@ -21,7 +21,7 @@
         <intercept-url method="GET" pattern="/data/**" access="ROLE_MERCHANT" />
         <intercept-url method="POST" pattern="/data/**" access="ROLE_MERCHANT" />
         <intercept-url method="DELETE" pattern="/data/**" access="ROLE_MERCHANT" />
-        <form-login login-page="/login" />
+        <form-login login-page="/login.html" />
     </http>
     
     <authentication-manager alias="authenticationManager">

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class LandingPageController {
     
-    @RequestMapping("/index.htm")
+    @RequestMapping("/index.html")
     public String handleRequest() {
         return "landingpage";
     }
