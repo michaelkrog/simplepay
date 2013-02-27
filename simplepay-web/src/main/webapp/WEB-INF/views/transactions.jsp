@@ -100,13 +100,14 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h3 id="myModalLabel">New Payment</h3>
             </div>
+            <form id="form-create-payment" class="form-horizontal">
+                
             <div class="modal-body">
-                <form class="form-horizontal">
                     <div class="control-group">
                         <label class="control-label" for="inputAmount">Amount</label>
                         <div class="controls">
                             <div class="input-append ">
-                                <input type="text" pattern="\d+(\.\d{2})?" class="span2" id="inputAmount" placeholder="<fmt:formatNumber value="9.99"/>" required>
+                                <input type="text" pattern="\d+(\.\d{2})?" class="input-small" id="inputAmount" placeholder="<fmt:formatNumber value="9.99"/>" required>
                                 <span class="add-on">DKK</span>
                             </div>
                         </div>
@@ -114,19 +115,19 @@
                     <div class="control-group">
                         <label class="control-label" for="inputCard">Card Number</label>
                         <div class="controls">
-                            <input type="text" pattern="^[0-9\s]{13,16}?$" class="span2" id="inputCard" placeholder="**** **** **** ****" required>
+                            <input type="text" pattern="^[0-9\s]{13,16}?$" class="input-medium" id="inputCard" placeholder="**** **** **** ****" required>
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label" for="inputDescription">Description</label>
                         <div class="controls">
-                            <input type="text" class="span2" id="inputDescription" placeholder="">
+                            <input type="text" class="input-medium" id="inputDescription" placeholder="">
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label" for="inputCard">Expires</label>
                         <div class="controls">
-                            <select class="span1">
+                            <select id="inputExpireMonth" class="input-mini">
                                 <c:forEach var="currentMonth" begin="${1}" end="${12}">
                                     <option>${currentMonth}</option>
                                 </c:forEach>
@@ -135,7 +136,7 @@
 
                             <jsp:useBean id="now" class="java.util.Date" scope="request" />
                             <fmt:formatDate var="year" value="${now}" pattern="yyyy" />
-                            <select class="span1">
+                            <select id="inputExpireYear" class="input-small">
                                 <c:forEach var="currentYear" begin="${year}" end="${year+11}">
                                     <option>${currentYear}</option>
                                 </c:forEach>
@@ -146,22 +147,36 @@
                     <div class="control-group">
                         <label class="control-label" for="inputCvd">CVC</label>
                         <div class="controls">
-                            <input type="number" class="span1" id="inputCvd" placeholder="***" required>
+                            <input type="text" pattern="^[0-9]{3}?$" class="span1" id="inputCvd" placeholder="***" required>
                         </div>
                     </div>
-                </form>
+                
             </div>
             <div class="modal-footer">
-                <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-                <button class="btn btn-primary">Create payment</button>
+                <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">Cancel</a>
+                <button type="submit" class="btn btn-primary">Create payment</button>
             </div>
+            </form>
         </div>
         <%@include file="inc/footer_menu.jsp" %>
         <%@include file="inc/footer.jsp" %>
 
         <%@include file="inc/post_body.jsp" %>
+        <script src="<c:url value="/api.js"/>"></script>
 
-
+        <script>
+            function onTokenCreated(data) {
+                alert(data)
+            }
+            
+            function onTokenFailed(data) {
+                alert(data);
+            }
+            $('#form-create-payment').submit(function() {
+               SimplePay.createToken($('#inputCard').val(), $('#inputExpireYear').val(), $('#inputExpireMonth').val(), $('#inputCvd').val(), onTokenCreated, onTokenFailed); 
+               return false;
+            });
+        </script>
     </body>
 </html>
 <!-- Localized -->

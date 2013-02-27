@@ -16,7 +16,12 @@ import org.springframework.web.servlet.ModelAndView;
 public class ScriptController {
 
     @RequestMapping(value = "/pay.js", method= RequestMethod.GET)
-    public ModelAndView handleRequest() {
+    public ModelAndView handlePayFileRequest() {
         return new ModelAndView("pay");
+    }
+    
+    @RequestMapping(value = "/api.js", method= RequestMethod.GET)
+    public ModelAndView handleApiFileRequest() {
+        return new ModelAndView("api");
     }
 }

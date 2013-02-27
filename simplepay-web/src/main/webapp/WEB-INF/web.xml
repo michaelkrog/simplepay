@@ -42,6 +42,14 @@
         <servlet-name>api</servlet-name>
         <url-pattern>/signup.html</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>api</servlet-name>
+        <url-pattern>/pay.js</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>api</servlet-name>
+        <url-pattern>/api.js</url-pattern>
+    </servlet-mapping>    
     <!-- SITE DISPATCHER -->
     <!--servlet>
         <servlet-name>site</servlet-name>
