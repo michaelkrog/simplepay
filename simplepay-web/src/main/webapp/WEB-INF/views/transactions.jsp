@@ -70,16 +70,26 @@
                             <ul class="nav nav-tabs nav-stacked clear">
                                 <c:if test="${empty entities}">
                                     <li><a href="#">No payments</a></li>
-                                </c:if>
-                                <c:forEach var="e" items="${entities}">
+                                    </c:if>
+                                    <c:forEach var="e" items="${entities}">
                                     <li>
-                                        <a href="<c:url value="/data/transactions/${e.id}.html"/>">
-                                            <div class="pull-left" style="width:50%;white-space:nowrap;overflow:hidden;text-overflow: ellipsis;padding-right: 15px"><fmt:formatNumber currencyCode="${e.currency}" value="${e.amount/100}" type="currency"/> — ${e.id}</div>
-                                            <span>${e.status}</span>
+                                        <a style="background:#fcf8e3" href="<c:url value="/data/transactions/${e.id}.html"/>">
+                                            <div class="pull-left" style="width:25%">
+                                                <span class="hidden-phone"><fmt:formatDate type="both" dateStyle="medium" timeStyle="short" value="${e.dateChanged}" /></span>
+                                                <span class="visible-phone"><fmt:formatDate type="date" dateStyle="short" value="${e.dateChanged}" /></span>
+                                            </div>
+                                            &nbsp;
+                                            
+                                            <div class="pull-left visible-desktop" style="width:40%;white-space:nowrap;overflow:hidden;text-overflow: ellipsis;padding-right: 15px">
+                                                <fmt:formatNumber currencyCode="${e.currency}" value="${e.amount/100}" type="currency"/> — ${e.id}
+                                            </div>
+                                            <div class="pull-left hidden-desktop" style="width:30%;white-space:nowrap;overflow:hidden;text-overflow: ellipsis;padding-right: 15px">
+                                                <fmt:formatNumber currencyCode="${e.currency}" value="${e.amount/100}" type="currency"/>
+                                            </div>
 
-                                            <span class="pull-right">&nbsp;<i class="mini-ico-ok mini-color"></i></span>
-                                            <span class="pull-right hidden-phone" style="padding-left:15px"><fmt:formatDate type="both" dateStyle="medium" timeStyle="medium" value="${e.dateChanged}" />&nbsp;<i class="mini-ico-circle-arrow-right mini-color"></i></span>
-                                            <span class="pull-right visible-phone" style="padding-left:15px"><fmt:formatDate type="date" dateStyle="medium" value="${e.dateChanged}" />&nbsp;<i class="mini-ico-circle-arrow-right mini-color"></i></span>
+                                            <div class="pull-right">#${e.refId}&nbsp;<i class="mini-ico-circle-arrow-right mini-color"></i></div>
+
+                                            <!--span class="pull-right">&nbsp;<i class="mini-ico-ok mini-color"></i></span-->
 
                                         </a>
                                     </li>
@@ -101,8 +111,8 @@
                 <h3 id="myModalLabel">New Payment</h3>
             </div>
             <form id="form-create-payment" class="form-horizontal">
-                
-            <div class="modal-body">
+
+                <div class="modal-body">
                     <div class="control-group">
                         <label class="control-label" for="inputAmount">Amount</label>
                         <div class="controls">
@@ -119,9 +129,9 @@
                         </div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label" for="inputDescription">Description</label>
+                        <label class="control-label" for="inputDescription">Reference</label>
                         <div class="controls">
-                            <input type="text" class="input-medium" id="inputDescription" placeholder="">
+                            <input type="text" class="input-medium" id="inputReference" placeholder="Reference fx. order id">
                         </div>
                     </div>
                     <div class="control-group">
@@ -150,12 +160,12 @@
                             <input type="text" pattern="^[0-9]{3}?$" class="span1" id="inputCvd" placeholder="***" required>
                         </div>
                     </div>
-                
-            </div>
-            <div class="modal-footer">
-                <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">Cancel</a>
-                <button type="submit" class="btn btn-primary">Create payment</button>
-            </div>
+
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Create payment</button>
+                </div>
             </form>
         </div>
         <%@include file="inc/footer_menu.jsp" %>
@@ -165,16 +175,25 @@
         <script src="<c:url value="/api.js"/>"></script>
 
         <script>
-            function onTokenCreated(data) {
-                alert(data)
+            function onTransactionCreated(transaction) {
+                document.location.reload();
             }
-            
-            function onTokenFailed(data) {
-                alert(data);
+
+            function onTokenCreated(token) {
+                SimplePay.createTransaction(token.id, Math.round($('#inputAmount').val() * 100), "DKK", $('#inputReference').val(), onTransactionCreated, onTransactionFailed);
             }
+
+            function onTokenFailed(xhr, ajaxOptions, thrownError) {
+                alert("Error: " + thrownError);
+            }
+
+            function onTransactionFailed(xhr, ajaxOptions, thrownError) {
+                alert("Error: " + thrownError);
+            }
+
             $('#form-create-payment').submit(function() {
-               SimplePay.createToken($('#inputCard').val(), $('#inputExpireYear').val(), $('#inputExpireMonth').val(), $('#inputCvd').val(), onTokenCreated, onTokenFailed); 
-               return false;
+                SimplePay.createToken($('#inputCard').val(), $('#inputExpireYear').val(), $('#inputExpireMonth').val(), $('#inputCvd').val(), onTokenCreated, onTokenFailed);
+                return false;
             });
         </script>
     </body>

@@ -24,6 +24,21 @@
             //$.post(this.serviceUrl + '/tokens', data, "json").done(callbackSuccess).fail(callbackFailure);
         }
         
+        this.createTransaction = function(token, amount, currency, refId, callbackSuccess, callbackFailure) {
+            var data = {
+                token:token,
+                amount:amount,
+                currency:currency,
+                refId:refId
+            }
+            $.ajax({
+                type: "POST",
+                url: this.serviceUrl + '/transactions',
+                data: data,
+                dataType: 'json'
+              }).done(callbackSuccess).fail(callbackFailure);
+        }
+        
         this.listTransactions = function(query, offset, count, callback) {
             $.getJSON(this.serviceUrl + "/transactions?query="+query+"&offset="+offset+"&count=" + count, function(data) {
                 callback(data);

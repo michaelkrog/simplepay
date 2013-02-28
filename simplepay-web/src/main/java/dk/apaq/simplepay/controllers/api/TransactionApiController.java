@@ -78,12 +78,12 @@ public class TransactionApiController extends BaseController {
     @RequestMapping(value = "/transactions", method = RequestMethod.POST, headers = "Accept=application/json")
     @Transactional(readOnly = true)
     @ResponseBody
-    public String createTransaction(@RequestParam String token, @RequestParam String refId, @RequestParam String currency, 
+    public Transaction createTransaction(@RequestParam String token, @RequestParam String refId, @RequestParam String currency, 
                                     @RequestParam Integer amount) {
         Validate.isTrue(amount > 0, "Amount cannot be '0'.");
         Merchant m = ControllerUtil.getMerchant(service);
         Money money = Money.ofMinor(CurrencyUnit.getInstance(currency), amount);
-        return service.getTransactions(m).createNew(m, token, refId, money).getId();
+        return service.getTransactions(m).createNew(m, token, refId, money);
     }
 
     /**

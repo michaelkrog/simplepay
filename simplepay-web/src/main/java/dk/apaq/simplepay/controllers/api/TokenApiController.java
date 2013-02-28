@@ -56,12 +56,12 @@ public class TokenApiController {
     @RequestMapping(value = "/tokens", method = RequestMethod.POST, headers = "Accept=application/json")
     @Transactional()
     @ResponseBody
-    public String createToken(@RequestParam String cardNumber, @RequestParam int expireMonth, @RequestParam int expireYear,
+    public Token createToken(@RequestParam String cardNumber, @RequestParam int expireMonth, @RequestParam int expireYear,
             @RequestParam String cvd) {
         Merchant m = ControllerUtil.getMerchant(service);
         LOG.debug("Creating token. [merchant={}]", m);
         Card card = new Card(cardNumber, expireYear, expireMonth, cvd, encryptor);
-        return service.getTokens(m).createNew(card).getId();
+        return service.getTokens(m).createNew(card);
     }
 
     /**
