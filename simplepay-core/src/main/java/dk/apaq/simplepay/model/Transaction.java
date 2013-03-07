@@ -14,7 +14,7 @@ import org.joda.money.Money;
  * @author krog
  */
 @Entity
-public class Transaction extends BaseEntity {
+public class Transaction extends BaseEntityWithoutGeneratedId {
 
     private long amount;
     private long amountCharged;

@@ -16,7 +16,7 @@ import org.hibernate.annotations.GenericGenerator;
  * @author krog
  */
 @Entity
-public class Token extends BaseEntity {
+public class Token extends BaseEntityWithoutGeneratedId {
 
     
     @NotNull
