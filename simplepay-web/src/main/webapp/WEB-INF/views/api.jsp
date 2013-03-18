@@ -7,6 +7,11 @@
     var w = this;
     this.SimplePay = new function() {
     this.serviceUrl = '<c:url value="/data"/>';
+    this.serviceKey = '';
+    
+        this.setKey = function(key) {
+            this.serviceKey = key;
+        }
     
         this.createToken = function(cardNumber, expireYear, expireMonth, cvd, callbackSuccess, callbackFailure) {
             var data = {
@@ -19,7 +24,8 @@
                 type: "POST",
                 url: this.serviceUrl + '/tokens',
                 data: data,
-                dataType: 'json'
+                dataType: 'json',
+                username: this.serviceKey
               }).done(callbackSuccess).fail(callbackFailure);
             //$.post(this.serviceUrl + '/tokens', data, "json").done(callbackSuccess).fail(callbackFailure);
         }
@@ -35,7 +41,8 @@
                 type: "POST",
                 url: this.serviceUrl + '/transactions',
                 data: data,
-                dataType: 'json'
+                dataType: 'json',
+                username: this.serviceKey
               }).done(callbackSuccess).fail(callbackFailure);
         }
         

@@ -74,22 +74,29 @@
                                     <c:forEach var="e" items="${entities}">
                                     <li>
                                         <a style="background:#fcf8e3" href="<c:url value="/data/transactions/${e.id}.html"/>">
-                                            <div class="pull-left" style="width:25%">
-                                                <span class="hidden-phone"><fmt:formatDate type="both" dateStyle="medium" timeStyle="short" value="${e.dateChanged}" /></span>
-                                                <span class="visible-phone"><fmt:formatDate type="date" dateStyle="short" value="${e.dateChanged}" /></span>
+                                            <div class="pull-left hidden-phone" style="width:25%">
+                                                <span><fmt:formatDate type="both" dateStyle="medium" timeStyle="short" value="${e.dateChanged}" /></span>
+                                                <!--span class="visible-phone"><fmt:formatDate type="date" dateStyle="short" value="${e.dateChanged}" /></span-->
                                             </div>
                                             &nbsp;
-                                            
-                                            <div class="pull-left visible-desktop" style="width:40%;white-space:nowrap;overflow:hidden;text-overflow: ellipsis;padding-right: 15px">
+
+                                            <div class="pull-left visible-desktop" style="width:30%;white-space:nowrap;overflow:hidden;text-overflow: ellipsis;padding-right: 15px">
                                                 <fmt:formatNumber currencyCode="${e.currency}" value="${e.amount/100}" type="currency"/> — ${e.id}
                                             </div>
-                                            <div class="pull-left hidden-desktop" style="width:30%;white-space:nowrap;overflow:hidden;text-overflow: ellipsis;padding-right: 15px">
+                                            <div class="pull-left hidden-desktop" style="width:25%;white-space:nowrap;overflow:hidden;text-overflow: ellipsis;padding-right: 15px">
                                                 <fmt:formatNumber currencyCode="${e.currency}" value="${e.amount/100}" type="currency"/>
                                             </div>
 
-                                            <div class="pull-right">#${e.refId}&nbsp;<i class="mini-ico-circle-arrow-right mini-color"></i></div>
+                                            <c:choose>
+                                                <c:when test="${e.status == 'Authorized'}">
+                                                    <div class="btn-group pull-right" style="border-left:1px solid #9f9f9f;margin-left: 10px;padding-left: 10px">
+                                                        <button class="btn btn-mini">Charge&nbsp;<i class="mini-ico-ok mini-color"></i></button>
+                                                    </div>
+                                                </c:when>
+                                                
+                                            </c:choose>
+                                            <div class="pull-right">#${e.refId}</div>
 
-                                            <!--span class="pull-right">&nbsp;<i class="mini-ico-ok mini-color"></i></span-->
 
                                         </a>
                                     </li>
@@ -175,6 +182,7 @@
         <script src="<c:url value="/api.js"/>"></script>
 
         <script>
+            SimplePay.setKey('${key}');
             function onTransactionCreated(transaction) {
                 document.location.reload();
             }

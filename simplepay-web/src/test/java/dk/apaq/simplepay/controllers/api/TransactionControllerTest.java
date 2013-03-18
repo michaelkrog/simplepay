@@ -175,11 +175,11 @@ public class TransactionControllerTest {
         String token = service.getTokens(merchant).createNew(card).getId();
         TransactionApiController instance = new TransactionApiController(service);
         
-        String result = instance.createTransaction(token, refId, currency, amount);
+        Transaction result = instance.createTransaction(token, refId, currency, amount);
 
         assertNotNull(result);
         
-        Transaction t = transactionRep.findOne(result);
+        Transaction t = result;
         assertNotNull(t);
         assertEquals(token, t.getToken());
         assertEquals("refid", t.getRefId());
@@ -198,7 +198,7 @@ public class TransactionControllerTest {
         TransactionApiController instance = new TransactionApiController(service);
         
         try {
-            String result = instance.createTransaction(token, refId, currency, amount);
+            Transaction result = instance.createTransaction(token, refId, currency, amount);
             fail("Should have failed");
         } catch(IllegalArgumentException ex) {
             

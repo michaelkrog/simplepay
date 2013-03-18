@@ -51,7 +51,9 @@ public class TransactionViewController extends BaseController {
     public ModelAndView listTransactions(@RequestParam(required = false) String query, @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "1000") Integer limit) {
         Merchant m = ControllerUtil.getMerchant(service);
-        return listEntities(service.getTransactions(m), query, new Sorter("dateCreated", Sorter.Direction.Descending), offset, limit, "transactions");
+        ModelAndView mav = listEntities(service.getTransactions(m), query, new Sorter("dateCreated", Sorter.Direction.Descending), offset, limit, "transactions");
+        mav.addObject("key", service.getOrCreatePrivateUser(m).getUsername());
+        return mav;
     }
     
     @RequestMapping(value = "/transactions/{id}.html", method = RequestMethod.GET)
@@ -60,7 +62,9 @@ public class TransactionViewController extends BaseController {
     public ModelAndView editTransaction(@PathVariable String id) {
         Merchant m = ControllerUtil.getMerchant(service);
         Transaction transaction = getTransaction(m, id);
-        return new ModelAndView("transaction_edit", "entity", transaction);
+        ModelAndView mav = new ModelAndView("transaction_edit", "entity", transaction);
+        mav.addObject("key", service.getOrCreatePrivateUser(m).getUsername());
+        return mav;
     }
     
 }
