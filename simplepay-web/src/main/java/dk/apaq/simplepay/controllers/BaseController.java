@@ -38,23 +38,22 @@ public class BaseController {
 
     private Map<String, Object> buildListModel(Repository rep, Criteria c) {
         LOG.debug("Building list model.");
-        List entities = rep.findAll(c);
+        Iterable entities = rep.findAll(c);
 
-        Criteria criteriaWithoutLimit = new Criteria(c.getRule());
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("entities", entities);
-        model.put("totalEntities", rep.count(/*criteriaWithoutLimit*/));
+        model.put("totalEntities", rep.count(c));
         model.put("offset", c.getLimit().getOffset());
         return model;
     }
 
-    protected List listEntities(Repository rep, Rule rule, Sorter sorter, int offset, int limit) {
+    protected Iterable listEntities(Repository rep, Rule rule, Sorter sorter, int offset, int limit) {
         LOG.debug("Retrieving list of entities");
         Criteria c = new Criteria(rule, sorter, new Limit(offset, limit));
         return rep.findAll(c);
     }
     
-    protected List listEntities(Repository rep, String query, Sorter sorter, int offset, int limit) {
+    protected Iterable listEntities(Repository rep, String query, Sorter sorter, int offset, int limit) {
         LOG.debug("Retrieving list of entities");
         Rule rule = null;
         if (query != null) {

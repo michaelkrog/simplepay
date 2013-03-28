@@ -85,7 +85,7 @@ public class PayService implements ApplicationContextAware, IPayService {
     @Override
     public SystemUser getOrCreatePublicUser(Merchant merchant) {
         DataAccess.checkMerchant(merchant);
-        List<SystemUser> list = getUserlist("merchant", merchant);
+        Iterable<SystemUser> list = getUserlist("merchant", merchant);
 
         for (SystemUser user : list) {
             if (user.getRoles().contains(ERole.PublicApiAccessor)) {
@@ -100,7 +100,7 @@ public class PayService implements ApplicationContextAware, IPayService {
     @Override
     public SystemUser getOrCreatePrivateUser(Merchant merchant) {
         DataAccess.checkMerchant(merchant);
-        List<SystemUser> list = getUserlist("merchant", merchant);
+        Iterable<SystemUser> list = getUserlist("merchant", merchant);
 
         for (SystemUser user : list) {
             if (user.getRoles().contains(ERole.PrivateApiAccessor)) {
@@ -142,10 +142,10 @@ public class PayService implements ApplicationContextAware, IPayService {
 
     private SystemUser getUser(String key, String value) {
         Rule rule = Rules.equals(key, value);
-        return getUsers().findFirst(new Criteria(rule));
+        return getUsers().findOne(new Criteria(rule));
     }
 
-    private List<SystemUser> getUserlist(String key, Object value) {
+    private Iterable<SystemUser> getUserlist(String key, Object value) {
         Rule rule = Rules.equals(key, value);
         return getUsers().findAll(new Criteria(rule));
     }
@@ -153,6 +153,6 @@ public class PayService implements ApplicationContextAware, IPayService {
     @Override
     public Transaction getTransactionByRefId(Merchant m, String refId) {
         Rule rule = Rules.equals("refId", refId);
-        return getTransactions(m).findFirst(new Criteria(rule));
+        return getTransactions(m).findOne(new Criteria(rule));
     }
 }

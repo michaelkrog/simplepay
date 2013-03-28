@@ -1,5 +1,7 @@
 package dk.apaq.simplepay.controllers.api;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -156,10 +158,17 @@ public class TransactionControllerTest {
         Integer offset = 0;
         Integer limit = 5;
         TransactionApiController instance = new TransactionApiController(service);
-        List<Transaction> result = instance.listTransactions(query, offset, limit);
+        Iterable<Transaction> result = instance.listTransactions(query, offset, limit);
 
-        assertTrue(result.size() == 5);
-        assertTrue(result.get(0).getRefId().startsWith("#1"));
+        int count=0;
+        Iterator<Transaction> it = result.iterator();
+        List<Transaction> list = new ArrayList<Transaction>();
+        while(it.hasNext()) {
+            list.add(it.next());
+            count++;
+        }
+        assertTrue(count == 5);
+        assertTrue(list.get(0).getRefId().startsWith("#1"));
     }
 
     /**

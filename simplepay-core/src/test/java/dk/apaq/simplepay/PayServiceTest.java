@@ -185,27 +185,27 @@ public class PayServiceTest {
     @Test
     public void testGetOrCreatePublicUser() {
         Merchant merchant = service.getMerchants().save(new Merchant());
-        List<SystemUser> users = service.getUsers().findAll(new Criteria(Rules.equals("merchant", merchant)));
-        assertTrue(users.isEmpty());
+        Iterable<SystemUser> users = service.getUsers().findAll(new Criteria(Rules.equals("merchant", merchant)));
+        assertFalse(users.iterator().hasNext());
         
         SystemUser user = service.getOrCreatePublicUser(merchant);
         assertNotNull(user);
         
         users = service.getUsers().findAll(new Criteria(Rules.equals("merchant", merchant)));
-        assertFalse(users.isEmpty());
+        assertTrue(users.iterator().hasNext());
     }
     
     @Test
     public void testGetOrCreatePrivateUser() {
         Merchant merchant = service.getMerchants().save(new Merchant());
-        List<SystemUser> users = service.getUsers().findAll(new Criteria(Rules.equals("merchant", merchant)));
-        assertTrue(users.isEmpty());
+        Iterable<SystemUser> users = service.getUsers().findAll(new Criteria(Rules.equals("merchant", merchant)));
+        assertFalse(users.iterator().hasNext());
         
         SystemUser user = service.getOrCreatePrivateUser(merchant);
         assertNotNull(user);
         
         users = service.getUsers().findAll(new Criteria(Rules.equals("merchant", merchant)));
-        assertFalse(users.isEmpty());
+        assertTrue(users.iterator().hasNext());
     }
     
     @Test

@@ -60,7 +60,7 @@ public class TransactionApiController extends BaseController {
     @RequestMapping(value = "/transactions", method = RequestMethod.GET, headers = "Accept=application/json")
     @Transactional(readOnly = true)
     @ResponseBody
-    public List<Transaction> listTransactions(@RequestParam(required = false) String query, @RequestParam(defaultValue = "0") Integer offset,
+    public Iterable<Transaction> listTransactions(@RequestParam(required = false) String query, @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "1000") Integer limit) {
         Merchant m = ControllerUtil.getMerchant(service);
         return listEntities(service.getTransactions(m), query, new Sorter("dateCreated", Sorter.Direction.Descending), offset, limit);
