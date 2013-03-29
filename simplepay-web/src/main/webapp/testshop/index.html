@@ -8,11 +8,11 @@
         
     </head>
     <body>
-        <form action="ok.html" method="post" data-type="payment" data-key="qwerty" data-orderref="123" data-amount="9900" data-currency="DKK">
-            Card: <input type="text" name="cardno"><br>
-            Cvd: <input type="text" name="cvd"><br>
-            expMonth: <input type="text" name="expireMonth"><br>
-            expYear: <input type="text" name="expireYear"><br>
+        <form action="ok.html" method="post" data-type="payment" data-key="qwerty">
+            Card: <input type="text" data-pay="cardno"><br>
+            Cvd: <input type="text" data-pay="cvd"><br>
+            expMonth: <input type="text" data-pay="expireMonth"><br>
+            expYear: <input type="text" data-pay="expireYear"><br>
 
             <!-- Flere input felter vedr. ordren som du vil have sendt til din server -->
             orderid: <input type="hidden" name="orderid" value="123"><br>

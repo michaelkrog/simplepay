@@ -47,9 +47,7 @@
         }
         
         this.chargeTransaction = function(id, amount, callbackSuccess, callbackFailure) {
-            var data = {
-                id:id
-            }
+            var data = {};
             
             if(amount) {
                 data.amount = amount;
@@ -58,6 +56,22 @@
             $.ajax({
                 type: "POST",
                 url: this.serviceUrl + '/transactions/' + id + '/charge',
+                data: data,
+                dataType: 'json',
+                username: this.serviceKey
+              }).done(callbackSuccess).fail(callbackFailure);
+        }
+        
+        this.refundTransaction = function(id, amount, callbackSuccess, callbackFailure) {
+            var data = {};
+            
+            if(amount) {
+                data.amount = amount;
+            }
+            
+            $.ajax({
+                type: "POST",
+                url: this.serviceUrl + '/transactions/' + id + '/refund',
                 data: data,
                 dataType: 'json',
                 username: this.serviceKey

@@ -2023,7 +2023,6 @@ form#newsletter input[type=submit] {
 	display: block;
 	padding: 3px 0;
 	padding-left: 12px;
-	background: url(../img/links-list-arrow-01.png) no-repeat left 47%;
 }
 
 .links-list-alt li a {
@@ -2031,11 +2030,26 @@ form#newsletter input[type=submit] {
 	display: block;
 	padding: 3px 0;
 	padding-left: 12px;
+}
+
+.links-list li.active a {
+	font-weight: bold;
+	background: url(../img/links-list-arrow-01.png) no-repeat left 47%;
+}
+
+.links-list-alt li.active a {
+	font-weight: bold;
 	background: url(../img/links-list-arrow-02.png) no-repeat left 47%;
 }
 
-.links-list li a:hover {color: #efe9d8}
-.links-list-alt li a:hover {color: #888}
+.links-list li a:hover {
+    color: #efe9d8;
+    background: url(../img/links-list-arrow-01.png) no-repeat left 47%;
+}
+.links-list-alt li a:hover {
+    color: #888;
+    background: url(../img/links-list-arrow-02.png) no-repeat left 47%;
+}
 
 .links-list li:first-child a,
 .links-list-alt li:first-child a {

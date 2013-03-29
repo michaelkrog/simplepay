@@ -64,6 +64,7 @@ public class TransactionViewController extends BaseController {
         Transaction transaction = getTransaction(m, id);
         ModelAndView mav = new ModelAndView("transaction_edit", "entity", transaction);
         mav.addObject("key", service.getOrCreatePrivateUser(m).getUsername());
+        mav.addObject("token", service.getTokens(m).findOne(transaction.getToken()));
         return mav;
     }
     
