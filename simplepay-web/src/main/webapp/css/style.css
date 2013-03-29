@@ -2421,5 +2421,13 @@ form#newsletter input[type=submit] {
 }
 
 .authorized-transaction {
-    background: #fcf8e3;
+    background: white;
+}
+
+.charged-transaction {
+    background: #dff0d8;
+}
+
+.failed-transaction {
+    background: #f2dede;
 }

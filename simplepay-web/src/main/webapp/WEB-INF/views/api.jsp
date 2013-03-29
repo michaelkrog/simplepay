@@ -46,6 +46,24 @@
               }).done(callbackSuccess).fail(callbackFailure);
         }
         
+        this.chargeTransaction = function(id, amount, callbackSuccess, callbackFailure) {
+            var data = {
+                id:id
+            }
+            
+            if(amount) {
+                data.amount = amount;
+            }
+            
+            $.ajax({
+                type: "POST",
+                url: this.serviceUrl + '/transactions/' + id + '/charge',
+                data: data,
+                dataType: 'json',
+                username: this.serviceKey
+              }).done(callbackSuccess).fail(callbackFailure);
+        }
+        
         this.listTransactions = function(query, offset, count, callback) {
             $.getJSON(this.serviceUrl + "/transactions?query="+query+"&offset="+offset+"&count=" + count, function(data) {
                 callback(data);
