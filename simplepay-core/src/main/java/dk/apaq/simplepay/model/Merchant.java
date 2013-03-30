@@ -101,7 +101,7 @@ public class Merchant extends BaseEntityWithGeneratedId {
         Validate.notNull(card, "The card specified is null.");
         Validate.notNull(money, "The money specified is null.");
         for (PaymentGatewayAccess pga : paymentGatewayAccesses) {
-            if(pga.getSpecificValidInstruments().isEmpty() || pga.getSpecificValidInstruments().contains(card.getPaymentIntrument())) {
+            if(pga.getSpecificValidInstruments().isEmpty() || pga.getSpecificValidInstruments().contains(card.getPaymentInstrument())) {
                 return pga;
             }
         }
