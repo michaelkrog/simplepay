@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dk.apaq.framework.common.beans.finance.Card;
-import dk.apaq.framework.common.beans.finance.PaymentIntrument;
+import dk.apaq.framework.common.beans.finance.PaymentInstrument;
 import dk.apaq.simplepay.gateway.PaymentException;
 import org.jasypt.encryption.StringEncryptor;
 import org.joda.money.CurrencyUnit;
@@ -158,7 +158,7 @@ public class PayServiceTest {
     @Test
     public void testMissingGatewayAccess() {
         Merchant m = new Merchant();
-        m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null, PaymentIntrument.Mastercard));
+        m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null, PaymentInstrument.Mastercard));
         m = service.getMerchants().save(m);
         
         Token token = service.getTokens(m).createNew(dankort);

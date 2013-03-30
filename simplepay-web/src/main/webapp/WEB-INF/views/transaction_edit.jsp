@@ -61,7 +61,7 @@
                         
 
                         <h1 class="pull-left">
-                            <img src="<c:url value='/img/cards/48/${fn:toLowerCase(token.data.paymentIntrument)}_48.png'/>">
+                            <img src="<c:url value='/img/cards/48/${fn:toLowerCase(token.data.paymentInstrument)}_48.png'/>">
                             <fmt:formatNumber value="${entity.amount/100}" type="currency" currencyCode="${entity.currency}"/>
                             <span class="muted" style="font-size:18px;vertical-align: middle">- ${entity.id}</span>
 
@@ -92,7 +92,7 @@
                                 <dt>Expires:</dt>
                                 <dd>${token.data.expireMonth} / ${token.data.expireYear}</dd>
                                 <dt>Type</dt>
-                                <dd>${token.data.paymentIntrument}</dd>
+                                <dd>${token.data.paymentInstrument}</dd>
                                 
                             </dl>
                         </div>

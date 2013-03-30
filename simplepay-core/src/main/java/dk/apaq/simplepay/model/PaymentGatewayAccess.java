@@ -10,7 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
-import dk.apaq.framework.common.beans.finance.PaymentIntrument;
+import dk.apaq.framework.common.beans.finance.PaymentInstrument;
 import dk.apaq.simplepay.gateway.EPaymentGateway;
 
 /**
@@ -25,7 +25,7 @@ public class PaymentGatewayAccess extends BaseEntityWithGeneratedId {
     
     @ElementCollection
     @Enumerated(EnumType.STRING)
-    private List<PaymentIntrument> specificValidInstruments;
+    private List<PaymentInstrument> specificValidInstruments;
 
     protected PaymentGatewayAccess() {
     }
@@ -34,13 +34,13 @@ public class PaymentGatewayAccess extends BaseEntityWithGeneratedId {
         this(paymentGatewayType, acquirerRefId, (List)null);
     }
 
-    public PaymentGatewayAccess(EPaymentGateway paymentGatewayType, String acquirerRefId, List<PaymentIntrument> specificValidInstruments) {
+    public PaymentGatewayAccess(EPaymentGateway paymentGatewayType, String acquirerRefId, List<PaymentInstrument> specificValidInstruments) {
         this.paymentGatewayType = paymentGatewayType;
         this.acquirerRefId = acquirerRefId;
-        this.specificValidInstruments = specificValidInstruments == null ? new ArrayList<PaymentIntrument>() : specificValidInstruments;
+        this.specificValidInstruments = specificValidInstruments == null ? new ArrayList<PaymentInstrument>() : specificValidInstruments;
     }
     
-    public PaymentGatewayAccess(EPaymentGateway paymentGatewayType, String acquirerRefId, PaymentIntrument ... specificValidInstruments) {
+    public PaymentGatewayAccess(EPaymentGateway paymentGatewayType, String acquirerRefId, PaymentInstrument ... specificValidInstruments) {
         this(paymentGatewayType, acquirerRefId, Arrays.asList(specificValidInstruments));
     }
     
@@ -73,7 +73,7 @@ public class PaymentGatewayAccess extends BaseEntityWithGeneratedId {
      * Retrieves a list of valid payment instruments for this PaymentGatewayAccess.
      * @return The list of instruments or an empty list if this supports all instruments.
      */
-    public List<PaymentIntrument> getSpecificValidInstruments() {
+    public List<PaymentInstrument> getSpecificValidInstruments() {
         return Collections.unmodifiableList(specificValidInstruments);
     }
 
@@ -82,8 +82,8 @@ public class PaymentGatewayAccess extends BaseEntityWithGeneratedId {
      * if this access is valid for all payments instruments.
      * @param validInstruments The list of instruments or an empty list.
      */
-    public void setSpecificValidInstruments(List<PaymentIntrument> validInstruments) {
-        this.specificValidInstruments = new ArrayList<PaymentIntrument>(validInstruments);
+    public void setSpecificValidInstruments(List<PaymentInstrument> validInstruments) {
+        this.specificValidInstruments = new ArrayList<PaymentInstrument>(validInstruments);
     }
     
 }

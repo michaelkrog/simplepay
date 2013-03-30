@@ -1,6 +1,6 @@
 package dk.apaq.simplepay.model;
 
-import dk.apaq.simplepay.common.EPaymentIntrument;
+
 import dk.apaq.simplepay.gateway.EPaymentGateway;
 import java.util.Date;
 import org.junit.After;

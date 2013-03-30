@@ -3,7 +3,7 @@ package dk.apaq.simplepay.controllers.api;
 import java.util.ArrayList;
 import java.util.List;
 
-import dk.apaq.framework.common.beans.finance.PaymentIntrument;
+import dk.apaq.framework.common.beans.finance.PaymentInstrument;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.controllers.exceptions.ResourceNotFoundException;
 import dk.apaq.simplepay.model.Merchant;
@@ -102,7 +102,7 @@ public class TokenControllerTest {
         assertEquals("4485538169160095", tokenObj.getData().getCardNumber(encryptor));
         assertEquals(2016, tokenObj.getData().getExpireYear());
         assertTrue(tokenObj.getData().isValid());
-        assertEquals(PaymentIntrument.Visa, tokenObj.getData().getPaymentInstrument());
+        assertEquals(PaymentInstrument.Visa, tokenObj.getData().getPaymentInstrument());
         
     }
     
@@ -121,7 +121,7 @@ public class TokenControllerTest {
         assertEquals("4485538169160095", tokenObj.getData().getCardNumber(encryptor));
         assertEquals(2016, tokenObj.getData().getExpireYear());
         assertTrue(tokenObj.getData().isValid());
-        assertEquals(PaymentIntrument.Visa, tokenObj.getData().getPaymentInstrument());
+        assertEquals(PaymentInstrument.Visa, tokenObj.getData().getPaymentInstrument());
         
     }
         
@@ -140,7 +140,7 @@ public class TokenControllerTest {
         assertEquals("345345435345", tokenObj.getData().getCardNumber(encryptor));
         assertEquals(2016, tokenObj.getData().getExpireYear());
         assertFalse(tokenObj.getData().isValid());
-        assertEquals(PaymentIntrument.Unknown, tokenObj.getData().getPaymentInstrument());
+        assertEquals(PaymentInstrument.Unknown, tokenObj.getData().getPaymentInstrument());
         
     }
         
