@@ -9,12 +9,13 @@
 
            <!-- Admin, PrivateApiAccessor, PublicApiAccessor, Merchant -->
            
-    <http disable-url-rewriting="true" request-matcher-ref="jsonMatcher" create-session="stateless">
+    <http entry-point-ref="restErrorHandler" disable-url-rewriting="true" request-matcher-ref="jsonMatcher" create-session="stateless" >
         <intercept-url method="POST" pattern="/data/tokens" access="ROLE_PUBLICAPIACCESSOR,ROLE_PRIVATEAPIACCESSOR,ROLE_MERCHANT" />
         <intercept-url method="GET" pattern="/data/**" access="ROLE_PRIVATEAPIACCESSOR,ROLE_MERCHANT" />
         <intercept-url method="POST" pattern="/data/**" access="ROLE_PRIVATEAPIACCESSOR,ROLE_MERCHANT" />
         <intercept-url method="DELETE" pattern="/data/**" access="ROLE_PRIVATEAPIACCESSOR,ROLE_MERCHANT" />
         <http-basic />
+        <access-denied-handler ref="restErrorHandler" />
     </http>
     
     <http disable-url-rewriting="true"> <!--use-expressions="true">-->
@@ -33,4 +34,7 @@
     <beans:bean id="jsonMatcher" class="org.springframework.security.web.util.ELRequestMatcher">
         <beans:constructor-arg value="hasHeader('Accept','application/json')"/>
     </beans:bean>  
+    
+    <beans:bean id="restErrorHandler" class="dk.apaq.simplepay.controllers.api.RestErrorHandler"></beans:bean>
+
 </beans:beans>

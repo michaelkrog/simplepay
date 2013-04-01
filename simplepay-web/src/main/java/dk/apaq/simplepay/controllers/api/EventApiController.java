@@ -27,8 +27,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class EventApiController extends BaseController {
 
+    private final IPayService service;
+    private final RestErrorHandler errorHandler;
+
     @Autowired
-    private IPayService service;
+    public EventApiController(IPayService service, RestErrorHandler errorHandler) {
+        this.service = service;
+        this.errorHandler = errorHandler;
+    }
 
     @RequestMapping(value = "/events", method = RequestMethod.GET, headers = "Accept=application/json")
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})

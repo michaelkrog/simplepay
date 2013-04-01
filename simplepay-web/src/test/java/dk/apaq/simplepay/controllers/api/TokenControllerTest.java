@@ -5,6 +5,7 @@ import java.util.List;
 
 import dk.apaq.framework.common.beans.finance.PaymentInstrument;
 import dk.apaq.simplepay.IPayService;
+import dk.apaq.simplepay.controllers.exceptions.ParameterException;
 import dk.apaq.simplepay.controllers.exceptions.ResourceNotFoundException;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
@@ -64,11 +65,11 @@ public class TokenControllerTest {
     @Test
     public void testCreateToken() {
         System.out.println("createToken");
-        String cardNumber = "1234 5678 1234 5678";
+        String cardNumber = "4111 1111 1111 1111";
         int expireMonth = 11;
         int expireYear = 2016;
         String cvd = "123";
-        TokenApiController instance = new TokenApiController(service, encryptor);
+        TokenApiController instance = new TokenApiController(service, encryptor, null);
         Token result = instance.createToken(cardNumber, expireMonth, expireYear, cvd);
         assertNotNull(result);
     }
@@ -79,7 +80,7 @@ public class TokenControllerTest {
     @Test
     public void testListTokens() {
         System.out.println("listTokens");
-        TokenApiController instance = new TokenApiController(service, encryptor);
+        TokenApiController instance = new TokenApiController(service, encryptor, null);
         Iterable<Token> result = instance.listTokens();
         assertNotNull(result);
     }
@@ -94,7 +95,7 @@ public class TokenControllerTest {
         int expireMonth = 11;
         int expireYear = 2016;
         String cvd = "123";
-        TokenApiController instance = new TokenApiController(service, encryptor);
+        TokenApiController instance = new TokenApiController(service, encryptor, null);
         Token token = instance.createToken(cardNumber, expireMonth, expireYear, cvd);
         assertNotNull(token);
         
@@ -113,7 +114,7 @@ public class TokenControllerTest {
         int expireMonth = 11;
         int expireYear = 16;
         String cvd = "123";
-        TokenApiController instance = new TokenApiController(service, encryptor);
+        TokenApiController instance = new TokenApiController(service, encryptor, null);
         Token token = instance.createToken(cardNumber, expireMonth, expireYear, cvd);
         assertNotNull(token);
         
@@ -132,15 +133,14 @@ public class TokenControllerTest {
         int expireMonth = 11;
         int expireYear = 16;
         String cvd = "123";
-        TokenApiController instance = new TokenApiController(service, encryptor);
-        Token token = instance.createToken(cardNumber, expireMonth, expireYear, cvd);
-        assertNotNull(token);
+        TokenApiController instance = new TokenApiController(service, encryptor, null);
         
-        Token tokenObj = token;
-        assertEquals("345345435345", tokenObj.getData().getCardNumber(encryptor));
-        assertEquals(2016, tokenObj.getData().getExpireYear());
-        assertFalse(tokenObj.getData().isValid());
-        assertEquals(PaymentInstrument.Unknown, tokenObj.getData().getPaymentInstrument());
+        try {
+            Token token = instance.createToken(cardNumber, expireMonth, expireYear, cvd);
+            fail("Should have failed.");
+        } catch (ParameterException ex) {
+            assertEquals("cardNumber", ex.getParameterName());
+        }
         
     }
         
@@ -151,7 +151,7 @@ public class TokenControllerTest {
         int expireMonth = 43;
         int expireYear = 316;
         String cvd = "wwer";
-        TokenApiController instance = new TokenApiController(service, encryptor);
+        TokenApiController instance = new TokenApiController(service, encryptor, null);
         
         try {
             Token token = instance.createToken(cardNumber, expireMonth, expireYear, cvd);
@@ -164,7 +164,7 @@ public class TokenControllerTest {
     
     @Test
     public void testGetToken_NotFound() {
-        TokenApiController instance = new TokenApiController(service, encryptor);
+        TokenApiController instance = new TokenApiController(service, encryptor, null);
         
         try {
             Token tokenObj = instance.getToken("234re");

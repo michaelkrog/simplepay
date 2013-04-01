@@ -1,8 +1,10 @@
 package dk.apaq.simplepay.controllers.api;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import dk.apaq.framework.criteria.Sorter;
 import dk.apaq.simplepay.IPayService;
@@ -21,11 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -36,10 +34,12 @@ public class TransactionApiController extends BaseController {
 
     private static final Logger LOG = LoggerFactory.getLogger(TransactionApiController.class);
     private final IPayService service;
+    private final RestErrorHandler errorHandler;
 
     @Autowired
-    public TransactionApiController(IPayService service) {
+    public TransactionApiController(IPayService service, RestErrorHandler errorHandler) {
         this.service = service;
+        this.errorHandler = errorHandler;
     }
 
     private Transaction getTransaction(Merchant m, String token) {
@@ -50,6 +50,11 @@ public class TransactionApiController extends BaseController {
         return t;
     }
 
+    @ExceptionHandler(Throwable.class)
+    public void handleException(Throwable ex, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        errorHandler.handleThrowable(request, response, ex);
+    }
+        
     /**
      * List transactions for the current merchant.
      * @param query The query in Simple Query Format
@@ -79,7 +84,7 @@ public class TransactionApiController extends BaseController {
     @Transactional(readOnly = true)
     @ResponseBody
     public Transaction createTransaction(@RequestParam String token, @RequestParam String refId, @RequestParam String currency, 
-                                    @RequestParam Integer amount) {
+                                    @RequestParam Long amount) {
         Validate.isTrue(amount > 0, "Amount cannot be '0'.");
         Merchant m = ControllerUtil.getMerchant(service);
         Money money = Money.ofMinor(CurrencyUnit.getInstance(currency), amount);

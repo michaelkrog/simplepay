@@ -1,5 +1,6 @@
 package dk.apaq.simplepay.controllers.api;
 
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
@@ -30,11 +31,13 @@ public class TokenApiController {
     private static final Logger LOG = LoggerFactory.getLogger(TokenApiController.class);
     private final IPayService service;
     private final StringEncryptor encryptor;
+    private final RestErrorHandler errorHandler;
 
     @Autowired
-    public TokenApiController(IPayService service, StringEncryptor encryptor) {
+    public TokenApiController(IPayService service, StringEncryptor encryptor, RestErrorHandler errorHandler) {
         this.service = service;
         this.encryptor = encryptor;
+        this.errorHandler = errorHandler;
     }
 
     private Token getToken(Merchant m, String token) {
@@ -46,9 +49,8 @@ public class TokenApiController {
     }
 
     @ExceptionHandler(Throwable.class)
-    @ResponseBody
-    public RestError handleException(Throwable ex, HttpServletRequest request, HttpServletResponse response) {
-        return RestErrorUtil.resolveRestError(ex, request, response);
+    public void handleException(Throwable ex, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        errorHandler.handleThrowable(request, response, ex);
     }
 
     /**
