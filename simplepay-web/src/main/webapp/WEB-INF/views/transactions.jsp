@@ -3,6 +3,9 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<c:set var="area" value="dashboard"/>
+<c:set var="subarea" value="payments"/>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -31,7 +34,7 @@
                 <!-- start: Container -->
                 <div class="container">
 
-                    <h2><i class="ico-italic ico-white"></i>Payments</h2>
+                    <h2><i class="ico-credit-card ico-white"></i>Payments</h2>
 
                 </div>
                 <!-- end: Container  -->
@@ -48,14 +51,7 @@
             <div class="container">
                 <div class="row">
                     <div class="span3" data-spy="affix" data-offset-top="200">
-                        <div class="widget">
-                            <div class="title"><h3>Menu</h3></div>
-                            <ul class="links-list-alt">
-                                <li class="active"><a href="full_width.html">Dashboard</a></li>
-                                <li class="active"><a href="full_width.html">Payments</a></li>
-                                <li><a href="sidebar.html">Events</a></li>
-                            </ul>
-                        </div>
+                        <%@include file="inc/menu-left.jsp" %>
                     </div>
                     <div class="span9">
                         <p>
@@ -66,6 +62,7 @@
                         <div class="pull-right"><a href="#paymentModal" role="button" data-toggle="modal">Create payment</a></div>
                         </p>
                         <div>
+                            <p>
 
                             <ul class="nav nav-tabs nav-stacked clear">
                                 <c:if test="${empty entities}">
@@ -73,7 +70,7 @@
                                     </c:if>
                                     <c:forEach var="e" items="${entities}">
                                     <li>
-                                        <a style="background:#fcf8e3" href="<c:url value="/data/transactions/${e.id}.html"/>">
+                                        <a class="${fn:toLowerCase(e.status)}-transaction" href="<c:url value="/data/transactions/${e.id}.html"/>">
                                             <div class="pull-left hidden-phone" style="width:25%">
                                                 <span><fmt:formatDate type="both" dateStyle="medium" timeStyle="short" value="${e.dateChanged}" /></span>
                                                 <!--span class="visible-phone"><fmt:formatDate type="date" dateStyle="short" value="${e.dateChanged}" /></span-->
@@ -90,7 +87,7 @@
                                             <c:choose>
                                                 <c:when test="${e.status == 'Authorized'}">
                                                     <div class="btn-group pull-right" style="border-left:1px solid #9f9f9f;margin-left: 10px;padding-left: 10px">
-                                                        <button class="btn btn-mini">Charge&nbsp;<i class="mini-ico-ok mini-color"></i></button>
+                                                        <button type="button" data-id="${e.id}" data-type="charge" class="btn btn-mini" data-toggle="button" onclick="">Charge&nbsp;<i class="mini-ico-ok mini-color"></i></button>
                                                     </div>
                                                 </c:when>
                                                 
@@ -102,6 +99,8 @@
                                     </li>
                                 </c:forEach>
                             </ul>
+                        </p>
+                            <div id="btn-approve-charges" class="btn btn-small pull-right disabled">Approve Charges</div>
                         </div>
                     </div>
                 </div>
@@ -182,7 +181,22 @@
         <script src="<c:url value="/api.js"/>"></script>
 
         <script>
+            var selectedCharges = new Array();
+            var index = 0;
+            var approveEnabled = false;
+            
             SimplePay.setKey('${key}');
+            
+            function setApproveButtonEnabled(value) {
+                approveEnabled = value === true;
+                if(approveEnabled) {
+                    $('#btn-approve-charges').removeClass('disabled');
+                } else{
+                    $('#btn-approve-charges').addClass('disabled');
+                }
+                
+            }
+            
             function onTransactionCreated(transaction) {
                 document.location.reload();
             }
@@ -203,6 +217,61 @@
                 SimplePay.createToken($('#inputCard').val(), $('#inputExpireYear').val(), $('#inputExpireMonth').val(), $('#inputCvd').val(), onTokenCreated, onTokenFailed);
                 return false;
             });
+            
+            $('button[data-type="charge"]').click(function(e) {
+                var id = $(this).attr('data-id');
+                var parent = $(this).parent().parent();
+                
+                if($(this).hasClass('active')) {
+                    $(parent).addClass('authorized-transaction');
+                    $(parent).removeClass('selected');
+                    
+                    var index = $.inArray(id, selectedCharges)
+                    if(index >= 0) {
+                        //remove id from list
+                        selectedCharges.splice(index, 1);
+                    }
+                } else {
+                    $(parent).removeClass('authorized-transaction');
+                    $(parent).addClass('selected');
+                    
+                    if($.inArray(id, selectedCharges) < 0) {
+                        //add id to list
+                        selectedCharges[selectedCharges.length] = id;
+                    }
+                    
+                    
+                }
+                
+                setApproveButtonEnabled(selectedCharges.length > 0);
+                
+                e.preventDefault();
+            });
+            
+            $('#btn-approve-charges').click(function() {
+                index = 0;
+                doNextCharge();
+            });
+            
+            function doNextCharge() {
+                if(index<selectedCharges.length) {
+                    SimplePay.chargeTransaction(selectedCharges[index],null, onSuccessfullCharge, onFailedCharge);
+                } else {
+                    document.location.reload();
+                }
+            }
+            
+            function onSuccessfullCharge() {
+                index++;
+                doNextCharge();
+            }
+            
+            function onFailedCharge() {
+                index++;
+                doNextCharge();
+            }
+            
+            setApproveButtonEnabled(false);
         </script>
     </body>
 </html>

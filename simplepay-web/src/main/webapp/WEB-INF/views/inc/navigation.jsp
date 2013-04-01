@@ -14,8 +14,8 @@
         <a class="brand" href="index.html"><i class="ico-cloud circle"></i>Simple<span>Pay</span>.</a>
         <div class="nav-collapse collapse">
             <ul class="nav">
-                <li class="active"><a href="/" class="dropdown-toggle"><spring:message code="navigation.frontpage"/></a></li>
-                <li><a href="about.html"><spring:message code="navigation.about_us"/></a></li>
+                <li <c:if test="${area=='landingpage'}">class="active"</c:if>><a href="<c:url value='/'/>" class="dropdown-toggle"><spring:message code="navigation.frontpage"/></a></li>
+                <li <c:if test="${area=='about_us'}">class="active"</c:if>><a href="about.html"><spring:message code="navigation.about_us"/></a></li>
                 <!--li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Funktioner<b class="caret"></b></a>
                     <ul class="dropdown-menu">
@@ -35,15 +35,15 @@
                     </ul>
                 </li-->									
                 <!--li><a href="services.html">Services</a></li-->
-                <li><a href="pricing.html"><spring:message code="navigation.prices"/></a></li>
+                <li <c:if test="${area=='prices'}">class="active"</c:if>><a href="pricing.html"><spring:message code="navigation.prices"/></a></li>
                 <!--li><a href="blog.html">Blog</a></li-->
-                <li><a href="contact.html"><spring:message code="navigation.contact"/></a></li>
+                <li <c:if test="${area=='contact'}">class="active"</c:if>><a href="contact.html"><spring:message code="navigation.contact"/></a></li>
                 <li class="divider-vertical"></li>
                 <sec:authorize ifNotGranted="ROLE_MERCHANT">
-                <li><a href="<c:url value="/login.html"/>"><spring:message code="navigation.log_in"/></a></li>
+                <li><a href="<c:url value="/data/transactions.html"/>"><spring:message code="navigation.log_in"/></a></li>
                 </sec:authorize>
                 <sec:authorize ifAnyGranted="ROLE_MERCHANT">
-                <li class="dropdown">
+                <li class="dropdown  <c:if test="${area=='dashboard'}">active</c:if>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Mit SimplePay&nbsp;<b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="<c:url value="/account"/>">Min konto</a></li>
