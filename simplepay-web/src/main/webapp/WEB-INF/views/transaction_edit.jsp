@@ -55,7 +55,12 @@
                     </div>
                     <div class="span9">
                         <c:choose>
-                            <c:when test="${entity.status=='Authorized'}"><div id="btn-charge" class="btn btn-success pull-right">Charge Payment</div></c:when>
+                            <c:when test="${entity.status=='Authorized'}">
+                                <div class="btn-group pull-right">
+                                <div id="btn-charge" class="btn btn-success">Charge Payment</div>
+                                <div id="btn-cancel" class="btn btn-inverse">Cancel Payment</div>
+                                </div>
+                            </c:when>
                             <c:when test="${entity.status=='Charged'}"><div id="btn-refund" class="btn btn-danger  pull-right">Refund Payment</div></c:when>
                         </c:choose>
                         
@@ -63,9 +68,6 @@
                         <h1 class="pull-left">
                             <img src="<c:url value='/img/cards/48/${fn:toLowerCase(token.data.paymentInstrument)}_48.png'/>">
                             <fmt:formatNumber value="${entity.amount/100}" type="currency" currencyCode="${entity.currency}"/>
-                            <span class="muted" style="font-size:18px;vertical-align: middle">- ${entity.id}</span>
-
-
                         </h1>
                         <hr class="clear"/>
                             
@@ -121,7 +123,15 @@
             });
             
             $('#btn-refund').click(function() {
-                SimplePay.refundTransaction("${entity.id}", null, onRefund, onRefundFailed);
+                if(confirm("Are you sure you want to refund this payment?")) {
+                    SimplePay.refundTransaction("${entity.id}", null, onRefund, onRefundFailed);
+                }
+            });
+            
+            $('#btn-cancel').click(function() {
+                if(confirm("Are you sure you want to cancel this payment?")) {
+                    SimplePay.cancelTransaction("${entity.id}", onRefund, onRefundFailed);
+                }
             });
             
             function onCharge() {
@@ -137,6 +147,14 @@
             }
             
             function onRefundFailed() {
+                alert("fail");
+            }
+            
+            function onCancel() {
+                document.location.reload();
+            }
+            
+            function onCancelFailed() {
                 alert("fail");
             }
         </script>

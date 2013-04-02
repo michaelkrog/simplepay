@@ -78,6 +78,18 @@
               }).done(callbackSuccess).fail(callbackFailure);
         }
         
+        this.cancelTransaction = function(id, callbackSuccess, callbackFailure) {
+            var data = {};
+            
+            $.ajax({
+                type: "POST",
+                url: this.serviceUrl + '/transactions/' + id + '/cancel',
+                data: data,
+                dataType: 'json',
+                username: this.serviceKey
+              }).done(callbackSuccess).fail(callbackFailure);
+        }
+        
         this.listTransactions = function(query, offset, count, callback) {
             $.getJSON(this.serviceUrl + "/transactions?query="+query+"&offset="+offset+"&count=" + count, function(data) {
                 callback(data);

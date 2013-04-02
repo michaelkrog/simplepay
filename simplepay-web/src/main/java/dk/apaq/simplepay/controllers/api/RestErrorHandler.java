@@ -64,9 +64,11 @@ public class RestErrorHandler implements AccessDeniedHandler, AuthenticationEntr
         RestError error;
         if(AccessDeniedException.class.isAssignableFrom(ex.getClass())) {
             error = new RestError("invalid_request_error", ex.getMessage());
+            response.addHeader("WWW-Authenticate", "Basic realm=\"SimplePay\"");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } else if(AuthenticationException.class.isAssignableFrom(ex.getClass())) {
             error = new RestError("invalid_request_error", ex.getMessage());
+            response.addHeader("WWW-Authenticate", "Basic realm=\"SimplePay\"");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } else if(MissingServletRequestParameterException.class.isAssignableFrom(ex.getClass())) {
             MissingServletRequestParameterException ext = (MissingServletRequestParameterException) ex;

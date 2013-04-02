@@ -2445,3 +2445,11 @@ form#newsletter input[type=submit] {
 .failed-transaction {
     background: #f2dede;
 }
+
+.refunded-transaction {
+    background: #fcf8e3;
+}
+
+.cancelled-transaction {
+    background: #d9edf7;
+}
