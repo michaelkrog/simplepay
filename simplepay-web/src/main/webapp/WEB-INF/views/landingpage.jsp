@@ -3,9 +3,9 @@
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <c:set var="area" value="landingpage"/>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="${request.locale.language}">
     <head>
-        <title>SimplePay</title>
+        <title><spring:message code="general.system_name"/></title>
         <%@include file="inc/head.jsp" %>
     </head>
     <body>
@@ -204,15 +204,15 @@
                                 <ul class="carousel">
 
                                     <li class="testimonial">
-                                        <div class="testimonials">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</div>
+                                        <div class="testimonials"><spring:message code="landingpage.clients.first.text"/></div>
                                         <div class="testimonials-bg"></div>
-                                        <div class="testimonials-author">Martin Christensen, <span>CTO</span></div>
+                                        <div class="testimonials-author"><spring:message code="landingpage.clients.first.name"/>, <span><spring:message code="landingpage.clients.first.title"/></span></div>
                                     </li>
 
                                     <li class="testimonial">
-                                        <div class="testimonials">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </div>
+                                        <div class="testimonials"><spring:message code="landingpage.clients.second.text"/></div>
                                         <div class="testimonials-bg"></div>
-                                        <div class="testimonials-author">Hannah Krog, <span>CEO</span></div>
+                                        <div class="testimonials-author"><spring:message code="landingpage.clients.second.name"/>, <span><spring:message code="landingpage.clients.second.title"/></span></div>
                                     </li>
 
 

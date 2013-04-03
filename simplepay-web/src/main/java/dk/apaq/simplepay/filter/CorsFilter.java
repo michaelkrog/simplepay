@@ -64,11 +64,6 @@ public class CorsFilter implements Filter {
             chain.doFilter(request, response);
         }
 
-
-
-
-
-
     }
 
     private boolean isPreflight(HttpServletRequest request) {
