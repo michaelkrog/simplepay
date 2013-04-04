@@ -56,17 +56,17 @@
                     <div class="span9">
                         <p>
                         <div class="btn-group">
-                            <button class="btn btn-mini btn-primary">Recent Payments</button>
-                            <button class="btn btn-mini">All Payments</button>
+                            <button class="btn btn-mini btn-primary"><spring:message code="transactions.recent_payments"/></button>
+                            <button class="btn btn-mini"><spring:message code="transactions.all_payments"/></button>
                         </div>
-                        <div class="pull-right"><a href="#paymentModal" role="button" data-toggle="modal">Create payment</a></div>
+                        <div class="pull-right"><a href="#paymentModal" role="button" data-toggle="modal"><spring:message code="transactions.create_payment"/></a></div>
                         </p>
                         <div>
                             <p>
 
                             <ul class="nav nav-tabs nav-stacked clear">
                                 <c:if test="${empty entities}">
-                                    <li><a href="#">No payments</a></li>
+                                    <li><a href="#"><spring:message code="transactions.no_payments"/></a></li>
                                     </c:if>
                                     <c:forEach var="e" items="${entities}">
                                     <li>
@@ -87,7 +87,7 @@
                                             <c:choose>
                                                 <c:when test="${e.status == 'Authorized'}">
                                                     <div class="btn-group pull-right" style="border-left:1px solid #9f9f9f;margin-left: 10px;padding-left: 10px">
-                                                        <button type="button" data-id="${e.id}" data-type="charge" class="btn btn-mini" data-toggle="button" onclick="">Charge&nbsp;<i class="mini-ico-ok mini-color"></i></button>
+                                                        <button type="button" data-id="${e.id}" data-type="charge" class="btn btn-mini" data-toggle="button" onclick=""><spring:message code="transactions.charge"/>&nbsp;<i class="mini-ico-ok mini-color"></i></button>
                                                     </div>
                                                 </c:when>
                                                 
@@ -100,7 +100,7 @@
                                 </c:forEach>
                             </ul>
                         </p>
-                            <div id="btn-approve-charges" class="btn btn-small pull-right disabled">Approve Charges</div>
+                            <div id="btn-approve-charges" class="btn btn-small pull-right disabled"><spring:message code="transactions.approve_charges"/></div>
                         </div>
                     </div>
                 </div>
@@ -114,34 +114,34 @@
         <div id="paymentModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabel">New Payment</h3>
+                <h3 id="myModalLabel"><spring:message code="transactions.new_payment"/></h3>
             </div>
             <form id="form-create-payment" class="form-horizontal">
 
                 <div class="modal-body">
                     <div class="control-group">
-                        <label class="control-label" for="inputAmount">Amount</label>
+                        <label class="control-label" for="inputAmount"><spring:message code="general.amount"/></label>
                         <div class="controls">
                             <div class="input-append ">
-                                <input type="text" pattern="\d+(\.\d{2})?" class="input-small" id="inputAmount" placeholder="<fmt:formatNumber value="9.99"/>" required>
+                                <input type="text" title="<spring:message code="general.formats.amount.description"/>" pattern="<spring:message code="general.formats.amount.js"/>" class="input-small" id="inputAmount" placeholder="<spring:message code="transactions.amount.placeholder"/>" required>
                                 <span class="add-on">DKK</span>
                             </div>
                         </div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label" for="inputCard">Card Number</label>
+                        <label class="control-label" for="inputCard"><spring:message code="general.card_number"/></label>
                         <div class="controls">
-                            <input type="text" pattern="^[0-9\s]{13,16}?$" class="input-medium" id="inputCard" placeholder="**** **** **** ****" required>
+                            <input type="text" title="<spring:message code="general.formats.card_number.description"/>" pattern="<spring:message code="general.formats.card_number.js"/>" class="input-medium" id="inputCard" placeholder="<spring:message code="transactions.card_number.placeholder"/>" required>
                         </div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label" for="inputDescription">Reference</label>
+                        <label class="control-label" for="inputDescription"><spring:message code="general.reference"/></label>
                         <div class="controls">
-                            <input type="text" class="input-medium" id="inputReference" placeholder="Reference fx. order id">
+                            <input type="text" class="input-medium" id="inputReference" placeholder="<spring:message code="transactions.reference.placeholder"/>">
                         </div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label" for="inputCard">Expires</label>
+                        <label class="control-label" for="inputCard"><spring:message code="general.expires"/></label>
                         <div class="controls">
                             <select id="inputExpireMonth" class="input-mini">
                                 <c:forEach var="currentMonth" begin="${1}" end="${12}">
@@ -161,16 +161,16 @@
                         </div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label" for="inputCvd">CVC</label>
+                        <label class="control-label" for="inputCvd"><spring:message code="general.cvd"/></label>
                         <div class="controls">
-                            <input type="text" pattern="^[0-9]{3}?$" class="span1" id="inputCvd" placeholder="***" required>
+                            <input title="<spring:message code="general.formats.cvd.description"/>" type="text" pattern="<spring:message code="general.formats.cvd.js"/>" class="span1" id="inputCvd" placeholder="<spring:message code="transactions.cvd.placeholder"/>" required>
                         </div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Create payment</button>
+                    <a href="#" class="btn" data-dismiss="modal" aria-hidden="true"><spring:message code="general.cancel"/></a>
+                    <button type="submit" class="btn btn-primary"><spring:message code="transactions.create_payment"/></button>
                 </div>
             </form>
         </div>
@@ -184,6 +184,7 @@
             var selectedCharges = new Array();
             var index = 0;
             var approveEnabled = false;
+            var decimalDelimiter = '<spring:message code="general.formats.decimal_delimiter.js"/>';
             
             SimplePay.setKey('${key}');
             
@@ -202,7 +203,11 @@
             }
 
             function onTokenCreated(token) {
-                SimplePay.createTransaction(token.id, Math.round($('#inputAmount').val() * 100), "DKK", $('#inputReference').val(), onTransactionCreated, onTransactionFailed);
+                var amount = $('#inputAmount').val();
+                if(decimalDelimiter != '.') {
+                    amount = amount.replace(decimalDelimiter,'.');
+                }
+                SimplePay.createTransaction(token.id, Math.round(amount * 100), "DKK", $('#inputReference').val(), onTransactionCreated, onTransactionFailed);
             }
 
             function onTokenFailed(xhr, ajaxOptions, thrownError) {
