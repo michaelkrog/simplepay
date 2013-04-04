@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>SimplePay - Login</title>
+        <title><spring:message code="general.system_name"/> - Login</title>
         <%@include file="inc/head.jsp" %>
     </head>
     <body style="background:url(./img/background-noise.png)">
@@ -13,17 +13,17 @@
             <div class="modal-body">
                 <form style="margin:0px" class="form-horizontal">
                     <div class="control-group">
-                        <label class="control-label" for="inputEmail">Email</label>
+                        <label class="control-label" for="inputEmail"><spring:message code="general.email"/></label>
                         <div class="controls">
                             <input type="text" name="username" class="input-large" placeholder="Email">
                         </div>
                     </div>                    <div class="control-group">
-                        <label class="control-label" for="inputEmail">Password</label>
+                        <label class="control-label" for="inputEmail"><spring:message code="general.password"/></label>
                         <div class="controls">
                             <input type="text" name="password" class="input-large" placeholder="Password">
                         </div>
                     </div><div class="control-group">
-                        <label class="control-label" for="inputEmail">Confirm</label>
+                        <label class="control-label" for="inputEmail"><spring:message code="general.confirm"/></label>
                         <div class="controls">
                             <input type="text" name="password" class="input-large" placeholder="Confirm password">
                         </div>
