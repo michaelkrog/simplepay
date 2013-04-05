@@ -14,6 +14,7 @@ import dk.apaq.simplepay.gateway.EPaymentGateway;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.ETokenPurpose;
+import dk.apaq.simplepay.model.PaymentGatewayAccess;
 import org.jasypt.encryption.StringEncryptor;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -25,7 +26,7 @@ import org.junit.Before;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/defaultspringcontext.xml"})
-public class TokenRepositoryTest {
+public class MerchantRepositoryTest {
     
     @Autowired
     private IPayService service;
@@ -37,13 +38,6 @@ public class TokenRepositoryTest {
     private StringEncryptor encryptor;
     
 
-    @Before
-    public void init() {
-        this.card = new Card("4111111111111111", 2012, 12, "xxx", encryptor);
-    }
-    
-    private Card card;
-    
     /**
      * Test of createNew method, of class TokenCrud.
      */
@@ -52,29 +46,14 @@ public class TokenRepositoryTest {
         System.out.println("createNew");
         
         Merchant m = new Merchant();
+        m.setName("merchant");
+        m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, "qwerty"));
         m = service.getMerchants().save(m);
-        
-        EPaymentGateway gatewayType = EPaymentGateway.Test;
-        String orderNumber = "ordernum";
-        String description = "description";
-        
-        ITokenRepository rep = service.getTokens(m);
-        Token token = rep.createNew(card);
-        
-        //The one we get back from the repository has been decrypted.
-        assertEquals("4111111111111111", token.getData().getCardNumber(encryptor));
-        assertEquals("xxx", token.getData().getCvd(encryptor));
-        
-        
-        /*token = em.find(Token.class, token.getId());
-        
-        //The one we read directly via the entitymanager is encrypted.
-        assertNotNull(token);
-        assertEquals(ETokenPurpose.SinglePayment, token.getPurpose());
-        assertEquals("4111111111111111", encryptor.decrypt(token.getData().getCardNumber(encryptor)));
-        assertEquals("xxx", encryptor.decrypt(token.getData().getCvd()));*/
-        
-        assertTrue(rep.findAll().iterator().hasNext());
+
+        m = service.getMerchants().findOne(m.getId());
+        assertEquals("merchant", m.getName());
+        assertEquals(EPaymentGateway.Test, m.getPaymentGatewayAccesses().get(0).getPaymentGatewayType());
+        assertEquals("qwerty", m.getPaymentGatewayAccesses().get(0).getAcquirerRefId());
         
     }
 

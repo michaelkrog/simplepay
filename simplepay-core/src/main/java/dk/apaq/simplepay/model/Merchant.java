@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 import dk.apaq.framework.common.beans.finance.Card;
@@ -26,7 +27,7 @@ public class Merchant extends BaseEntityWithGeneratedId {
     private String postalCode;
     private String city;
     private String countryCode;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<PaymentGatewayAccess> paymentGatewayAccesses = new ArrayList<PaymentGatewayAccess>();
 
     public List<PaymentGatewayAccess> getPaymentGatewayAccesses() {

@@ -20,6 +20,7 @@ public class MerchantTest {
         instance.setCity("city");
         instance.setCountry("country");
         instance.setEmail("email");
+        instance.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null));
        /* instance.setGatewaySecret("gatewaySecret");
         instance.setGatewayType(PaymentGatewayType.Test);
         instance.setGatewayUserId("gatewayUserId");*/
@@ -32,6 +33,7 @@ public class MerchantTest {
         assertEquals("city", instance.getCity());
         assertEquals("country", instance.getCountryCode());
         assertEquals("email", instance.getEmail());
+        assertEquals(EPaymentGateway.Test, instance.getPaymentGatewayAccesses().get(0).getPaymentGatewayType());
         /*assertEquals("gatewaySecret", instance.getGatewaySecret());
         assertEquals(PaymentGatewayType.Test, instance.getGatewayType());
         assertEquals("gatewayUserId", instance.getGatewayUserId());*/
