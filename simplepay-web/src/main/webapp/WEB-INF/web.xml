@@ -32,6 +32,10 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>api</servlet-name>
+        <url-pattern>*.html</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>api</servlet-name>
         <url-pattern>/index.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
