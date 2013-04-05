@@ -15,7 +15,7 @@
         <div class="nav-collapse collapse">
             <ul class="nav">
                 <li <c:if test="${area=='landingpage'}">class="active"</c:if>><a href="<c:url value='/'/>" class="dropdown-toggle"><spring:message code="navigation.frontpage"/></a></li>
-                <li <c:if test="${area=='documentation'}">class="active"</c:if>><a href="documentaion"><spring:message code="navigation.documentation"/></a></li>
+                <li <c:if test="${area=='documentation'}">class="active"</c:if>><a href="docs/index.html"><spring:message code="navigation.documentation"/></a></li>
                 <li <c:if test="${area=='about_us'}">class="active"</c:if>><a href="about.html"><spring:message code="navigation.about_us"/></a></li>
                 <!--li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Funktioner<b class="caret"></b></a>

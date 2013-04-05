@@ -36,7 +36,7 @@
                     <div class="control-group">
                         <div class="controls">
                             <label class="checkbox">
-                                <input type="checkbox"> <spring:message code="loging.remember_me"/>
+                                <input type="checkbox"> <spring:message code="login.remember_me"/>
                             </label>
 
                         </div>
@@ -45,8 +45,8 @@
                 </div>
                 <div class="modal-footer">
 
-                    <a href="<c:url value="signup"/>" class="btn pull-left"><spring:message code="login_sign_up"/></a>
-                    <button type="submit" class="btn btn-primary"><spring:message code="login.sign_ine"/></button>
+                    <a href="<c:url value="signup"/>" class="btn pull-left"><spring:message code="login.sign_up"/></a>
+                    <button type="submit" class="btn btn-primary"><spring:message code="login.sign_in"/></button>
                 </div>
             </form>
         </div>

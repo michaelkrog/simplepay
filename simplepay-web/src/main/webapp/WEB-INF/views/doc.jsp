@@ -6,6 +6,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <c:set var="area" value="dashboard"/>
 <c:set var="subarea" value="payments"/>
+<% response.setContentType("text/html; charset=UTF-8"); %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -51,10 +52,10 @@
             <div class="container">
                 <div class="row">
                     <div class="span3" data-spy="affix" data-offset-top="200">
-                        <textarea id="menu-markdown"><jsp:include page="/docs/menu_${language}.md" /></textarea>
+                        <textarea id="menu-markdown"><jsp:include page="docs/menu_${language}.jsp" /></textarea>
                     </div>
                     <div class="span9">
-                        <textarea id="content-markdown"><jsp:include page="/docs/${docfile}_${language}.md" /></textarea>
+                        <textarea id="content-markdown"><jsp:include page="docs/${docfile}_${language}.jsp" /></textarea>
                     </div>
                 </div>
             </div>
@@ -68,10 +69,9 @@
         <%@include file="inc/footer.jsp" %>
 
         <%@include file="inc/post_body.jsp" %>
-        <script src="<c:url value="/js/Markdown.Converter.js"/>"></script>
-        <script src="<c:url value="/js/Markdown.Sanitizer.js"/>"></script>
+        <script src="<c:url value="/js/showdown.js"/>"></script>
         <script>
-            var converter = new Markdown.Converter();
+            var converter = new Showdown.converter();
             $('#content-markdown').replaceWith(converter.makeHtml($('#content-markdown').text()));
             $('#menu-markdown').replaceWith(converter.makeHtml($('#menu-markdown').text()));
             
