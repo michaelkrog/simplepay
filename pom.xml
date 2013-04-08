@@ -31,7 +31,6 @@
     <module>simplepay-web</module>
     <module>simplepay-core</module>
     <module>simplepay-teaser</module>
-    <module>simplepay-client</module>
   </modules>
   
   <reporting>
