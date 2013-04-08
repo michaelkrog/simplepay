@@ -52,7 +52,7 @@
             <div class="container">
                 <div class="row">
                     <div class="span3" data-spy="affix" data-offset-top="200">
-                        <textarea id="menu-markdown"><jsp:include page="docs/menu_${language}.jsp" /></textarea>
+                        <%@include file="docs/menu.jsp" %>
                     </div>
                     <div class="span9">
                         <textarea id="content-markdown"><jsp:include page="docs/${docfile}_${language}.jsp" /></textarea>
