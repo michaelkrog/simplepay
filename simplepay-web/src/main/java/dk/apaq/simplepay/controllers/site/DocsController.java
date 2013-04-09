@@ -43,13 +43,13 @@ public class DocsController {
         }
     }
     
-    @RequestMapping(value = {"/docs/index.html"})
+    @RequestMapping(value = {"/docs/index.html", "/docs"})
     public ModelAndView handleRequest(HttpServletRequest req) {
         return handleRequest(req, null, null);
     }
     
 
-    @RequestMapping(value = {"/docs/{section}/{page}.html"})
+    @RequestMapping(value = {"/docs/{section}/{page}"})
     public ModelAndView handleRequest(HttpServletRequest req, @PathVariable String section, @PathVariable String page) {
         String language = req.getLocale().getLanguage();
 

@@ -45,7 +45,7 @@ public class TransactionViewController extends BaseController {
    
     
      
-    @RequestMapping(value = "/transactions.html", method = RequestMethod.GET)
+    @RequestMapping(value = "/manage/transactions", method = RequestMethod.GET)
     @Transactional(readOnly = true)
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     public ModelAndView listTransactions(@RequestParam(required = false) String query, @RequestParam(defaultValue = "0") Integer offset,
@@ -56,7 +56,7 @@ public class TransactionViewController extends BaseController {
         return mav;
     }
     
-    @RequestMapping(value = "/transactions/{id}.html", method = RequestMethod.GET)
+    @RequestMapping(value = "/manage/transactions/{id}", method = RequestMethod.GET)
     @Transactional(readOnly = true)
     @Secured({"ROLE_PRIVATEAPIACCESSOR", "ROLE_MERCHANT"})
     public ModelAndView editTransaction(@PathVariable String id) {

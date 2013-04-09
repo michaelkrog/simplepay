@@ -27,7 +27,7 @@ public class EventViewController extends BaseController {
     @Autowired
     private IPayService service;
 
-    @RequestMapping(value = "/events.html", method = RequestMethod.GET)
+    @RequestMapping(value = "/manage/events", method = RequestMethod.GET)
     @Secured("ROLE_MERCHANT")
     public ModelAndView listEvents(@RequestParam(required = false) String type, @RequestParam(required = false) String entityId, 
             @RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "1000") Integer limit) {

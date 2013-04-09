@@ -16,26 +16,14 @@
         <property name="suffix" value=".jsp" />
     </bean>
 
-    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        <property name="maxUploadSize" value="100000"/>
-    </bean>
-
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
     
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basename" value="dk.apaq.simplepay.i18n.Messages" />
     </bean>
 
-    <bean id="themeSource" class="org.springframework.ui.context.support.ResourceBundleThemeSource">
-        <property name="basenamePrefix" value="dk.apaq.simplepay.site.theme." />
-    </bean>
-    
-    <bean id="themeResolver" class="org.springframework.web.servlet.theme.FixedThemeResolver">
-        <property name="defaultThemeName" value="simplepay"/>
-    </bean>
-
     <context:annotation-config />
-    <context:component-scan base-package="dk.apaq.simplepay.controllers"/>
+    <context:component-scan base-package="dk.apaq.simplepay.controllers.api"/>
     <context:property-placeholder ignore-resource-not-found="true" location="classpath:simplepay_default.properties,file:${user.home}/simplepay.properties" />
     <mvc:annotation-driven />
 </beans>
