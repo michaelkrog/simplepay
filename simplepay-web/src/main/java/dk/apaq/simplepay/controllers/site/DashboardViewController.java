@@ -22,12 +22,12 @@ import org.springframework.web.servlet.ModelAndView;
  * @author michael
  */
 @Controller
-public class EventViewController extends BaseController {
+public class DashboardViewController extends BaseController {
 
     @Autowired
     private IPayService service;
 
-    @RequestMapping(value = "/manage/events", method = RequestMethod.GET)
+    @RequestMapping(value = "/manage/dashboard", method = RequestMethod.GET)
     @Secured("ROLE_MERCHANT")
     public ModelAndView listEvents(@RequestParam(required = false) String type, @RequestParam(required = false) String entityId,  
            @RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "1000") Integer limit) {
@@ -38,7 +38,7 @@ public class EventViewController extends BaseController {
             rule = Rules.equals("transaction.id", entityId);
         }
 
-        return listEntities(service.getEvents(m, BaseEvent.class), rule, new Sorter("eventDate", Sorter.Direction.Descending), offset, limit, "events");
+        return listEntities(service.getEvents(m, BaseEvent.class), rule, new Sorter("eventDate", Sorter.Direction.Descending), offset, limit, "dashboard");
 
     }
 }

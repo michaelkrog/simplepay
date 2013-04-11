@@ -4,8 +4,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<c:set var="area" value="dashboard"/>
-<c:set var="subarea" value="payments"/>
+<c:set var="area" value="documentation"/>
+<c:set var="subarea" value="docfile"/>
 <% response.setContentType("text/html; charset=UTF-8"); %>
 <!DOCTYPE html>
 <html lang="en">

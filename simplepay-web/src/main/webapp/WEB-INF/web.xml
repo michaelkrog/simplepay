@@ -39,37 +39,9 @@
     
     <servlet-mapping>
         <servlet-name>site</servlet-name>
-        <url-pattern>/docs**</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>site</servlet-name>
-        <url-pattern>/manage**</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>site</servlet-name>
-        <url-pattern>/prices**</url-pattern>
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
     
-    <servlet-mapping>
-        <servlet-name>site</servlet-name>
-        <url-pattern>/index.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>site</servlet-name>
-        <url-pattern>/login</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>site</servlet-name>
-        <url-pattern>/signup</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>site</servlet-name>
-        <url-pattern>/pay.js</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>site</servlet-name>
-        <url-pattern>/api.js</url-pattern>
-    </servlet-mapping>  
     
     <filter-mapping>
         <filter-name>RequestInformationPolulatorFilter</filter-name>

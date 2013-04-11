@@ -18,11 +18,10 @@
         <access-denied-handler ref="restErrorHandler" />
     </http>
     
-    <http disable-url-rewriting="true"> <!--use-expressions="true">-->
-        <intercept-url method="GET" pattern="/data/**" access="ROLE_MERCHANT" />
-        <intercept-url method="POST" pattern="/data/**" access="ROLE_MERCHANT" />
-        <intercept-url method="DELETE" pattern="/data/**" access="ROLE_MERCHANT" />
-        <form-login login-page="/login.html" />
+    <http disable-url-rewriting="true">
+        <intercept-url  pattern="/manage/**" access="ROLE_MERCHANT" />
+        <form-login login-page="/login" />
+        <logout logout-url="/logout"/>
     </http>
     
     <authentication-manager alias="authenticationManager">
