@@ -25,7 +25,7 @@ public class TransactionEvent extends BaseEvent {
     private ETransactionStatus newStatus;
     @NotNull
     private String remoteAddress;
-    private String entityId;
+    private Transaction transaction;
 
     protected TransactionEvent() {
     }
@@ -34,7 +34,7 @@ public class TransactionEvent extends BaseEvent {
         if (transaction == null) {
             throw new NullPointerException("transaction was null.");
         }
-        this.entityId = transaction.getId();
+        this.transaction = transaction;
         this.username = username;
         this.newStatus = newStatus;
         this.remoteAddress = remoteAddress;
@@ -58,7 +58,8 @@ public class TransactionEvent extends BaseEvent {
         return username;
     }
 
-    public String getEntityId() {
-        return entityId;
+    public Transaction getTransaction() {
+        return transaction;
     }
+
 }

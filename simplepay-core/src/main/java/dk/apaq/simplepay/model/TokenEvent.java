@@ -20,10 +20,9 @@ import org.hibernate.annotations.GenericGenerator;
 public class TokenEvent extends BaseEvent {
 
     private String username;
-    private String message;
     @NotNull
     private String remoteAddress;
-    private String entityId;
+    private Token token;
 
     protected TokenEvent() {
     }
@@ -32,8 +31,7 @@ public class TokenEvent extends BaseEvent {
         if (token == null) {
             throw new NullPointerException("token was null.");
         }
-        this.entityId = token.getId();
-        this.message = message;
+        this.token = token;
         this.username = username;
         this.remoteAddress = remoteAddress;
     }
@@ -41,10 +39,6 @@ public class TokenEvent extends BaseEvent {
     @Override
     public String getType() {
         return "tokenEvent";
-    }
-
-    public String getMessage() {
-        return message;
     }
 
     public String getRemoteAddress() {
@@ -55,7 +49,9 @@ public class TokenEvent extends BaseEvent {
         return username;
     }
 
-    public String getEntityId() {
-        return entityId;
+    public Token getToken() {
+        return token;
     }
+
+    
 }
