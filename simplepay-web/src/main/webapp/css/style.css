@@ -2453,3 +2453,7 @@ form#newsletter input[type=submit] {
 .cancelled-transaction {
     background: #d9edf7;
 }
+
+#example-box .prettyprint {
+    height:200px;
+}
