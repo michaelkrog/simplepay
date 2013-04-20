@@ -1,12 +1,21 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <c:set var="area" value="landingpage"/>
+<c:set var="langs" value="curl,java"/>
+<% 
+pageContext.setAttribute("newLineChar", "\n"); 
+pageContext.setAttribute("backslashChar", "\\"); 
+%>
+<c:set var="methods" value="transaction_create,transaction_charge,transaction_refund,transaction_cancel"/>
+
 <!DOCTYPE html>
 <html lang="${request.locale.language}">
     <head>
         <title><spring:message code="general.system_name"/></title>
         <%@include file="inc/head.jsp" %>
+        <link href="<c:url value="/css/prettify.css"/>" type="text/css" rel="stylesheet" />
     </head>
     <body>
 
@@ -39,7 +48,7 @@
                         <div class="pull-right visible-desktop" style="padding-right:3%">
                             <img src="<c:url value="/img/cardcloud.png"/>"  height="160px">
                         </div>
-   
+
                     </div>
                 </div>
                 <!-- end: Container  -->
@@ -116,7 +125,7 @@
                     <div class="clear"></div>
                 </div>
                 <!-- end: Row -->
-                
+
                 <div class="row">
 
                     <!-- start: Icon Boxes -->
@@ -182,7 +191,25 @@
 
                             <div class="span9">
 
-                             This is where the Simple API will be described
+                                <div id="example-box">
+                                    <c:forEach var="lang" items="${langs}">
+                                        <c:forEach var="method" items="${methods}">
+                                            <spring:message var="example" code="api.methods.${method}.example.${lang}"/>
+                                            <div data-type="example" id="example-${method}-${lang}" class="hide">
+                                                <pre class="prettyprint"><code class="language-${lang}"><c:out value="${example}"/></code></pre>
+                                            </div>
+                                        </c:forEach>
+                                    </c:forEach>   
+                                    <div id="example-controls">
+                                        <select name="method">
+                                            <c:forEach var="method" items="${methods}"><option value="${method}"><spring:message code="api.methods.${method}.name"/></option></c:forEach>
+                                        </select>
+                                        <span>&nbsp;<spring:message code="api.using"/>&nbsp;</span>
+                                        <select name="lang" class="input-small">
+                                            <c:forEach var="lang" items="${langs}"><option value="${lang}"><spring:message code="api.languages.${lang}.name"/></option></c:forEach>
+                                        </select>
+                                    </div>
+                                </div>
 
                             </div>
 
@@ -271,8 +298,23 @@
         <%@include file="inc/footer_menu.jsp" %>
         <%@include file="inc/footer.jsp" %>
 
-        <%@include file="inc/post_body.jsp" %>
-
     </body>
+    <%@include file="inc/post_body.jsp" %>
+    
+    <script type="text/javascript" src="<c:url value="/js/prettify/prettify.js"/>"></script>
+    <script>
+            
+        $('#example-controls select').change(updateApi);
+        
+        function updateApi() {
+            var method = $('#example-controls select[name="method"]').val();
+            var lang = $('#example-controls select[name="lang"]').val();
+            $('div[data-type="example"]').addClass("hide");
+            $('div[data-type="example"][id="example-'+method+'-'+lang+'"]').removeClass("hide");
+        }
+        
+        prettyPrint();
+        updateApi();
+    </script>
 </html>
 <!-- Localized -->
