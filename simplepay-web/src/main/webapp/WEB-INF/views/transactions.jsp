@@ -50,8 +50,10 @@
             <!--start: Container -->
             <div class="container">
                 <div class="row">
-                    <div class="span3" data-spy="affix" data-offset-top="200">
-                        <%@include file="inc/menu-left.jsp" %>
+                    <div class="span3">
+                        <div data-spy="affix" data-offset-top="0">
+                            <%@include file="inc/menu-left.jsp" %>
+                        </div>
                     </div>
                     <div class="span9">
                         <p>
@@ -70,7 +72,7 @@
                                     </c:if>
                                     <c:forEach var="e" items="${entities}">
                                     <li>
-                                        <a class="${fn:toLowerCase(e.status)}-transaction" href="<c:url value="/data/transactions/${e.id}.html"/>">
+                                        <a class="${fn:toLowerCase(e.status)}-transaction" href="<c:url value="/manage/transactions/${e.id}"/>">
                                             <div class="pull-left hidden-phone" style="width:25%">
                                                 <span><fmt:formatDate type="both" dateStyle="medium" timeStyle="short" value="${e.dateChanged}" /></span>
                                                 <!--span class="visible-phone"><fmt:formatDate type="date" dateStyle="short" value="${e.dateChanged}" /></span-->
