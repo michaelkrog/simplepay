@@ -108,8 +108,41 @@
         <script src="<c:url value="/js/jquery.flot.resize.min.js"/>"></script>
         <script src="<c:url value="/js/jquery.flot.time.min.js"/>"></script>
         <script>
-            var timeStart = new Date(2013, 3, 20).getTime();
-            var timeEnd = new Date(2013, 3, 21).getTime();
+            var grossVolumeData = [];
+            var successfulChargesData = [];
+            var paymentTypeData = [];
+            var timeStart = ${startHour * 3600000};
+            var timeEnd = ${endHour * 3600000};
+            
+            <c:set var="visa" value="${0}"/>
+            <c:set var="visaElectron" value="${0}"/>
+            <c:set var="dankort" value="${0}"/>
+            <c:set var="mastercard" value="${0}"/>
+            <c:set var="jcb" value="${0}"/>
+            <c:set var="diners" value="${0}"/>
+            <c:set var="americanExpress" value="${0}"/>
+            <c:set var="unknown" value="${0}"/>
+            
+            <c:set var="grossVolume" value="${0}"/>
+            
+            <c:if test="${endHour-startHour <= 24}">
+                
+            <c:forEach var="entry" items="${statistics}" varStatus="status">
+            <c:set var="grossVolume" value="${grossVolume+entry.amount}"/>
+            <c:set var="chargesVolume" value="${entry.visaCount+entry.visaElectronCount+entry.dankortCount+entry.mastercardCount+entry.dinersCount+entry.unknownCount+entry.americanExpressCount+entry.jcbCount}"/>    
+            grossVolumeData[${status.index}] = [${(startHour+status.index)*3600000}, ${grossVolume}];
+            successfulChargesData[${status.index}] = [${(startHour+status.index)*3600000}, ${chargesVolume}];
+            <c:set var="visa" value="${visa + entry.visaCount}"/>
+            <c:set var="visaElectron" value="${visaElectron + entry.visaElectronCount}"/>
+            <c:set var="dankort" value="${dankort + entry.dankortCount}"/>
+            <c:set var="mastercard" value="${mastercard + entry.mastercardCount}"/>
+            <c:set var="jcb" value="${jcb + entry.jcbCount}"/>
+            <c:set var="diners" value="${diners + entry.dinersCount}"/>
+            <c:set var="americanExpress" value="${americanExpress + entry.americanExpressCount}"/>
+            <c:set var="unknown" value="${unknown + entry.unknownCount}"/>
+            </c:forEach>
+            </c:if>    
+            
             var xaxisDef = {
                 mode: "time",
                 timezone:"browser",
@@ -118,23 +151,14 @@
                 max: timeEnd
             };
             
-            var grossVolumeData = [];
-            var count = 0;
-            for(var i=timeStart;i<=timeEnd;i+=3600000) {
-                grossVolumeData[count++] = [i, parseInt(count*40+ (60*Math.random()))];
-            }
-            
-            var successfulChargesData = [];
-            count = 0;
-            for(var i=timeStart;i<=timeEnd;i+=3600000) {
-                successfulChargesData[count++] = [i, parseInt(count*20+ (20*Math.random()))];
-            }
-
-            
-            var paymentTypeData = [];
-            paymentTypeData[0] = {label:"Visa", data:200};
-            paymentTypeData[1] = {label:"Dankort", data:500};
-            paymentTypeData[2] = {label:"Mastercard", data:50};
+            paymentTypeData[0] = {label:"Visa", data:${visa}};
+            paymentTypeData[1] = {label:"Dankort", data:${dankort}};
+            paymentTypeData[2] = {label:"Mastercard", data:${mastercard}};
+            paymentTypeData[3] = {label:"Visa Elektron", data:${visaElectron}};
+            paymentTypeData[4] = {label:"Diners", data:${diners}};
+            paymentTypeData[5] = {label:"Jcb", data:${jcb}};
+            paymentTypeData[6] = {label:"American Express", data:${americanExpress}};
+            paymentTypeData[7] = {label:"Unknown", data:${unknown}};
             
             function labelFormatter(label, series) {
                 return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" + label + "<br/>" + Math.round(series.percent) + "%</div>";

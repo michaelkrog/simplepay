@@ -1,5 +1,11 @@
 package dk.apaq.simplepay.controllers.site;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import dk.apaq.simplepay.controllers.ControllerUtil;
 import dk.apaq.simplepay.controllers.BaseController;
 
@@ -9,6 +15,7 @@ import dk.apaq.framework.criteria.Sorter;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.model.BaseEvent;
 import dk.apaq.simplepay.model.Merchant;
+import dk.apaq.simplepay.model.StatisticEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -33,12 +40,19 @@ public class DashboardViewController extends BaseController {
            @RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "1000") Integer limit) {
         Merchant m = ControllerUtil.getMerchant(service);
 
-        Rule rule = null;
-        if (entityId != null) {
-            rule = Rules.equals("transaction.id", entityId);
+        Random random = new Random();
+        Date now = new Date();
+        int hour = (int) (now.getTime() / 3600000);
+        List<StatisticEntry> entries = new ArrayList<StatisticEntry>();
+        for(int i = hour;i<hour+24;i++) {
+            entries.add(new StatisticEntry(m.getId(), hour, random.nextInt(99999), random.nextInt(9), random.nextInt(99), random.nextInt(9), random.nextInt(9), random.nextInt(9), random.nextInt(99), random.nextInt(9), random.nextInt(9)));
         }
-
-        return listEntities(service.getEvents(m, BaseEvent.class), rule, new Sorter("eventDate", Sorter.Direction.Descending), offset, limit, "dashboard");
+        
+        Map model = new HashMap();
+        model.put("startHour", hour);
+        model.put("endHour", hour+24 );
+        model.put("statistics", entries);
+        return new ModelAndView("dashboard", model);
 
     }
 }
