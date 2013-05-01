@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 
 import dk.apaq.framework.common.beans.finance.Card;
 import dk.apaq.framework.criteria.Criteria;
+import dk.apaq.framework.repository.Repository;
 import dk.apaq.framework.repository.jpa.EntityManagerRepository;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.gateway.PaymentGatewayManager;
@@ -22,18 +23,16 @@ import org.springframework.transaction.annotation.Transactional;
  * @author michael
  */
 @Transactional(readOnly = true)    
-public class TokenRepository extends EntityManagerRepository<Token, String> implements ITokenRepository {
+public class TokenRepository extends RepositoryWrapper<Token, String> implements ITokenRepository {
 
     @Autowired
     private PaymentGatewayManager gatewayManager;
     @Autowired
     private IPayService service;
-    private final EntityManager em;
     private Merchant merchant;
 
-    public TokenRepository(EntityManager em, Merchant merchant) {
-        super(em, Token.class);
-        this.em = em;
+    public TokenRepository(Repository<Token, String> repository, Merchant merchant) {
+        super(repository);
         this.merchant = merchant;
     }
 
@@ -54,12 +53,12 @@ public class TokenRepository extends EntityManagerRepository<Token, String> impl
     }
 
     @Override
-    public List<Token> findAll() {
+    public Iterable<Token> findAll() {
         return findAll(DataAccess.appendMerchantCriteria(null, merchant));
     }
 
     @Override
-    public List<Token> findAll(Criteria criteria) {
+    public Iterable<Token> findAll(Criteria criteria) {
         return super.findAll(DataAccess.appendMerchantCriteria(criteria, merchant));
     }
     

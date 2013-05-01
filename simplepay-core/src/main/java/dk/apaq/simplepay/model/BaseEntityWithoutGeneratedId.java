@@ -55,4 +55,8 @@ public abstract class BaseEntityWithoutGeneratedId implements BaseEntity {
         this.dateCreated = dateCreated;
     }
 
+    @Override
+    public boolean isNew() {
+        return _id == null;
+    }
 }

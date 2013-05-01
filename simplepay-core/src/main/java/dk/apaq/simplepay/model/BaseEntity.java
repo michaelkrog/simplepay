@@ -3,10 +3,12 @@ package dk.apaq.simplepay.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.springframework.data.domain.Persistable;
+
 /**
  * Javadoc
  */
-public interface BaseEntity extends Serializable {
+public interface BaseEntity extends Serializable, Persistable<String> {
 
     Date getDateChanged();
 

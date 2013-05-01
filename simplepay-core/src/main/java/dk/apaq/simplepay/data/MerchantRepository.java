@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.EntityManager;
+
+import dk.apaq.framework.repository.Repository;
 import dk.apaq.framework.repository.jpa.EntityManagerRepository;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.model.Merchant;
@@ -15,12 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Javadoc
  */
-public class MerchantRepository extends EntityManagerRepository<Merchant, String> {
+public class MerchantRepository extends RepositoryWrapper<Merchant, String> {
 
     private final IPayService service;
     
-    public MerchantRepository(EntityManager entityManager, IPayService service) {
-        super(entityManager, Merchant.class);
+    public MerchantRepository(Repository<Merchant, String> repository, IPayService service) {
+        super(repository);
         this.service = service;
     }
 

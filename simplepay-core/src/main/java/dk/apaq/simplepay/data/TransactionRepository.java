@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author michael
  */
-public class TransactionRepository extends EntityManagerRepository<Transaction, String> implements ITransactionRepository {
+public class TransactionRepository extends RepositoryWrapper<Transaction, String> implements ITransactionRepository {
 
     @Autowired
     private PaymentGatewayManager gatewayManager;
@@ -39,8 +39,8 @@ public class TransactionRepository extends EntityManagerRepository<Transaction, 
      *
      * @param em The entitymanager that holds transactions.
      */
-    public TransactionRepository(EntityManager em, Merchant merchant) {
-        super(em, Transaction.class);
+    public TransactionRepository(Repository<Transaction, String> repository, Merchant merchant) {
+        super(repository);
         this.merchant = merchant;
     }
 
@@ -166,12 +166,12 @@ public class TransactionRepository extends EntityManagerRepository<Transaction, 
     }
 
     @Override
-    public List<Transaction> findAll() {
+    public Iterable<Transaction> findAll() {
         return findAll(DataAccess.appendMerchantCriteria(null, merchant));
     }
 
     @Override
-    public List<Transaction> findAll(Criteria criteria) {
+    public Iterable<Transaction> findAll(Criteria criteria) {
         return super.findAll(DataAccess.appendMerchantCriteria(criteria, merchant));
     }
     
