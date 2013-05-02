@@ -1,18 +1,18 @@
 package dk.apaq.simplepay.data;
 
 import java.io.Serializable;
-
+/*
 import javax.persistence.EntityManager;
 
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean;
 import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
-
+*/
 /**
  * Javadoc
  */
-public class RepositoryFactoryBeanForJpa<R extends JpaRepository<T, I>, T, I extends Serializable>
+public class RepositoryFactoryBeanForJpa{/*<R extends JpaRepository<T, I>, T, I extends Serializable>
         extends JpaRepositoryFactoryBean<R, T, I> {
 
     protected RepositoryFactorySupport createRepositoryFactory(EntityManager entityManager) {
@@ -40,5 +40,5 @@ public class RepositoryFactoryBeanForJpa<R extends JpaRepository<T, I>, T, I ext
             //to check for QueryDslJpaRepository's which is out of scope.
             return JpaRepository.class;
         }
-    }
+    }*/
 }

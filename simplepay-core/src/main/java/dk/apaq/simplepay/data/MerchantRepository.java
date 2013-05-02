@@ -3,10 +3,7 @@ package dk.apaq.simplepay.data;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.EntityManager;
-
 import dk.apaq.framework.repository.Repository;
-import dk.apaq.framework.repository.jpa.EntityManagerRepository;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;

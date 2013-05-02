@@ -2,11 +2,9 @@ package dk.apaq.simplepay.data;
 
 import java.util.Date;
 import java.util.List;
-import javax.persistence.EntityManager;
 
 import dk.apaq.framework.criteria.Criteria;
 import dk.apaq.framework.repository.Repository;
-import dk.apaq.framework.repository.jpa.EntityManagerRepository;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.common.ETransactionStatus;
 import dk.apaq.simplepay.gateway.EPaymentGateway;
