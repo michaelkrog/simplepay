@@ -54,7 +54,7 @@ public class Merchant extends BaseEntityWithGeneratedId {
      * Sets the 3-letter countryCode.
      * @param country The countrycode fx. DNK
      */
-    public void setCountry(String country) {
+    public void setCountryCode(String country) {
         this.countryCode = country;
     }
 

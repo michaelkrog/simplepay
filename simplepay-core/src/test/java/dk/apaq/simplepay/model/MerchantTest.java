@@ -18,7 +18,7 @@ public class MerchantTest {
     public void testBeanPattern() {
         Merchant instance = new Merchant();
         instance.setCity("city");
-        instance.setCountry("country");
+        instance.setCountryCode("country");
         instance.setEmail("email");
         instance.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null));
        /* instance.setGatewaySecret("gatewaySecret");
