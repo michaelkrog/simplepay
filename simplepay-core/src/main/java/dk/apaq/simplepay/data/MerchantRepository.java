@@ -16,13 +16,17 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class MerchantRepository extends RepositoryWrapper<Merchant, String> {
 
-    private final IPayService service;
+    private IPayService service;
     
-    public MerchantRepository(Repository<Merchant, String> repository, IPayService service) {
+    public MerchantRepository(Repository<Merchant, String> repository) {
         super(repository);
+    }
+
+    public void setService(IPayService service) {
         this.service = service;
     }
 
+    
     @Override
     @Transactional
     public <S extends Merchant> S save(S entity) {

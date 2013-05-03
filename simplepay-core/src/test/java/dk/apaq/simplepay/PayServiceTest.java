@@ -125,7 +125,7 @@ public class PayServiceTest {
         assertFalse(token.isExpired());
         
         //Create transaction for m
-        Transaction t = service.getTransactions(m).createNew(token.getMerchant(), token.getId(), "T_123", Money.of(CurrencyUnit.USD, 123));
+        Transaction t = service.getTransactions(m).createNew(token.getMerchant(), token.getId(), "T_" + System.currentTimeMillis(), Money.of(CurrencyUnit.USD, 123));
         assertEquals(t.getToken(), token.getId());
         assertEquals(ETransactionStatus.Authorized, t.getStatus());
         
@@ -147,10 +147,10 @@ public class PayServiceTest {
         assertFalse(token.isExpired());
         
         //Create transaction for m
-        Transaction t = service.getTransactions(m).createNew(token.getMerchant(), token.getId(), "T_123", Money.of(CurrencyUnit.USD, 123));
+        Transaction t = service.getTransactions(m).createNew(token.getMerchant(), token.getId(), "T2_" + System.currentTimeMillis(), Money.of(CurrencyUnit.USD, 123));
         
         try {
-            service.getTransactions(m).createNew(token.getMerchant(), token.getId(), "T_321", Money.of(CurrencyUnit.USD, 123));
+            service.getTransactions(m).createNew(token.getMerchant(), token.getId(), "T2_" + System.currentTimeMillis(), Money.of(CurrencyUnit.USD, 123));
             fail("Should not allow same token twice.");
         } catch(IllegalArgumentException ex) { }
     }
@@ -165,7 +165,7 @@ public class PayServiceTest {
         assertFalse(token.isExpired());
         
         try {
-            Transaction t = service.getTransactions(m).createNew(token.getMerchant(), token.getId(), "T_123", Money.of(CurrencyUnit.USD, 123));
+            Transaction t = service.getTransactions(m).createNew(token.getMerchant(), token.getId(), "T3_" + System.currentTimeMillis(), Money.of(CurrencyUnit.USD, 123));
             fail("Should have failed");
         } catch(PaymentException ex) {
             

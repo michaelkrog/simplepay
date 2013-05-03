@@ -43,5 +43,8 @@ public interface ITransactionRepository extends Repository<Transaction, String> 
      * @return The refunded transaction.
      */
     Transaction refund(Transaction transaction, long amount);
+        
+    Merchant getMerchant();
     
+    void setMerchant(Merchant merchant);
 }

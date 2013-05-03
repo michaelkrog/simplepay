@@ -23,23 +23,28 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)    
 public class TokenRepository extends RepositoryWrapper<Token, String> implements ITokenRepository {
 
-    @Autowired
-    private PaymentGatewayManager gatewayManager;
-    @Autowired
-    private IPayService service;
+    private final IPayService service;
     private Merchant merchant;
 
-    public TokenRepository(Repository<Token, String> repository, Merchant merchant) {
+    public TokenRepository(Repository<Token, String> repository, IPayService service) {
         super(repository);
-        this.merchant = merchant;
+        this.service = service;
+        
     }
 
+    public Merchant getMerchant() {
+        return merchant;
+    }
+
+    public void setMerchant(Merchant merchant) {
+        this.merchant = merchant;
+    }
+    
     @Override
     @Transactional
     public Token createNew(Card card) {
         Date now = new Date();
         Token token = new Token(card);
-        token.setId(IdGenerator.generateUniqueId("t"));
         token.setMerchant(merchant);
         token.setDateCreated(now);
         token.setDateChanged(now);

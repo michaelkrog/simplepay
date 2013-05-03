@@ -10,15 +10,24 @@ import dk.apaq.simplepay.model.Merchant;
 /**
  * Javadoc
  */
-public class EventRepository extends RepositoryWrapper<BaseEvent, String> {
+public class EventRepository extends RepositoryWrapper<BaseEvent, String> implements IEventRepository<BaseEvent> {
 
     private Merchant merchant;
 
-    public EventRepository(Repository<BaseEvent, String> repository, Merchant merchant) {
+    public EventRepository(Repository<BaseEvent, String> repository) {
         super(repository);
-        this.merchant = merchant;
     }
 
+    @Override
+    public Merchant getMerchant() {
+        return merchant;
+    }
+
+    @Override
+    public void setMerchant(Merchant merchant) {
+        this.merchant = merchant;
+    }
+    
     @Override
     public Iterable<BaseEvent> findAll() {
         return findAll(DataAccess.appendMerchantCriteria(null, merchant));

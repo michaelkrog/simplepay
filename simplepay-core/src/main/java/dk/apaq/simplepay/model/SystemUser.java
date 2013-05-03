@@ -10,13 +10,14 @@ import javax.validation.constraints.NotNull;
 
 import dk.apaq.simplepay.security.ERole;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.domain.Persistable;
 
 /**
  *
  * @author michael
  */
 @Entity
-public class SystemUser implements Serializable {
+public class SystemUser implements Serializable, Persistable<String> {
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -114,4 +115,11 @@ public class SystemUser implements Serializable {
     public void setMerchant(Merchant merchant) {
         this.merchant = merchant;
     }
+
+    @Override
+    public boolean isNew() {
+        return id == null;
+    }
+    
+    
 }

@@ -98,7 +98,7 @@ public class TransactionRepositoryTest {
         m = service.getMerchants().save(m);
         
         EPaymentGateway gatewayType = EPaymentGateway.Test;
-        String orderNumber = "ordernum";
+        String orderNumber = "o_" + System.currentTimeMillis();
         String description = "description";
         Money money = Money.parse("USD 123.45");
         

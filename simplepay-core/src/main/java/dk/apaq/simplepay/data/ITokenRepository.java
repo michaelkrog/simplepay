@@ -2,6 +2,7 @@ package dk.apaq.simplepay.data;
 
 import dk.apaq.framework.common.beans.finance.Card;
 import dk.apaq.framework.repository.Repository;
+import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
 
 /**
@@ -23,4 +24,8 @@ public interface ITokenRepository extends Repository<Token, String> {
      * @return The token after marked expired.
      */
     Token markExpired(String token);
+    
+    Merchant getMerchant();
+    
+    void setMerchant(Merchant merchant);
 }

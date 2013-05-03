@@ -1,28 +1,28 @@
 package dk.apaq.simplepay;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import dk.apaq.framework.criteria.Criteria;
 import dk.apaq.framework.criteria.Rule;
 import dk.apaq.framework.criteria.Rules;
 import dk.apaq.framework.repository.Repository;
 import dk.apaq.simplepay.data.DataAccess;
+import dk.apaq.simplepay.data.EventRepository;
+import dk.apaq.simplepay.data.IEventRepository;
 import dk.apaq.simplepay.data.ITokenRepository;
+import dk.apaq.simplepay.data.TokenRepository;
 import dk.apaq.simplepay.data.ITransactionRepository;
+import dk.apaq.simplepay.data.TransactionRepository;
+import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.model.BaseEvent;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
+import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.security.ERole;
 import dk.apaq.simplepay.util.IdGenerator;
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,20 +32,42 @@ import org.springframework.transaction.annotation.Transactional;
  * This implemenation expects a Spring <code>ApplicationConext</code> to be injected via the <code>setApplicationContext</code> method 
  * before being used. 
  */
-public class PayService implements ApplicationContextAware, IPayService {
+public class PayService implements IPayService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PayService.class);
-    @PersistenceContext
-    private EntityManager em;
-    private ApplicationContext context;
-    private Repository<Merchant, String> merchantRep;
-    private Repository<SystemUser, String> userRep;
+    
+    private Repository<Merchant, String> merchantRepository;
+    private Repository<SystemUser, String> userRepository;
+    private Repository<Token, String> tokenRepository;
+    private Repository<Transaction, String> transactionRepository;
+    private Repository<BaseEvent, String> eventRepository;
+    private PaymentGatewayManager paymentGatewayManager;
 
-    @Override
-    public void setApplicationContext(ApplicationContext ac) throws BeansException {
-        this.context = ac;
+    public void setPaymentGatewayManager(PaymentGatewayManager paymentGatewayManager) {
+        this.paymentGatewayManager = paymentGatewayManager;
+    }
+    
+    public void setMerchantRepository(Repository<Merchant, String> merchantRepository) {
+        this.merchantRepository = merchantRepository;
     }
 
+    public void setEventRepository(Repository<BaseEvent, String> eventRepository) {
+        this.eventRepository = eventRepository;
+    }
+
+    public void setTokenRepository(Repository<Token, String> tokenRepository) {
+        this.tokenRepository = tokenRepository;
+    }
+
+    public void setTransactionRepository(Repository<Transaction, String> transactionRepository) {
+        this.transactionRepository = transactionRepository;
+    }
+
+    public void setUserRepository(Repository<SystemUser, String> userRepository) {
+        this.userRepository = userRepository;
+    }
+    
+    
     @Override
     public ITransactionRepository getTransactions(Merchant merchant) {
         Validate.notNull(merchant, "merchant is null.");
@@ -55,30 +77,35 @@ public class PayService implements ApplicationContextAware, IPayService {
             throw new IllegalArgumentException("Merchant must have been persisted before used for retrieving transactions.");
         }
 
-        return (ITransactionRepository) context.getBean("transactionRepository", em, merchant);
+        ITransactionRepository rep = (ITransactionRepository) new TransactionRepository(transactionRepository, this, paymentGatewayManager);
+        rep.setMerchant(merchant);
+        return rep;
     }
 
     @Override
     public ITokenRepository getTokens(Merchant merchant) {
         DataAccess.checkMerchant(merchant);
         LOG.debug("Retrieving TokenRepository");
-        return (ITokenRepository) context.getBean("tokenRepository", em, merchant);
+        
+        ITokenRepository rep = (ITokenRepository) new TokenRepository(tokenRepository, this);
+        
+        rep.setMerchant(merchant);
+        return rep;
     }
 
     @Override
     public <T extends BaseEvent> Repository<T, String> getEvents(Merchant merchant, Class<T> type) {
         DataAccess.checkMerchant(merchant);
         LOG.debug("Retrieving EventRepository for class {}", type);
-        return (Repository<T, String>) context.getBean("eventRepository", em, merchant, type);
+        IEventRepository rep = (IEventRepository<T>) new EventRepository(eventRepository);
+        rep.setMerchant(merchant);
+        return rep;
     }
 
     @Override
     public Repository<Merchant, String> getMerchants() {
         LOG.debug("Retrieving MerchantRepository");
-        if (merchantRep == null) {
-            merchantRep = (Repository<Merchant, String>) context.getBean("merchantRepository", em, this);
-        }
-        return merchantRep;
+        return merchantRepository;
     }
 
     @Transactional
@@ -114,10 +141,7 @@ public class PayService implements ApplicationContextAware, IPayService {
     @Override
     public Repository<SystemUser, String> getUsers() {
         LOG.debug("Retrieving SystemUserRepository");
-        if (userRep == null) {
-            userRep = (Repository) context.getBean("repository", em, SystemUser.class);
-        }
-        return userRep;
+        return userRepository;
     }
 
     @Override

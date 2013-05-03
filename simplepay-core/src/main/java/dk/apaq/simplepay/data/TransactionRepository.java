@@ -25,9 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class TransactionRepository extends RepositoryWrapper<Transaction, String> implements ITransactionRepository {
 
-    @Autowired
     private PaymentGatewayManager gatewayManager;
-    @Autowired
     private IPayService service;
 
     private Merchant merchant;
@@ -37,10 +35,20 @@ public class TransactionRepository extends RepositoryWrapper<Transaction, String
      *
      * @param em The entitymanager that holds transactions.
      */
-    public TransactionRepository(Repository<Transaction, String> repository, Merchant merchant) {
+    public TransactionRepository(Repository<Transaction, String> repository, IPayService service, PaymentGatewayManager gatewayManager) {
         super(repository);
+        this.service = service;
+        this.gatewayManager = gatewayManager;
+    }
+    
+    public Merchant getMerchant() {
+        return merchant;
+    }
+
+    public void setMerchant(Merchant merchant) {
         this.merchant = merchant;
     }
+    
 
     @Transactional
     @Override
@@ -64,7 +72,6 @@ public class TransactionRepository extends RepositoryWrapper<Transaction, String
 
         Date now = new Date();
         Transaction transaction = new Transaction(token.getId(), refId, money, access.getPaymentGatewayType());
-        transaction.setId(IdGenerator.generateUniqueId("p"));
         transaction.setMerchant(merchant);
         transaction.setDateCreated(now);
         transaction.setDateChanged(now);
