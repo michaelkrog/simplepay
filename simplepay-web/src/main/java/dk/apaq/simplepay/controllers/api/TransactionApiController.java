@@ -88,7 +88,7 @@ public class TransactionApiController extends BaseController {
         Validate.isTrue(amount > 0, "Amount cannot be '0'.");
         Merchant m = ControllerUtil.getMerchant(service);
         Money money = Money.ofMinor(CurrencyUnit.getInstance(currency), amount);
-        return service.getTransactions(m).createNew(m, token, refId, money);
+        return service.getTransactions(m).createNew(token, refId, money);
     }
 
     /**

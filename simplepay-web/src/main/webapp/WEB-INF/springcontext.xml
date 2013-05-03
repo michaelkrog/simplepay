@@ -40,28 +40,29 @@
     </bean>
     
         <!-- Repository AND SERVICE BEANS -->
-    <bean id="repository" class="dk.apaq.framework.repository.jpa.EntityManagerRepository" scope="prototype">
-        <property name="transactionsHandled" value="false"/>
+    <bean id="userRepository" class="dk.apaq.framework.repository.CollectionRepository"/>
+
+    <bean id="tokenRepository" class="dk.apaq.framework.repository.CollectionRepository"/>
+    
+    <bean id="transactionRepository" class="dk.apaq.framework.repository.CollectionRepository"/>
+    
+    <bean id="merchantRepository" class="dk.apaq.simplepay.data.MerchantRepository">
+        <constructor-arg>
+            <bean class="dk.apaq.framework.repository.CollectionRepository"/>
+        </constructor-arg>
+        <property name="service" ref="service"/>
     </bean>
 
-    <bean id="tokenRepository" class="dk.apaq.simplepay.data.TokenRepository" scope="prototype">
-        <property name="transactionsHandled" value="false"/>
-    </bean>
+    <bean id="eventRepository" class="dk.apaq.framework.repository.CollectionRepository"/>
     
-    <bean id="transactionRepository" class="dk.apaq.simplepay.data.TransactionRepository" scope="prototype">
-        <property name="transactionsHandled" value="false"/>
+    <bean id="service" class="dk.apaq.simplepay.PayService">
+        <property name="merchantRepository" ref="merchantRepository"/>
+        <property name="userRepository" ref="userRepository"/>
+        <property name="tokenRepository" ref="tokenRepository"/>
+        <property name="transactionRepository" ref="transactionRepository"/>
+        <property name="eventRepository" ref="eventRepository"/>
+        <property name="paymentGatewayManager" ref="paymentGatewayManager"/>
     </bean>
-    
-    <bean id="merchantRepository" class="dk.apaq.simplepay.data.MerchantRepository" scope="prototype">
-        <property name="transactionsHandled" value="false"/>
-    </bean>
-
-
-    <bean id="eventRepository" class="dk.apaq.simplepay.data.EventRepository" scope="prototype">
-        <property name="transactionsHandled" value="false"/>
-    </bean>
-    
-    <bean id="service" class="dk.apaq.simplepay.PayService"/>
         
     <!-- PAYMENT -->
     <bean id="testGateway" class="dk.apaq.simplepay.gateway.test.TestGateway"/>
@@ -92,7 +93,7 @@
     <bean class="dk.apaq.simplepay.Bootstrap"/>
     
     <!-- DATA BEANS -->
-    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+    <!--bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="SimplePay"/>
         <property name="dataSource" ref="dataSource"/>
         <property name="jpaVendorAdapter">
@@ -118,7 +119,7 @@
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory" />
-    </bean>
+    </bean-->
 
     <!-- Enables the transaction annotations -->
     <tx:annotation-driven />

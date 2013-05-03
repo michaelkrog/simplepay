@@ -33,7 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/defaultspringcontext.xml"})
-@Transactional
 public class TokenControllerTest {
     
     @Autowired

@@ -38,27 +38,29 @@
     
         
     <!-- CRUD AND SERVICE BEANS -->
-    <bean id="repository" class="dk.apaq.framework.repository.jpa.EntityManagerRepository" scope="prototype">
-        <property name="transactionsHandled" value="false"/>
-    </bean>
+    <bean id="userRepository" class="dk.apaq.framework.repository.CollectionRepository"/>
 
-    <bean id="tokenRepository" class="dk.apaq.simplepay.data.TokenRepository" scope="prototype">
-        <property name="transactionsHandled" value="false"/>
-    </bean>
+    <bean id="tokenRepository" class="dk.apaq.framework.repository.CollectionRepository"/>
     
-    <bean id="transactionRepository" class="dk.apaq.simplepay.data.TransactionRepository" scope="prototype">
-        <property name="transactionsHandled" value="false"/>
-    </bean>
-
-<bean id="merchantRepository" class="dk.apaq.simplepay.data.MerchantRepository" scope="prototype">
-        <property name="transactionsHandled" value="false"/>
-    </bean>
-
-    <bean id="eventRepository" class="dk.apaq.simplepay.data.EventRepository" scope="prototype">
-        <property name="transactionsHandled" value="false"/>
-    </bean>
+    <bean id="transactionRepository" class="dk.apaq.framework.repository.CollectionRepository"/>
     
-    <bean id="service" class="dk.apaq.simplepay.PayService"/>
+    <bean id="merchantRepository" class="dk.apaq.simplepay.data.MerchantRepository">
+        <constructor-arg>
+            <bean class="dk.apaq.framework.repository.CollectionRepository"/>
+        </constructor-arg>
+        <property name="service" ref="service"/>
+    </bean>
+
+    <bean id="eventRepository" class="dk.apaq.framework.repository.CollectionRepository"/>
+    
+    <bean id="service" class="dk.apaq.simplepay.PayService">
+        <property name="merchantRepository" ref="merchantRepository"/>
+        <property name="userRepository" ref="userRepository"/>
+        <property name="tokenRepository" ref="tokenRepository"/>
+        <property name="transactionRepository" ref="transactionRepository"/>
+        <property name="eventRepository" ref="eventRepository"/>
+        <property name="paymentGatewayManager" ref="paymentGatewayManager"/>
+    </bean>
     
     <bean id="testGateway" class="dk.apaq.simplepay.gateway.test.TestGateway"/>
     <!--bean id="netsGateway" class="dk.apaq.simplepay.gateway.nets.Nets">
@@ -86,34 +88,7 @@
     </bean>
 
     
-    <!-- DATA BEANS -->
-    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="persistenceUnitName" value="SimplePay"/>
-        <property name="dataSource" ref="dataSource"/>
-        <property name="jpaVendorAdapter">
-            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-                <property name="showSql" value="${data.showSql}" />
-                <property name="generateDdl" value="${data.generateDdl}" />
-                <property name="databasePlatform" value="${data.dialect}" />
-            </bean>
-        </property>
-        <property name="jpaProperties">
-            <props>
-                <prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.DefaultComponentSafeNamingStrategy</prop>
-            </props>
-        </property>
-    </bean>
-
-    <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
-        <property name="driverClass" value="${data.driverClass}" />
-        <property name="jdbcUrl" value="${data.jdbcUrl}" />
-        <property name="username" value="${data.username}" />
-        <property name="password" value="${data.password}" />
-    </bean>
-
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManagerFactory" />
-    </bean>
+   
 
     <!-- Enables the transaction annotations -->
     <tx:annotation-driven />

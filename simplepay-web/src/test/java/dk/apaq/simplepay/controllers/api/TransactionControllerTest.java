@@ -11,7 +11,7 @@ import dk.apaq.framework.repository.Repository;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.common.ETransactionStatus;
 import dk.apaq.simplepay.controllers.exceptions.ResourceNotFoundException;
-import dk.apaq.simplepay.data.ITokenRepository;
+import dk.apaq.simplepay.data.ITokenRepositoryCustom;
 import dk.apaq.simplepay.data.ITransactionRepository;
 import dk.apaq.simplepay.gateway.EPaymentGateway;
 import dk.apaq.simplepay.model.Merchant;
@@ -38,17 +38,10 @@ import static org.junit.Assert.*;
  */
 public class TransactionControllerTest {
 
-    private class MockTokenRepository extends CollectionRepository<Token> implements ITokenRepository {
+    private class MockTokenRepository extends CollectionRepository<Token> implements ITokenRepositoryCustom {
 
-        public MockTokenRepository() {
-            super(new IdResolver<Token>() {
-                @Override
-                public String getIdForBean(Token bean) {
-                    return bean.getId();
-                }
-            });
-        }
-
+        private Merchant merchant;
+        
         @Override
         public Token createNew(Card card) {
             return save(new Token(card));
@@ -66,21 +59,32 @@ public class TransactionControllerTest {
             entity.setId(UUID.randomUUID().toString());
             return super.save(entity);
         }
+
+        public void setMerchant(Merchant merchant) {
+            this.merchant = merchant;
+        }
+
+        public Merchant getMerchant() {
+            return merchant;
+        }
+        
+        
     }
 
     private class MockTransactionRepository extends CollectionRepository<Transaction> implements ITransactionRepository {
 
-        public MockTransactionRepository() {
-            super(new IdResolver<Transaction>() {
-                @Override
-                public String getIdForBean(Transaction bean) {
-                    return bean.getId();
-                }
-            });
+        private Merchant merchant;
+
+        public void setMerchant(Merchant merchant) {
+            this.merchant = merchant;
         }
 
+        public Merchant getMerchant() {
+            return merchant;
+        }
+        
         @Override
-        public Transaction createNew(Merchant merchant, String tokenId, String refId, Money money) {
+        public Transaction createNew(String tokenId, String refId, Money money) {
             Validate.notNull(tokenRep.findOne(tokenId), "token not found");
             return save(new Transaction(tokenId, refId, money, EPaymentGateway.Test));
         }
@@ -122,7 +126,7 @@ public class TransactionControllerTest {
         Token token = tokenRep.createNew(card);
         
         for (int i = 0; i < 20; i++) {
-            transactionRep.createNew(merchant, token.getId(), "#" + i, Money.parse("USD 123.00"));
+            transactionRep.createNew(token.getId(), "#" + i, Money.parse("USD 123.00"));
         }
         
         
@@ -142,7 +146,7 @@ public class TransactionControllerTest {
     
     private Merchant merchant;
     private Repository<SystemUser, String> userRep = new CollectionRepository<SystemUser>();
-    private ITokenRepository tokenRep = new MockTokenRepository();
+    private ITokenRepositoryCustom tokenRep = new MockTokenRepository();
     private ITransactionRepository transactionRep = new MockTransactionRepository();
     private IPayService service;
     private StringEncryptor encryptor = new StandardPBEStringEncryptor();
