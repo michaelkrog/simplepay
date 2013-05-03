@@ -25,7 +25,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.transaction.annotation.Transactional;
 import static org.junit.Assert.*;
 import org.junit.Before;
 /**
@@ -34,7 +33,6 @@ import org.junit.Before;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/defaultspringcontext.xml"})
-@Transactional
 public class PayServiceTest {
     
     @Autowired
@@ -64,49 +62,49 @@ public class PayServiceTest {
         Merchant m = new Merchant();
         m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null));
         
-        m = service.getMerchants().save(m);
+        m = service.getMerchantService().save(m);
         
-        SystemUser user = service.getUsers().save(new SystemUser(m, "john", "doe"));
+        SystemUser user = service.getUserService().save(new SystemUser(m, "john", "doe"));
         
         Merchant m2 = new Merchant();
         m2.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null));
-        m2 = service.getMerchants().save(m2);
+        m2 = service.getMerchantService().save(m2);
         
-        SystemUser user2 = service.getUsers().save(new SystemUser(m, "jane", "doe"));
+        SystemUser user2 = service.getUserService().save(new SystemUser(m, "jane", "doe"));
         
         //We are not logged in - we should not be allowed to change this merchant.
         try {
-            service.getMerchants().save(m);
+            service.getMerchantService().save(m);
             fail("Should not be able to update merchant.");
         } catch(Exception ex) { }
         
         login(user);
         
         //Now we should be allowed
-        m = service.getMerchants().save(m);
+        m = service.getMerchantService().save(m);
         
         //But not for m2
         try {
-            service.getMerchants().save(m2);
+            service.getMerchantService().save(m2);
             fail("Should not be able to update merchant.");
         } catch(Exception ex) { }
         
-        Token token1 = service.getTokens(m).createNew(dankort);
-        Token token2 = service.getTokens(m2).createNew(dankort);
+        Token token1 = service.getTokenService().createNew(dankort);
+        Token token2 = service.getTokenService().createNew(dankort);
         
         //Create transaction for m
-        Transaction t = service.getTransactions(m).createNew(token1.getMerchant(), token1.getId(), "T_123", Money.of(CurrencyUnit.USD, 123));
+        Transaction t = service.getTransactionService().createNew(token1.getId(), "T_123", Money.of(CurrencyUnit.USD, 123));
         
         //Create transaction for m2
-        Transaction t2 = service.getTransactions(m2).createNew(token2.getMerchant(), token2.getId(), "T_321", Money.of(CurrencyUnit.USD, 123));
+        Transaction t2 = service.getTransactionService().createNew(token2.getId(), "T_321", Money.of(CurrencyUnit.USD, 123));
         
         //Make sure the right data has been set
         assertEquals(m.getId(), t.getMerchant().getId());
         assertEquals(ETransactionStatus.Authorized, t.getStatus());
         
         //Make sure that transactions are only available throught he right merchants
-        Iterable<Transaction> tlist = service.getTransactions(m).findAll();
-        Iterable<Transaction> tlist2 = service.getTransactions(m2).findAll();
+        Iterable<Transaction> tlist = service.getTransactionService().findAll();
+        Iterable<Transaction> tlist2 = service.getTransactionService().findAll();
         assertTrue(tlist.iterator().hasNext());
         assertTrue(tlist2.iterator().hasNext());
         assertEquals("T_123", tlist.iterator().next().getRefId());
@@ -119,20 +117,20 @@ public class PayServiceTest {
     public void testValidTestPayment() {
         Merchant m = new Merchant();
         m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null));
-        m = service.getMerchants().save(m);
+        m = service.getMerchantService().save(m);
         
-        Token token = service.getTokens(m).createNew(dankort);
+        Token token = service.getTokenService().createNew(dankort);
         assertFalse(token.isExpired());
         
         //Create transaction for m
-        Transaction t = service.getTransactions(m).createNew(token.getMerchant(), token.getId(), "T_" + System.currentTimeMillis(), Money.of(CurrencyUnit.USD, 123));
+        Transaction t = service.getTransactionService().createNew(token.getId(), "T_" + System.currentTimeMillis(), Money.of(CurrencyUnit.USD, 123));
         assertEquals(t.getToken(), token.getId());
         assertEquals(ETransactionStatus.Authorized, t.getStatus());
         
-        t = service.getTransactions(m).charge(t, 300);
+        t = service.getTransactionService().charge(t, 300);
         assertEquals(ETransactionStatus.Charged, t.getStatus());
         
-        t = service.getTransactions(m).refund(t, 300);
+        t = service.getTransactionService().refund(t, 300);
         assertEquals(ETransactionStatus.Refunded, t.getStatus());
         
     }
@@ -141,16 +139,16 @@ public class PayServiceTest {
     public void testInvalidTestPayment() {
         Merchant m = new Merchant();
         m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null));
-        m = service.getMerchants().save(m);
+        m = service.getMerchantService().save(m);
         
-        Token token = service.getTokens(m).createNew(dankort);
+        Token token = service.getTokenService().createNew(dankort);
         assertFalse(token.isExpired());
         
         //Create transaction for m
-        Transaction t = service.getTransactions(m).createNew(token.getMerchant(), token.getId(), "T2_" + System.currentTimeMillis(), Money.of(CurrencyUnit.USD, 123));
+        Transaction t = service.getTransactionService().createNew(token.getId(), "T2_" + System.currentTimeMillis(), Money.of(CurrencyUnit.USD, 123));
         
         try {
-            service.getTransactions(m).createNew(token.getMerchant(), token.getId(), "T2_" + System.currentTimeMillis(), Money.of(CurrencyUnit.USD, 123));
+            service.getTransactionService().createNew(token.getId(), "T2_" + System.currentTimeMillis(), Money.of(CurrencyUnit.USD, 123));
             fail("Should not allow same token twice.");
         } catch(IllegalArgumentException ex) { }
     }
@@ -159,13 +157,13 @@ public class PayServiceTest {
     public void testMissingGatewayAccess() {
         Merchant m = new Merchant();
         m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null, PaymentInstrument.Mastercard));
-        m = service.getMerchants().save(m);
+        m = service.getMerchantService().save(m);
         
-        Token token = service.getTokens(m).createNew(dankort);
+        Token token = service.getTokenService().createNew(dankort);
         assertFalse(token.isExpired());
         
         try {
-            Transaction t = service.getTransactions(m).createNew(token.getMerchant(), token.getId(), "T3_" + System.currentTimeMillis(), Money.of(CurrencyUnit.USD, 123));
+            Transaction t = service.getTransactionService().createNew(token.getId(), "T3_" + System.currentTimeMillis(), Money.of(CurrencyUnit.USD, 123));
             fail("Should have failed");
         } catch(PaymentException ex) {
             
@@ -176,16 +174,16 @@ public class PayServiceTest {
     @Test
     public void testGetEvents() {
         Transaction t = new Transaction("123", "T_123", Money.of(CurrencyUnit.USD, 123), EPaymentGateway.Test);
-        Merchant merchant = service.getMerchants().save(new Merchant());
-        Repository<BaseEvent, String> events = service.getEvents(merchant, BaseEvent.class);
+        Merchant merchant = service.getMerchantService().save(new Merchant());
+        Repository<BaseEvent, String> events = service.getEventService(merchant, BaseEvent.class);
         TransactionEvent event = events.save(new TransactionEvent(t, "user", ETransactionStatus.Authorized, "129.129.129.912"));
         assertNotNull(event);
     }
     
     @Test
     public void testGetOrCreatePublicUser() {
-        Merchant merchant = service.getMerchants().save(new Merchant());
-        Iterable<SystemUser> users = service.getUsers().findAll(new Criteria(Rules.equals("merchant", merchant)));
+        Merchant merchant = service.getMerchantService().save(new Merchant());
+        Iterable<SystemUser> users = service.getUserService().findAll(new Criteria(Rules.equals("merchant", merchant)));
         assertFalse(users.iterator().hasNext());
         
         SystemUser user = service.getOrCreatePublicUser(merchant);

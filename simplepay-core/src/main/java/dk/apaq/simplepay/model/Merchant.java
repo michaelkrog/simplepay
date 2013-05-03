@@ -3,11 +3,6 @@ package dk.apaq.simplepay.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-
 import dk.apaq.framework.common.beans.finance.Card;
 import dk.apaq.simplepay.gateway.EPaymentGateway;
 import org.apache.commons.lang.Validate;
@@ -17,7 +12,6 @@ import org.joda.money.Money;
  *
  * @author krog
  */
-@Entity
 public class Merchant extends BaseEntityWithGeneratedId {
 
     private String name;
@@ -27,7 +21,6 @@ public class Merchant extends BaseEntityWithGeneratedId {
     private String postalCode;
     private String city;
     private String countryCode;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<PaymentGatewayAccess> paymentGatewayAccesses = new ArrayList<PaymentGatewayAccess>();
 
     public List<PaymentGatewayAccess> getPaymentGatewayAccesses() {

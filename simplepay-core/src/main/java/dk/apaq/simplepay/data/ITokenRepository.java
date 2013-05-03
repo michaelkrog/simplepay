@@ -1,31 +1,22 @@
 package dk.apaq.simplepay.data;
 
-import dk.apaq.framework.common.beans.finance.Card;
-import dk.apaq.framework.repository.Repository;
+import java.io.Serializable;
+import java.util.List;
+
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 /**
  *
- * @author michael
+ * @author krog
  */
-public interface ITokenRepository extends Repository<Token, String> {
-
-    /**
-     * Creates a new token.
-     * @param card The card to use as payment data for this token.
-     * @return The new token.
-     */
-    Token createNew(Card card);
-
-    /**
-     * Marks a token as expired.
-     * @param token The token to mark as expired.
-     * @return The token after marked expired.
-     */
-    Token markExpired(String token);
+public interface ITokenRepository extends PagingAndSortingRepository<Token, String> {
     
-    Merchant getMerchant();
+    List<Token> findByMerchant(Merchant merchant);
+    Page<Token> findByMerchant(Merchant merchant, Pageable pageable);       
     
-    void setMerchant(Merchant merchant);
+    Token findByMerchantAndId(Merchant merchant, String id);
 }

@@ -1,20 +1,15 @@
 package dk.apaq.simplepay.data;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import dk.apaq.framework.common.beans.finance.Card;
-import dk.apaq.simplepay.data.ITokenRepository;
 import dk.apaq.simplepay.IPayService;
 import dk.apaq.simplepay.common.ETransactionStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 import dk.apaq.simplepay.gateway.EPaymentGateway;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
-import dk.apaq.simplepay.model.ETokenPurpose;
 import dk.apaq.simplepay.model.PaymentGatewayAccess;
 import dk.apaq.simplepay.model.Transaction;
 import org.jasypt.encryption.StringEncryptor;
@@ -29,14 +24,10 @@ import org.junit.Before;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/defaultspringcontext.xml"})
-@Transactional
 public class TransactionRepositoryTest {
     
     @Autowired
     private IPayService service;
-    
-    @PersistenceContext
-    private EntityManager em;
     
     @Autowired
     private StringEncryptor encryptor;
@@ -62,11 +53,11 @@ public class TransactionRepositoryTest {
         String description = "description";
         Money money = Money.parse("USD 123.45");
         
-        ITokenRepository tokens = service.getTokens(m);
+        ITokenRepositoryCustom tokens = service.getTokens(m);
         Token token = tokens.createNew(card);
         
         ITransactionRepository transactions = service.getTransactions(m);
-        Transaction t = transactions.createNew(token.getMerchant(), token.getId(), orderNumber, money);
+        Transaction t = transactions.createNew(token.getId(), orderNumber, money);
         
         assertNotNull(t);
         assertEquals(12345, t.getAmount());
@@ -102,11 +93,11 @@ public class TransactionRepositoryTest {
         String description = "description";
         Money money = Money.parse("USD 123.45");
         
-        ITokenRepository tokens = service.getTokens(m);
+        ITokenRepositoryCustom tokens = service.getTokens(m);
         Token token = tokens.createNew(card);
         
         ITransactionRepository transactions = service.getTransactions(m);
-        Transaction t = transactions.createNew(token.getMerchant(), token.getId(), orderNumber, money);
+        Transaction t = transactions.createNew(token.getId(), orderNumber, money);
         
         assertNotNull(t);
         assertEquals(12345, t.getAmount());

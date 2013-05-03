@@ -5,26 +5,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import dk.apaq.simplepay.security.ERole;
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.domain.Persistable;
 
 /**
  *
  * @author michael
  */
-@Entity
 public class SystemUser implements Serializable, Persistable<String> {
 
-    @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
     private String id;
     @NotNull
-    @Column(unique = true)
     private String username;
     private String password;
     private boolean disabled;
@@ -32,10 +25,7 @@ public class SystemUser implements Serializable, Persistable<String> {
     private boolean credentialsExpired;
     private boolean locked;
     @NotNull
-    @ManyToOne
     private Merchant merchant;
-    @Enumerated(EnumType.STRING)
-    @ElementCollection
     private List<ERole> roles = new ArrayList<ERole>();
 
     public SystemUser() {

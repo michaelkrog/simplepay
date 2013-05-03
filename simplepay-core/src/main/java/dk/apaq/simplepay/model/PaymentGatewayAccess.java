@@ -5,11 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-
 import dk.apaq.framework.common.beans.finance.PaymentInstrument;
 import dk.apaq.simplepay.gateway.EPaymentGateway;
 
@@ -17,14 +12,11 @@ import dk.apaq.simplepay.gateway.EPaymentGateway;
  *
  * @author krog
  */
-@Entity
 public class PaymentGatewayAccess extends BaseEntityWithGeneratedId {
 
     private EPaymentGateway paymentGatewayType;
     private String acquirerRefId;
     
-    @ElementCollection
-    @Enumerated(EnumType.STRING)
     private List<PaymentInstrument> specificValidInstruments;
 
     protected PaymentGatewayAccess() {

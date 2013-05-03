@@ -1,19 +1,16 @@
 package dk.apaq.simplepay.model;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import dk.apaq.simplepay.common.ETransactionStatus;
 import dk.apaq.simplepay.gateway.EPaymentGateway;
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.hibernate.annotations.GenericGenerator;
 import org.joda.money.Money;
 
 /**
  *
  * @author krog
  */
-@Entity
 public class Transaction extends BaseEntityWithoutGeneratedId {
 
     private long amount;
@@ -24,7 +21,6 @@ public class Transaction extends BaseEntityWithoutGeneratedId {
     private boolean test;
     private String message;
     @JsonIgnore
-    @ManyToOne
     @NotNull
     private Merchant merchant;
     @NotNull
@@ -32,11 +28,9 @@ public class Transaction extends BaseEntityWithoutGeneratedId {
     private String description;
     @NotNull
     private String token;
-    @Enumerated(EnumType.STRING)
     @NotNull
     private ETransactionStatus status = ETransactionStatus.Authorized;
     private String gatewayTransactionId;
-    @Enumerated(EnumType.STRING)
     @NotNull
     private EPaymentGateway gatewayType;
 

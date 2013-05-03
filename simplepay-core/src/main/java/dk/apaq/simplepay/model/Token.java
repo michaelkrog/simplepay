@@ -1,21 +1,13 @@
 package dk.apaq.simplepay.model;
 
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
-
 import dk.apaq.framework.common.beans.finance.Card;
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.hibernate.annotations.GenericGenerator;
 
 /**
  *
  * @author krog
  */
-@Entity
 public class Token extends BaseEntityWithoutGeneratedId {
 
     
@@ -24,13 +16,11 @@ public class Token extends BaseEntityWithoutGeneratedId {
     private boolean expired = false;
     private boolean test = false;
     
-    @Embedded 
     private Card tokenData;
     
     //Variables we dont want in a JSON output is here.
     //TODO Move the ignore descision to the JSON mapper instead
     @NotNull
-    @ManyToOne
     @JsonIgnore
     private Merchant merchant;
 
