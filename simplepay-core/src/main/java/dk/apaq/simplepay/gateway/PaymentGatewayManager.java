@@ -5,7 +5,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
-import dk.apaq.simplepay.IPayService;
+import dk.apaq.simplepay.PaymentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class PaymentGatewayManager {
 
     @Autowired
-    private IPayService service;
+    private PaymentContext service;
     private static final Logger LOG = LoggerFactory.getLogger(PaymentGatewayManager.class);
     private Map<String, IPaymentGateway> gatewayMap;
 

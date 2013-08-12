@@ -1,29 +1,26 @@
 
-package dk.apaq.simplepay.data.service;
+package dk.apaq.simplepay.service;
 
-import dk.apaq.simplepay.data.ISystemUserRepository;
+import dk.apaq.simplepay.repository.ISystemUserRepository;
 import dk.apaq.simplepay.model.SystemUser;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * Javadoc
  */
-public class UserService implements IUserService {
+public class UserService extends BaseService<SystemUser, String> {
 
     private ISystemUserRepository repository;
     
-    @Override
     public SystemUser getUser(String username) {
         return repository.findByUsername(username);
     }
 
-    @Override
     public String getCurrentUsername() {
         SystemUser user = getCurrentUser();
         return user == null ? "Anonymous" : user.getUsername();
     }
 
-    @Override
     public SystemUser getCurrentUser() {
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
             return null;

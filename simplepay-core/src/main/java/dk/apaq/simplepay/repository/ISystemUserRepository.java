@@ -1,5 +1,5 @@
 
-package dk.apaq.simplepay.data;
+package dk.apaq.simplepay.repository;
 
 import dk.apaq.simplepay.model.SystemUser;
 import org.springframework.data.repository.PagingAndSortingRepository;

@@ -53,7 +53,7 @@
 
     <bean id="eventRepository" class="dk.apaq.framework.repository.CollectionRepository"/>
     
-    <bean id="service" class="dk.apaq.simplepay.PayService">
+    <bean id="service" class="dk.apaq.simplepay.PayContext">
         <property name="merchantRepository" ref="merchantRepository"/>
         <property name="userRepository" ref="userRepository"/>
         <property name="tokenRepository" ref="tokenRepository"/>

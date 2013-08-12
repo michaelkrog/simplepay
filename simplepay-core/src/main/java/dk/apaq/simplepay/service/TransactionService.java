@@ -1,12 +1,13 @@
 
-package dk.apaq.simplepay.data.service;
+package dk.apaq.simplepay.service;
 
+import java.io.Serializable;
 import java.util.Date;
 
-import dk.apaq.simplepay.IPayService;
+import dk.apaq.simplepay.PaymentContext;
 import dk.apaq.simplepay.common.ETransactionStatus;
-import dk.apaq.simplepay.data.ITokenRepository;
-import dk.apaq.simplepay.data.ITransactionRepository;
+import dk.apaq.simplepay.repository.ITokenRepository;
+import dk.apaq.simplepay.repository.ITransactionRepository;
 import dk.apaq.simplepay.gateway.EPaymentGateway;
 import dk.apaq.simplepay.gateway.IPaymentGateway;
 import dk.apaq.simplepay.gateway.PaymentException;
@@ -24,14 +25,13 @@ import org.joda.money.Money;
 /**
  * Javadoc
  */
-public class TransactionService implements ITransactionService {
+public class TransactionService extends BaseService<Transaction, String> {
 
     private ITransactionRepository repository;
     //private ITokenRepository tokenRepository;
-    private IPayService service;
+    private PaymentContext service;
     private PaymentGatewayManager gatewayManager;
     
-    @Override
     public Transaction createNew(String tokenId, String refId, Money money) {
         Validate.notNull(tokenId, "token is null.");
         Merchant merchant = service.getUserService().getCurrentUser().getMerchant();
@@ -77,7 +77,6 @@ public class TransactionService implements ITransactionService {
         return transaction;
     }
 
-    @Override
     public Transaction charge(Transaction transaction, long amount) {
         Merchant merchant = service.getUserService().getCurrentUser().getMerchant();
         transaction = loadTransaction(merchant, transaction);
@@ -100,7 +99,6 @@ public class TransactionService implements ITransactionService {
         return transaction;
     }
 
-    @Override
     public Transaction cancel(Transaction transaction) {
         Merchant merchant = service.getUserService().getCurrentUser().getMerchant();
         transaction = loadTransaction(merchant, transaction);
@@ -122,7 +120,6 @@ public class TransactionService implements ITransactionService {
         return transaction;
     }
 
-    @Override
     public Transaction refund(Transaction transaction, long amount) {
         Merchant merchant = service.getUserService().getCurrentUser().getMerchant();
         transaction = loadTransaction(merchant, transaction);
@@ -164,7 +161,6 @@ public class TransactionService implements ITransactionService {
         return access;
     }
 
-    @Override
     public Transaction getTransactionByRefId(String refId) {
         Merchant merchant = service.getUserService().getCurrentUser().getMerchant();
         return repository.findByMerchantAndRefId(merchant, refId);

@@ -3,7 +3,7 @@ package dk.apaq.simplepay.security;
 import java.util.ArrayList;
 import java.util.List;
 
-import dk.apaq.simplepay.IPayService;
+import dk.apaq.simplepay.PaymentContext;
 import dk.apaq.simplepay.model.SystemUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,10 +19,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
  */
 public class SystemUserDetailsManager implements UserDetailsService {
 
-    private final IPayService service;
+    private final PaymentContext service;
 
     @Autowired
-    public SystemUserDetailsManager(IPayService service) {
+    public SystemUserDetailsManager(PaymentContext service) {
         this.service = service;
     }
 

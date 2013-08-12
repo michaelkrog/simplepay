@@ -1,7 +1,8 @@
 package dk.apaq.simplepay.data;
 
+import dk.apaq.simplepay.repository.ITransactionRepository;
 import dk.apaq.framework.common.beans.finance.Card;
-import dk.apaq.simplepay.IPayService;
+import dk.apaq.simplepay.PaymentContext;
 import dk.apaq.simplepay.common.ETransactionStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.junit.runner.RunWith;
@@ -12,6 +13,8 @@ import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.PaymentGatewayAccess;
 import dk.apaq.simplepay.model.Transaction;
+import dk.apaq.simplepay.service.TokenService;
+import dk.apaq.simplepay.service.TransactionService;
 import org.jasypt.encryption.StringEncryptor;
 import org.joda.money.Money;
 import org.junit.Test;
@@ -27,7 +30,7 @@ import org.junit.Before;
 public class TransactionRepositoryTest {
     
     @Autowired
-    private IPayService service;
+    private PaymentContext context;
     
     @Autowired
     private StringEncryptor encryptor;
@@ -46,17 +49,17 @@ public class TransactionRepositoryTest {
         
         Merchant m = new Merchant();
         m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null));
-        m = service.getMerchants().save(m);
+        m = context.getMerchantService().save(m);
         
         EPaymentGateway gatewayType = EPaymentGateway.Test;
         String orderNumber = "ordernum";
         String description = "description";
         Money money = Money.parse("USD 123.45");
         
-        ITokenRepositoryCustom tokens = service.getTokens(m);
+        TokenService tokens = context.getTokenService();
         Token token = tokens.createNew(card);
         
-        ITransactionRepository transactions = service.getTransactions(m);
+        TransactionService transactions = context.getTransactionService();
         Transaction t = transactions.createNew(token.getId(), orderNumber, money);
         
         assertNotNull(t);
@@ -86,17 +89,17 @@ public class TransactionRepositoryTest {
         
         Merchant m = new Merchant();
         m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, null));
-        m = service.getMerchants().save(m);
+        m = context.getMerchantService().save(m);
         
         EPaymentGateway gatewayType = EPaymentGateway.Test;
         String orderNumber = "o_" + System.currentTimeMillis();
         String description = "description";
         Money money = Money.parse("USD 123.45");
         
-        ITokenRepositoryCustom tokens = service.getTokens(m);
+        TokenService tokens = context.getTokenService();
         Token token = tokens.createNew(card);
         
-        ITransactionRepository transactions = service.getTransactions(m);
+        TransactionService transactions = context.getTransactionService();
         Transaction t = transactions.createNew(token.getId(), orderNumber, money);
         
         assertNotNull(t);

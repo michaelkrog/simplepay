@@ -5,7 +5,7 @@
 package dk.apaq.simplepay.gateway;
 
 import dk.apaq.framework.common.beans.finance.Card;
-import dk.apaq.simplepay.IPayService;
+import dk.apaq.simplepay.PaymentContext;
 import dk.apaq.simplepay.model.ETokenPurpose;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.PaymentGatewayAccess;

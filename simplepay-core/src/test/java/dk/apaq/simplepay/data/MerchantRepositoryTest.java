@@ -1,6 +1,6 @@
 package dk.apaq.simplepay.data;
 
-import dk.apaq.simplepay.IPayService;
+import dk.apaq.simplepay.PaymentContext;
 import dk.apaq.simplepay.gateway.EPaymentGateway;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.PaymentGatewayAccess;
@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 public class MerchantRepositoryTest {
     
     @Autowired
-    private IPayService service;
+    private PaymentContext service;
     
     /**
      * Test of createNew method, of class TokenCrud.
@@ -33,9 +33,9 @@ public class MerchantRepositoryTest {
         Merchant m = new Merchant();
         m.setName("merchant");
         m.getPaymentGatewayAccesses().add(new PaymentGatewayAccess(EPaymentGateway.Test, "qwerty"));
-        m = service.getMerchants().save(m);
+        m = service.getMerchantService().save(m);
 
-        m = service.getMerchants().findOne(m.getId());
+        m = service.getMerchantService().findOne(m.getId());
         assertEquals("merchant", m.getName());
         assertEquals(EPaymentGateway.Test, m.getPaymentGatewayAccesses().get(0).getPaymentGatewayType());
         assertEquals("qwerty", m.getPaymentGatewayAccesses().get(0).getAcquirerRefId());

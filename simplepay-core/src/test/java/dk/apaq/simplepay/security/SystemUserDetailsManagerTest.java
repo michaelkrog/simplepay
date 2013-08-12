@@ -1,7 +1,8 @@
 package dk.apaq.simplepay.security;
 
 import java.util.Collection;
-import dk.apaq.simplepay.IPayService;
+
+import dk.apaq.simplepay.PaymentContext;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
 import org.junit.After;
@@ -26,7 +27,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class SystemUserDetailsManagerTest {
 
     @Autowired
-    private IPayService service;
+    private PaymentContext context;
 
     /**
      * Test of loadUserByUsername method, of class SystemUserDetailsManager.
@@ -36,17 +37,17 @@ public class SystemUserDetailsManagerTest {
         System.out.println("loadUserByUsername");
 
         String username = "U_" + System.currentTimeMillis();
-        Merchant m = service.getMerchants().save(new Merchant());
+        Merchant m = context.getMerchantService().save(new Merchant());
         SystemUser user = new SystemUser(m, username, "doe", ERole.Merchant);
 
-        user = service.getUsers().save(user);
+        user = context.getUserService().save(user);
         assertEquals(1, user.getRoles().size());
 
         //Thread.sleep(100);
-        user = service.getUsers().findOne(user.getId());
+        user = context.getUserService().findOne(user.getId());
         assertEquals(1, user.getRoles().size());
 
-        SystemUserDetailsManager instance = new SystemUserDetailsManager(service);
+        SystemUserDetailsManager instance = new SystemUserDetailsManager(context);
         UserDetails result = instance.loadUserByUsername(username);
         Collection<? extends GrantedAuthority> auths = result.getAuthorities();
         Object[] authArray = auths.toArray();

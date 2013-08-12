@@ -1,22 +1,23 @@
 
-package dk.apaq.simplepay.data.service;
+package dk.apaq.simplepay.service;
 
 import java.util.Date;
 
-import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.data.IMerchantRepository;
+import dk.apaq.simplepay.PaymentContext;
+import dk.apaq.simplepay.repository.IMerchantRepository;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
+import dk.apaq.simplepay.model.Transaction;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * Javadoc
  */
-public class MerchantService implements IMerchantService {
+public class MerchantService  extends BaseService<Merchant, String> {
 
     private IMerchantRepository repository;
-    private IPayService service;
+    private PaymentContext service;
 
     @Override
     public Merchant save(Merchant merchant) {

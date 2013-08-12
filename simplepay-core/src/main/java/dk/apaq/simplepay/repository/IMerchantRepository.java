@@ -1,4 +1,4 @@
-package dk.apaq.simplepay.data;
+package dk.apaq.simplepay.repository;
 
 import java.io.Serializable;
 

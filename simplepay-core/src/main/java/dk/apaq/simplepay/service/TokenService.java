@@ -1,11 +1,11 @@
-package dk.apaq.simplepay.data.service;
+package dk.apaq.simplepay.service;
 
 import java.util.Date;
 
 import dk.apaq.framework.common.beans.finance.Card;
-import dk.apaq.simplepay.IPayService;
-import dk.apaq.simplepay.data.IEventRepository;
-import dk.apaq.simplepay.data.ITokenRepository;
+import dk.apaq.simplepay.PaymentContext;
+import dk.apaq.simplepay.repository.IEventRepository;
+import dk.apaq.simplepay.repository.ITokenRepository;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.TokenEvent;
@@ -17,13 +17,12 @@ import org.springframework.data.domain.Pageable;
 /**
  * Javadoc
  */
-public class TokenService implements ITokenService {
+public class TokenService extends BaseService<Token, String> {
 
     @Autowired private ITokenRepository repository;
     @Autowired private IEventRepository eventRepository;
-    @Autowired private IPayService service;
+    @Autowired private PaymentContext service;
     
-    @Override
     public Token createNew(Card card) {
         Merchant merchant = service.getUserService().getCurrentUser().getMerchant();
         Date now = new Date();
@@ -38,7 +37,6 @@ public class TokenService implements ITokenService {
         return token;
     }
 
-    @Override
     public Token markExpired(String token) {
         Token t = repository.findOne(token);
         t.setExpired(true);
