@@ -4,18 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import dk.apaq.framework.criteria.Criteria;
-import dk.apaq.framework.criteria.Limit;
-import dk.apaq.framework.criteria.Rule;
-import dk.apaq.framework.criteria.Sorter;
-import dk.apaq.framework.criteria.simplequery.QueryException;
-import dk.apaq.framework.criteria.simplequery.SimpleQueryParser;
-import dk.apaq.framework.repository.Repository;
-import dk.apaq.simplepay.IPayService;
+import dk.apaq.simplepay.PaymentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,14 +22,14 @@ public class BaseController {
 
     private static final Logger LOG = LoggerFactory.getLogger(BaseController.class);
     @Autowired
-    private IPayService service;
+    private PaymentContext context;
     private SimpleQueryParser queryParser = new SimpleQueryParser();
 
     public SimpleQueryParser getQueryParser() {
         return queryParser;
     }
 
-    private Map<String, Object> buildListModel(Repository rep, Criteria c) {
+    private Map<String, Object> buildListModel(CrudRepository rep, Criteria c) {
         LOG.debug("Building list model.");
         Iterable entities = rep.findAll(c);
 
