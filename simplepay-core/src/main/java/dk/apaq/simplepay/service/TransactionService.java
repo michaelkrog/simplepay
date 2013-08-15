@@ -15,28 +15,45 @@ import dk.apaq.simplepay.gateway.PaymentGatewayManager;
 import dk.apaq.simplepay.model.ETokenPurpose;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.PaymentGatewayAccess;
+import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Token;
 import dk.apaq.simplepay.model.Transaction;
 import dk.apaq.simplepay.model.TransactionEvent;
 import dk.apaq.simplepay.util.RequestInformationHelper;
 import org.apache.commons.lang.Validate;
 import org.joda.money.Money;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Javadoc
  */
-public class TransactionService extends BaseService<Transaction, String> {
+public class TransactionService extends BaseService<Transaction, ITransactionRepository> {
 
-    private ITransactionRepository repository;
-    //private ITokenRepository tokenRepository;
-    private PaymentContext service;
+    private UserService userService;
+    private TokenService tokenService;
     private PaymentGatewayManager gatewayManager;
+
+    @Autowired
+    public void setGatewayManager(PaymentGatewayManager gatewayManager) {
+        this.gatewayManager = gatewayManager;
+    }
+
+    @Autowired
+    public void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService;
+    }
+
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+    
     
     public Transaction createNew(String tokenId, String refId, Money money) {
         Validate.notNull(tokenId, "token is null.");
-        Merchant merchant = service.getUserService().getCurrentUser().getMerchant();
+        Merchant merchant = userService.getCurrentUser(true).getMerchant();
         
-        Token token = service.getTokenService().findOne(tokenId);
+        Token token = tokenService.findOne(tokenId);
         Validate.notNull(token, "Token given but could not be found in database.");
         Validate.isTrue(!token.isExpired(), "Token is expired.");
 
@@ -67,10 +84,10 @@ public class TransactionService extends BaseService<Transaction, String> {
 
         //if token only for single usage then mark it expired
         if (token.getPurpose() == ETokenPurpose.SinglePayment) {
-            token = service.getTokenService().markExpired(token.getId());
+            token = tokenService.markExpired(token.getId());
         }
 
-        TransactionEvent evt = new TransactionEvent(transaction, service.getUserService().getCurrentUsername(), ETransactionStatus.Authorized,
+        TransactionEvent evt = new TransactionEvent(transaction, userService.getCurrentUsername(), ETransactionStatus.Authorized,
                 RequestInformationHelper.getRemoteAddress());
         //service.getEvents(token.getMerchant(), TransactionEvent.class).save(evt);
 
@@ -78,9 +95,9 @@ public class TransactionService extends BaseService<Transaction, String> {
     }
 
     public Transaction charge(Transaction transaction, long amount) {
-        Merchant merchant = service.getUserService().getCurrentUser().getMerchant();
+        Merchant merchant = userService.getCurrentUser().getMerchant();
         transaction = loadTransaction(merchant, transaction);
-        Token token = service.getTokenService().findOne(transaction.getToken());
+        Token token = tokenService.findOne(transaction.getToken());
         PaymentGatewayAccess access = getGatewayAccess(token.getMerchant(), transaction.getGatewayType());
 
         transaction.setAmountCharged(amount);
@@ -92,7 +109,7 @@ public class TransactionService extends BaseService<Transaction, String> {
 
         transaction = repository.save(transaction);
 
-        TransactionEvent evt = new TransactionEvent(transaction, service.getUserService().getCurrentUsername(), ETransactionStatus.Charged,
+        TransactionEvent evt = new TransactionEvent(transaction, userService.getCurrentUsername(), ETransactionStatus.Charged,
                 RequestInformationHelper.getRemoteAddress());
         //service.getEvents(transaction.getMerchant(), TransactionEvent.class).save(evt);
 
@@ -100,9 +117,9 @@ public class TransactionService extends BaseService<Transaction, String> {
     }
 
     public Transaction cancel(Transaction transaction) {
-        Merchant merchant = service.getUserService().getCurrentUser().getMerchant();
+        Merchant merchant = userService.getCurrentUser().getMerchant();
         transaction = loadTransaction(merchant, transaction);
-        Token token = service.getTokenService().findOne(transaction.getToken());
+        Token token = tokenService.findOne(transaction.getToken());
         PaymentGatewayAccess access = getGatewayAccess(token.getMerchant(), transaction.getGatewayType());
 
         transaction.setStatus(ETransactionStatus.Cancelled);
@@ -113,7 +130,7 @@ public class TransactionService extends BaseService<Transaction, String> {
 
         transaction = repository.save(transaction);
 
-        TransactionEvent evt = new TransactionEvent(transaction, service.getUserService().getCurrentUsername(), ETransactionStatus.Cancelled,
+        TransactionEvent evt = new TransactionEvent(transaction, userService.getCurrentUsername(), ETransactionStatus.Cancelled,
                 RequestInformationHelper.getRemoteAddress());
         //service.getEvents(transaction.getMerchant(), TransactionEvent.class).save(evt);
 
@@ -121,9 +138,9 @@ public class TransactionService extends BaseService<Transaction, String> {
     }
 
     public Transaction refund(Transaction transaction, long amount) {
-        Merchant merchant = service.getUserService().getCurrentUser().getMerchant();
+        Merchant merchant = userService.getCurrentUser().getMerchant();
         transaction = loadTransaction(merchant, transaction);
-        Token token = service.getTokenService().findOne(transaction.getToken());
+        Token token = tokenService.findOne(transaction.getToken());
         PaymentGatewayAccess access = getGatewayAccess(token.getMerchant(), transaction.getGatewayType());
 
         transaction.setAmountRefunded(amount);
@@ -135,7 +152,7 @@ public class TransactionService extends BaseService<Transaction, String> {
 
         transaction = repository.save(transaction);
 
-        TransactionEvent evt = new TransactionEvent(transaction, service.getUserService().getCurrentUsername(), ETransactionStatus.Refunded,
+        TransactionEvent evt = new TransactionEvent(transaction, userService.getCurrentUsername(), ETransactionStatus.Refunded,
                 RequestInformationHelper.getRemoteAddress());
         //service.getEvents(transaction.getMerchant(), TransactionEvent.class).save(evt);
 
@@ -162,7 +179,7 @@ public class TransactionService extends BaseService<Transaction, String> {
     }
 
     public Transaction getTransactionByRefId(String refId) {
-        Merchant merchant = service.getUserService().getCurrentUser().getMerchant();
+        Merchant merchant = userService.getCurrentUser().getMerchant();
         return repository.findByMerchantAndRefId(merchant, refId);
     }
     

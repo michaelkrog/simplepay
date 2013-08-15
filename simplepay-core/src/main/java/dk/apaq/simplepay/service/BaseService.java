@@ -1,22 +1,28 @@
 package dk.apaq.simplepay.service;
 
 import java.io.Serializable;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.util.Assert;
 
 /**
  * Abstract class for basic services using a
  * <code>PageableQueryDslCrudRepository</code>.
  */
-public abstract class BaseService<BT extends Persistable, IDTYPE extends Serializable> {
+public abstract class BaseService<BT extends Persistable, RepositoryType extends PagingAndSortingRepository<BT, String>> {
 
-    private PagingAndSortingRepository<BT, IDTYPE> repository;
+    protected RepositoryType repository;
 
-    public void setRepository(PagingAndSortingRepository<BT, IDTYPE> repository) {
+    @Autowired
+    public void setRepository(RepositoryType repository) {
         this.repository = repository;
     }
 
@@ -28,7 +34,7 @@ public abstract class BaseService<BT extends Persistable, IDTYPE extends Seriali
         return repository.findAll(pageable);
     }
 
-    public BT findOne(IDTYPE id) {
+    public BT findOne(String id) {
         return repository.findOne(id);
     }
 
@@ -37,7 +43,7 @@ public abstract class BaseService<BT extends Persistable, IDTYPE extends Seriali
         return repository.save(entity);
     }
 
-    public void delete(IDTYPE id) {
+    public void delete(String id) {
         repository.delete(id);
     }
 

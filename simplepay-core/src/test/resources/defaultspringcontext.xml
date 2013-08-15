@@ -21,9 +21,9 @@
        http://www.springframework.org/schema/aop
        http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
        http://www.springframework.org/schema/security
-       http://www.springframework.org/schema/security/spring-security-3.0.2.xsd
+       http://www.springframework.org/schema/security/spring-security-3.1.4.xsd
        http://www.springframework.org/schema/lang
-       http://www.springframework.org/schema/lang/spring-lang-2.0.xsd">
+       http://www.springframework.org/schema/lang/spring-lang-3.0.xsd">
 
     <context:property-placeholder ignore-resource-not-found="true" location="classpath:simplepay_default.properties,file:${user.home}/simplepay.properties" />
     
@@ -38,27 +38,26 @@
     
         
     <!-- CRUD AND SERVICE BEANS -->
-    <bean id="userRepository" class="dk.apaq.framework.repository.CollectionRepository"/>
-
-    <bean id="tokenRepository" class="dk.apaq.framework.repository.CollectionRepository"/>
+    <bean id="userRepository" class="dk.apaq.simplepay.util.MockUserRepository"/>
+    <bean id="tokenRepository" class="dk.apaq.simplepay.util.MockTokenRepository"/>
+    <bean id="transactionRepository" class="dk.apaq.simplepay.util.MockTransactionRepository"/>
+    <bean id="merchantRepository" class="dk.apaq.simplepay.util.MockMerchantRepository"/>
+    <bean id="eventRepository" class="dk.apaq.simplepay.util.MockEventRepository"/>
     
-    <bean id="transactionRepository" class="dk.apaq.framework.repository.CollectionRepository"/>
-    
-    <bean id="merchantRepository" class="dk.apaq.simplepay.data.MerchantRepository">
-        <constructor-arg>
-            <bean class="dk.apaq.framework.repository.CollectionRepository"/>
-        </constructor-arg>
-        <property name="service" ref="service"/>
+    <bean id="userService" class="dk.apaq.simplepay.service.UserService"/>
+    <bean id="tokenService" class="dk.apaq.simplepay.service.TokenService"/>
+    <bean id="transactionService" class="dk.apaq.simplepay.service.TransactionService"/>
+    <bean id="merchantService" class="dk.apaq.simplepay.service.MerchantService">
+        <property name="context" ref="paymentContext"/>
     </bean>
-
-    <bean id="eventRepository" class="dk.apaq.framework.repository.CollectionRepository"/>
+    <bean id="eventService" class="dk.apaq.simplepay.service.EventService"/>
     
-    <bean id="service" class="dk.apaq.simplepay.PayContext">
-        <property name="merchantRepository" ref="merchantRepository"/>
-        <property name="userRepository" ref="userRepository"/>
-        <property name="tokenRepository" ref="tokenRepository"/>
-        <property name="transactionRepository" ref="transactionRepository"/>
-        <property name="eventRepository" ref="eventRepository"/>
+    <bean id="paymentContext" class="dk.apaq.simplepay.PaymentContext">
+        <property name="merchantService" ref="merchantService"/>
+        <property name="userService" ref="userService"/>
+        <property name="tokenService" ref="tokenService"/>
+        <property name="transactionService" ref="transactionService"/>
+        <property name="eventService" ref="eventService"/>
         <property name="paymentGatewayManager" ref="paymentGatewayManager"/>
     </bean>
     

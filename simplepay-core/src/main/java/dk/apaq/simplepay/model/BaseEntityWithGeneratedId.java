@@ -8,17 +8,17 @@ import java.util.Date;
  */
 public abstract class BaseEntityWithGeneratedId implements BaseEntity {
 
-    private String _id;
+    private String id;
     
     protected Date dateChanged;
     protected Date dateCreated;
 
     public String getId() {
-        return _id;
+        return id;
     }
 
-    public void setId(String _id) {
-        this._id = _id;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Date getDateChanged() {
@@ -39,7 +39,7 @@ public abstract class BaseEntityWithGeneratedId implements BaseEntity {
 
     @Override
     public boolean isNew() {
-        return _id == null;
+        return id == null;
     }
     
     

@@ -20,6 +20,6 @@ public interface BaseEntity extends Serializable, Persistable<String> {
 
     void setDateCreated(Date dateCreated);
 
-    void setId(String _id);
+    void setId(String id);
     
 }

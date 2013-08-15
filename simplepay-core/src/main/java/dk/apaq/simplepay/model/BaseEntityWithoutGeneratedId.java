@@ -10,19 +10,19 @@ import java.util.Date;
  * Javadoc
  */
 public abstract class BaseEntityWithoutGeneratedId implements BaseEntity {
-    private String _id;
+    private String id;
     
     protected Date dateChanged;
     protected Date dateCreated;
 
     @Override
     public String getId() {
-        return _id;
+        return id;
     }
 
     @Override
-    public void setId(String _id) {
-        this._id = _id;
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override
@@ -47,6 +47,6 @@ public abstract class BaseEntityWithoutGeneratedId implements BaseEntity {
 
     @Override
     public boolean isNew() {
-        return _id == null;
+        return id == null;
     }
 }

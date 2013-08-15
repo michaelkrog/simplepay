@@ -3,22 +3,27 @@ package dk.apaq.simplepay.service;
 
 import java.util.Date;
 
+import javax.annotation.PostConstruct;
 import dk.apaq.simplepay.PaymentContext;
 import dk.apaq.simplepay.repository.IMerchantRepository;
 import dk.apaq.simplepay.model.Merchant;
 import dk.apaq.simplepay.model.SystemUser;
 import dk.apaq.simplepay.model.Transaction;
+import dk.apaq.simplepay.repository.ISystemUserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.Assert;
 
 /**
  * Javadoc
  */
-public class MerchantService  extends BaseService<Merchant, String> {
+public class MerchantService  extends BaseService<Merchant, IMerchantRepository> {
 
-    private IMerchantRepository repository;
-    private PaymentContext service;
+    @Autowired
+    private ISystemUserRepository systemUserRepository;
 
+    
     @Override
     public Merchant save(Merchant merchant) {
         Date now = new Date();
@@ -29,7 +34,7 @@ public class MerchantService  extends BaseService<Merchant, String> {
                 throw new IllegalStateException("No authenticated user available.");
             }
             String username = auth.getName();
-            SystemUser user = service.getUserService().getUser(username);
+            SystemUser user = systemUserRepository.findByUsername(username);
             Merchant usersMerchant = user.getMerchant();
             merchant.setDateCreated(usersMerchant.getDateCreated());
             if (!usersMerchant.getId().equals(merchant.getId())) {
